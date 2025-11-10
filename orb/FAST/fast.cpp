@@ -156,6 +156,6370 @@ class FASTDetector {
         }
 };
 
+void learnedFast(std::vector<cv::Point2d>& keypoints, const cv::Mat& img, int threshold) {
+    unsigned char* raw_data = img.data;
+    int height = img.size().height;
+    int width = img.size().width;
+    for (int row = 3; row < height - 3; row++) {
+        for (int col = 3; col < width - 3; col++) {
+            int comp_pixel, pixel;
+            comp_pixel = raw_data[row * width + col];
+            pixel = raw_data[(row + 1) * width + col + 3];
+            if (pixel + threshold < comp_pixel) {
+                pixel = raw_data[(row - 3) * width + col];
+                if (pixel + threshold < comp_pixel) {
+                    pixel = raw_data[(row - 1) * width + col - 3];
+                    if (pixel + threshold < comp_pixel) {
+                        pixel = raw_data[(row - 1) * width + col + 3];
+                        if (pixel + threshold < comp_pixel) {
+                            pixel = raw_data[(row - 2) * width + col - 2];
+                            if (pixel + threshold < comp_pixel) {
+                                pixel = raw_data[(row) * width + col + 3];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row - 2) * width + col + 2];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                keypoints.push_back(cv::Point2d(col, row));
+                                            }
+                                            else {
+                                                pixel = raw_data[(row + 3) * width + col];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 2) * width + col + 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col + 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col - 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col - 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                pixel = raw_data[(row) * width + col - 3];
+                                                                if (pixel + threshold < comp_pixel || pixel - threshold > comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                                else {
+                                                                    pixel = raw_data[(row + 2) * width + col + 2];
+                                                                    if (pixel + threshold < comp_pixel) {
+                                                                        pixel = raw_data[(row + 3) * width + col + 1];
+                                                                        if (pixel + threshold < comp_pixel) {
+                                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                            else if (pixel - threshold > comp_pixel) {
+                                                                pixel = raw_data[(row + 3) * width + col + 1];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                            else {
+                                                                pixel = raw_data[(row + 3) * width + col + 1];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    pixel = raw_data[(row + 2) * width + col + 2];
+                                                                    if (pixel + threshold < comp_pixel) {
+                                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                        else if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row + 3) * width + col + 1];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                pixel = raw_data[(row + 2) * width + col + 2];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                        else {
+                                                            pixel = raw_data[(row + 2) * width + col + 2];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                pixel = raw_data[(row + 3) * width + col + 1];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row + 3) * width + col];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col - 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col - 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row) * width + col - 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                pixel = raw_data[(row - 3) * width + col - 1];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                                else if (pixel - threshold > comp_pixel) {
+                                                                    pixel = raw_data[(row + 2) * width + col + 2];
+                                                                    if (pixel + threshold < comp_pixel) {
+                                                                        pixel = raw_data[(row + 3) * width + col + 1];
+                                                                        if (pixel + threshold < comp_pixel) {
+                                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                                        }
+                                                                    }
+                                                                }
+                                                                else {
+                                                                    pixel = raw_data[(row + 3) * width + col + 1];
+                                                                    if (pixel + threshold < comp_pixel) {
+                                                                        pixel = raw_data[(row + 2) * width + col + 2];
+                                                                        if (pixel + threshold < comp_pixel) {
+                                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                            else if (pixel - threshold > comp_pixel) {
+                                                                pixel = raw_data[(row + 2) * width + col + 2];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                            else {
+                                                                pixel = raw_data[(row + 2) * width + col + 2];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    pixel = raw_data[(row + 3) * width + col + 1];
+                                                                    if (pixel + threshold < comp_pixel) {
+                                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                        else {
+                                                            pixel = raw_data[(row + 2) * width + col + 2];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                pixel = raw_data[(row + 3) * width + col + 1];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row + 3) * width + col];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 1) * width + col - 3];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col - 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col - 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col - 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row) * width + col - 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                            else if (pixel - threshold > comp_pixel) {
+                                                                pixel = raw_data[(row + 2) * width + col + 2];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                            else {
+                                                                pixel = raw_data[(row + 2) * width + col + 2];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    pixel = raw_data[(row + 3) * width + col + 1];
+                                                                    if (pixel + threshold < comp_pixel) {
+                                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                        else if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row + 3) * width + col + 1];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                pixel = raw_data[(row + 2) * width + col + 2];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                        else {
+                                                            pixel = raw_data[(row + 2) * width + col + 2];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                pixel = raw_data[(row + 3) * width + col + 1];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 3) * width + col + 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 2) * width + col - 2];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row) * width + col - 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                pixel = raw_data[(row - 3) * width + col - 1];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row - 3) * width + col + 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 2) * width + col - 2];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                pixel = raw_data[(row) * width + col - 3];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col - 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col - 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 2) * width + col + 2];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row + 3) * width + col + 1];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                            else if (pixel - threshold > comp_pixel) {
+                                                                pixel = raw_data[(row - 3) * width + col - 1];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    pixel = raw_data[(row) * width + col - 3];
+                                                                    if (pixel + threshold < comp_pixel) {
+                                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                                    }
+                                                                }
+                                                            }
+                                                            else {
+                                                                pixel = raw_data[(row) * width + col - 3];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                                    if (pixel + threshold < comp_pixel) {
+                                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                        else if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                pixel = raw_data[(row) * width + col - 3];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                        else {
+                                                            pixel = raw_data[(row) * width + col - 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                pixel = raw_data[(row - 3) * width + col - 1];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    else if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                pixel = raw_data[(row) * width + col - 3];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    else {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row) * width + col - 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                pixel = raw_data[(row - 3) * width + col - 1];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else if (pixel - threshold > comp_pixel) {
+                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row) * width + col - 3];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col + 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                    else if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row + 3) * width + col];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                    else {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row + 3) * width + col + 1];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                pixel = raw_data[(row + 2) * width + col - 2];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    pixel = raw_data[(row + 3) * width + col];
+                                                                    if (pixel + threshold < comp_pixel) {
+                                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 2) * width + col - 2];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row + 3) * width + col - 1];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row + 3) * width + col];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                pixel = raw_data[(row + 2) * width + col - 2];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                            else if (pixel - threshold > comp_pixel) {
+                                                                pixel = raw_data[(row + 3) * width + col + 1];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                            else {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col + 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col - 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 2) * width + col - 2];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                                else if (pixel + threshold >= comp_pixel && pixel - threshold <= comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                    else if (pixel + threshold >= comp_pixel && pixel - threshold <= comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 2) * width + col - 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                        else if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row - 3) * width + col + 1];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                        else {
+                                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else {
+                                    pixel = raw_data[(row) * width + col - 3];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 3) * width + col + 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col - 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 2) * width + col + 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                    else if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row + 2) * width + col - 2];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                    else {
+                                                        pixel = raw_data[(row + 2) * width + col - 2];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row + 3) * width + col - 1];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col - 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 2) * width + col + 2];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row + 2) * width + col - 2];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                pixel = raw_data[(row + 3) * width + col + 1];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    pixel = raw_data[(row + 3) * width + col];
+                                                                    if (pixel + threshold < comp_pixel) {
+                                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row + 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 2) * width + col - 2];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row + 2) * width + col + 2];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    pixel = raw_data[(row + 3) * width + col];
+                                                                    if (pixel + threshold < comp_pixel) {
+                                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col - 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 2) * width + col - 2];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                            else if (pixel + threshold >= comp_pixel && pixel - threshold <= comp_pixel) {
+                                                                pixel = raw_data[(row - 2) * width + col + 2];
+                                                                if (pixel - threshold > comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                pixel = raw_data[(row + 3) * width + col];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 2) * width + col - 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                                            if (pixel + threshold < comp_pixel || pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                            else {
+                                                                pixel = raw_data[(row + 3) * width + col + 1];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    pixel = raw_data[(row + 2) * width + col + 2];
+                                                                    if (pixel + threshold < comp_pixel) {
+                                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else if (pixel - threshold > comp_pixel) {
+                                pixel = raw_data[(row + 3) * width + col + 1];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row + 2) * width + col + 2];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row + 3) * width + col];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row) * width + col + 3];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                    else {
+                                                        pixel = raw_data[(row + 2) * width + col - 2];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row + 3) * width + col - 1];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col - 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row + 2) * width + col - 2];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row + 2) * width + col - 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col - 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row + 1) * width + col - 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 1) * width + col - 3];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col - 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 2) * width + col - 2];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row) * width + col - 3];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                pixel = raw_data[(row) * width + col + 3];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                            else {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                pixel = raw_data[(row + 2) * width + col - 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row) * width + col - 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                            else {
+                                                                pixel = raw_data[(row) * width + col + 3];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col + 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col + 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col + 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row) * width + col + 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else {
+                                pixel = raw_data[(row + 2) * width + col + 2];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row + 3) * width + col + 1];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row + 3) * width + col];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row) * width + col + 3];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                    else {
+                                                        pixel = raw_data[(row + 2) * width + col - 2];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row + 3) * width + col - 1];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col - 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row + 3) * width + col - 1];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 2) * width + col - 2];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row) * width + col - 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 1) * width + col - 3];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col - 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 2) * width + col - 2];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row) * width + col - 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                            else {
+                                                                pixel = raw_data[(row) * width + col + 3];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                pixel = raw_data[(row + 1) * width + col - 3];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 2) * width + col - 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row) * width + col - 3];
+                                                            if (pixel + threshold < comp_pixel || pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                            else {
+                                                                pixel = raw_data[(row) * width + col + 3];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col + 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col + 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else if (pixel - threshold > comp_pixel) {
+                            pixel = raw_data[(row + 1) * width + col - 3];
+                            if (pixel + threshold < comp_pixel) {
+                                pixel = raw_data[(row + 2) * width + col - 2];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row) * width + col - 3];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col + 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col + 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                    else if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                    else {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row - 2) * width + col - 2];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                pixel = raw_data[(row - 3) * width + col - 1];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 2) * width + col - 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col - 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row + 3) * width + col];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                            else if (pixel + threshold >= comp_pixel && pixel - threshold <= comp_pixel) {
+                                                                pixel = raw_data[(row - 3) * width + col + 1];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row - 2) * width + col - 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col - 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row + 3) * width + col];
+                                                            if (pixel + threshold < comp_pixel || pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                            else {
+                                                                pixel = raw_data[(row - 3) * width + col + 1];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col - 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col - 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                    else if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                    else {
+                                                        pixel = raw_data[(row + 3) * width + col];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                pixel = raw_data[(row - 2) * width + col - 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                        else {
+                                                            pixel = raw_data[(row + 3) * width + col];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col - 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            pixel = raw_data[(row + 1) * width + col - 3];
+                            if (pixel + threshold < comp_pixel) {
+                                pixel = raw_data[(row) * width + col - 3];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row + 2) * width + col - 2];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 2) * width + col + 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col + 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                    else {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row - 2) * width + col - 2];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                pixel = raw_data[(row - 3) * width + col - 1];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 2) * width + col - 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                        else {
+                                                            pixel = raw_data[(row + 3) * width + col];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row - 2) * width + col - 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col - 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row - 3) * width + col + 1];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                            else {
+                                                                pixel = raw_data[(row + 3) * width + col];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col - 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col - 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                    else {
+                                                        pixel = raw_data[(row + 3) * width + col];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                pixel = raw_data[(row - 2) * width + col - 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                        else {
+                                                            pixel = raw_data[(row + 3) * width + col];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col - 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else if (pixel - threshold > comp_pixel) {
+                        pixel = raw_data[(row + 3) * width + col + 1];
+                        if (pixel + threshold < comp_pixel) {
+                            pixel = raw_data[(row - 1) * width + col + 3];
+                            if (pixel + threshold < comp_pixel) {
+                                pixel = raw_data[(row + 2) * width + col + 2];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row + 3) * width + col];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row) * width + col + 3];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col + 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row + 2) * width + col - 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                pixel = raw_data[(row + 1) * width + col - 3];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 2) * width + col - 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        pixel = raw_data[(row - 3) * width + col - 1];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 3) * width + col + 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col + 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row) * width + col + 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else if (pixel - threshold > comp_pixel) {
+                                pixel = raw_data[(row) * width + col - 3];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row) * width + col + 3];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 2) * width + col - 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col + 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else {
+                                pixel = raw_data[(row) * width + col - 3];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row) * width + col + 3];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 2) * width + col + 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col - 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else if (pixel - threshold > comp_pixel) {
+                            pixel = raw_data[(row - 2) * width + col - 2];
+                            if (pixel + threshold < comp_pixel) {
+                                pixel = raw_data[(row + 2) * width + col + 2];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row - 1) * width + col + 3];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row) * width + col + 3];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else if (pixel - threshold > comp_pixel) {
+                                pixel = raw_data[(row + 2) * width + col + 2];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                    if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row + 2) * width + col - 2];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 1) * width + col - 3];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col - 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col - 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else if (pixel - threshold > comp_pixel) {
+                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                    if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 2) * width + col - 2];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row) * width + col - 3];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else {
+                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                    if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row + 2) * width + col - 2];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col - 1];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 1) * width + col - 3];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col - 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            pixel = raw_data[(row - 2) * width + col - 2];
+                            if (pixel + threshold < comp_pixel) {
+                                pixel = raw_data[(row + 2) * width + col + 2];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row - 1) * width + col + 3];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row) * width + col + 3];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col + 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        pixel = raw_data[(row + 2) * width + col + 2];
+                        if (pixel + threshold < comp_pixel) {
+                            pixel = raw_data[(row) * width + col + 3];
+                            if (pixel + threshold < comp_pixel) {
+                                pixel = raw_data[(row + 3) * width + col + 1];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row - 1) * width + col + 3];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col + 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row + 2) * width + col - 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                pixel = raw_data[(row - 3) * width + col - 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row + 1) * width + col - 3];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 2) * width + col - 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row) * width + col - 3];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col - 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col - 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        pixel = raw_data[(row) * width + col - 3];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 2) * width + col - 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else if (pixel - threshold > comp_pixel) {
+                                    pixel = raw_data[(row - 2) * width + col - 2];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row - 1) * width + col + 3];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 3) * width + col + 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col + 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else {
+                                    pixel = raw_data[(row - 2) * width + col - 2];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 1) * width + col + 3];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col + 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else if (pixel - threshold > comp_pixel) {
+                    pixel = raw_data[(row) * width + col - 3];
+                    if (pixel + threshold < comp_pixel) {
+                        pixel = raw_data[(row + 3) * width + col];
+                        if (pixel + threshold < comp_pixel) {
+                            pixel = raw_data[(row - 1) * width + col - 3];
+                            if (pixel + threshold < comp_pixel) {
+                                pixel = raw_data[(row + 2) * width + col - 2];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row + 2) * width + col + 2];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col + 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 1) * width + col - 3];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                }
+                                                else if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 2) * width + col + 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col + 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row - 1) * width + col + 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row - 2) * width + col + 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 1) * width + col + 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row) * width + col + 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row - 3) * width + col - 1];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col + 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col - 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        pixel = raw_data[(row - 3) * width + col - 1];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col + 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col - 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col - 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else if (pixel - threshold > comp_pixel) {
+                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 1) * width + col + 3];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col + 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row) * width + col + 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else {
+                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 1) * width + col + 3];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col + 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col + 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else if (pixel - threshold > comp_pixel) {
+                                pixel = raw_data[(row) * width + col + 3];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row + 2) * width + col + 2];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row + 2) * width + col - 2];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col - 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 1) * width + col - 3];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                }
+                                                else if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row - 2) * width + col + 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 1) * width + col + 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row + 3) * width + col + 1];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 3) * width + col + 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 1) * width + col + 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col + 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row - 3) * width + col + 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 1) * width + col + 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row + 3) * width + col + 1];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else {
+                                pixel = raw_data[(row) * width + col + 3];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row + 2) * width + col + 2];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row + 2) * width + col - 2];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col - 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col + 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                    else if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                    else {
+                                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row - 1) * width + col + 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 3) * width + col + 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 2) * width + col + 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 1) * width + col + 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row + 3) * width + col + 1];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row - 3) * width + col + 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 1) * width + col + 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else if (pixel - threshold > comp_pixel) {
+                        pixel = raw_data[(row - 2) * width + col - 2];
+                        if (pixel + threshold < comp_pixel) {
+                            pixel = raw_data[(row + 3) * width + col + 1];
+                            if (pixel + threshold < comp_pixel) {
+                                pixel = raw_data[(row - 1) * width + col + 3];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row + 3) * width + col - 1];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row + 2) * width + col + 2];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 2) * width + col - 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col + 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col + 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                                else if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col + 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row + 3) * width + col];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col + 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                pixel = raw_data[(row - 3) * width + col + 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row) * width + col + 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else if (pixel - threshold > comp_pixel) {
+                            pixel = raw_data[(row + 2) * width + col - 2];
+                            if (pixel + threshold < comp_pixel) {
+                                pixel = raw_data[(row) * width + col + 3];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row - 1) * width + col + 3];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col + 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 2) * width + col + 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row + 2) * width + col + 2];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 2) * width + col + 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row + 3) * width + col + 1];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 1) * width + col - 3];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col + 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else if (pixel - threshold > comp_pixel) {
+                                    pixel = raw_data[(row - 1) * width + col - 3];
+                                    if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 3) * width + col + 1];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 1) * width + col + 3];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else {
+                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                    if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row - 1) * width + col + 3];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 1) * width + col - 3];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col + 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else if (pixel - threshold > comp_pixel) {
+                                pixel = raw_data[(row + 3) * width + col];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row - 2) * width + col + 2];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 3) * width + col + 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col + 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 1) * width + col + 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col + 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row) * width + col + 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 3) * width + col + 1];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 1) * width + col - 3];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row - 1) * width + col - 3];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col + 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                    else {
+                                                        pixel = raw_data[(row) * width + col + 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row - 1) * width + col + 3];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 3) * width + col + 1];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 1) * width + col - 3];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else if (pixel - threshold > comp_pixel) {
+                                    pixel = raw_data[(row - 1) * width + col - 3];
+                                    if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row) * width + col + 3];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col + 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 1) * width + col + 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row - 3) * width + col + 1];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row - 2) * width + col + 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                pixel = raw_data[(row + 2) * width + col + 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col - 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col + 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row) * width + col + 3];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col + 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row - 1) * width + col + 3];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else {
+                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                    if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row - 1) * width + col - 3];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col + 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col + 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                    else if (pixel - threshold > comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                    else {
+                                                        pixel = raw_data[(row) * width + col + 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row - 1) * width + col + 3];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row + 3) * width + col - 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else {
+                                pixel = raw_data[(row - 1) * width + col + 3];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col + 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 2) * width + col + 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col + 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row) * width + col + 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else if (pixel - threshold > comp_pixel) {
+                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row) * width + col + 3];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col - 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 1) * width + col - 3];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row - 1) * width + col - 3];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col - 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        pixel = raw_data[(row) * width + col + 3];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 1) * width + col - 3];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col + 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            pixel = raw_data[(row - 1) * width + col + 3];
+                            if (pixel + threshold < comp_pixel) {
+                                pixel = raw_data[(row + 3) * width + col - 1];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row + 2) * width + col + 2];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col + 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row) * width + col + 3];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 2) * width + col - 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                    else {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col + 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col - 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 2) * width + col + 2];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row) * width + col + 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 2) * width + col + 2];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row + 3) * width + col];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                pixel = raw_data[(row) * width + col + 3];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row + 2) * width + col + 2];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col + 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col - 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 2) * width + col + 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row) * width + col + 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 1) * width + col - 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                        else if (pixel + threshold >= comp_pixel && pixel - threshold <= comp_pixel) {
+                                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                                            if (pixel + threshold >= comp_pixel && pixel - threshold <= comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col - 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row) * width + col + 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                pixel = raw_data[(row + 2) * width + col + 2];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        pixel = raw_data[(row - 1) * width + col + 3];
+                        if (pixel + threshold < comp_pixel) {
+                            pixel = raw_data[(row + 3) * width + col - 1];
+                            if (pixel + threshold < comp_pixel) {
+                                pixel = raw_data[(row + 3) * width + col + 1];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row) * width + col + 3];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 2) * width + col + 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col - 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row + 3) * width + col];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col - 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 2) * width + col + 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 2) * width + col + 2];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row + 3) * width + col];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col - 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 2) * width + col + 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row + 2) * width + col + 2];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else {
+                    pixel = raw_data[(row + 3) * width + col];
+                    if (pixel + threshold < comp_pixel) {
+                        pixel = raw_data[(row) * width + col - 3];
+                        if (pixel + threshold < comp_pixel) {
+                            pixel = raw_data[(row + 3) * width + col - 1];
+                            if (pixel + threshold < comp_pixel) {
+                                pixel = raw_data[(row + 3) * width + col + 1];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row - 1) * width + col - 3];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row + 2) * width + col - 2];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 2) * width + col + 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 1) * width + col - 3];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                }
+                                                else if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 1) * width + col + 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col + 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row - 1) * width + col + 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row) * width + col + 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                pixel = raw_data[(row - 3) * width + col - 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 2) * width + col - 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row - 3) * width + col + 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 1) * width + col + 3];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 2) * width + col + 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col + 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row) * width + col + 3];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 2) * width + col + 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col - 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                    else if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                    else {
+                                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row - 1) * width + col + 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row - 1) * width + col + 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        pixel = raw_data[(row) * width + col + 3];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 2) * width + col + 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col - 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                    else {
+                                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row - 1) * width + col + 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row - 1) * width + col + 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else if (pixel - threshold > comp_pixel) {
+                            pixel = raw_data[(row - 1) * width + col + 3];
+                            if (pixel + threshold < comp_pixel) {
+                                pixel = raw_data[(row + 3) * width + col - 1];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row + 2) * width + col + 2];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col + 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col + 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row) * width + col + 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                }
+                                                else if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 1) * width + col - 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row) * width + col + 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                        else if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col + 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row + 2) * width + col - 2];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 2) * width + col + 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row) * width + col + 3];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 2) * width + col - 2];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col - 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 2) * width + col + 2];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row) * width + col + 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col - 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 2) * width + col + 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col + 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row) * width + col + 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        pixel = raw_data[(row + 2) * width + col - 2];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col + 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col + 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 1) * width + col - 3];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 2) * width + col + 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col + 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row) * width + col + 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                pixel = raw_data[(row + 1) * width + col - 3];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 2) * width + col + 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col + 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row + 3) * width + col + 1];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            pixel = raw_data[(row - 1) * width + col + 3];
+                            if (pixel + threshold < comp_pixel) {
+                                pixel = raw_data[(row + 2) * width + col - 2];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row + 2) * width + col + 2];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row) * width + col + 3];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 1) * width + col - 3];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col + 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col - 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                pixel = raw_data[(row - 2) * width + col + 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else if (pixel - threshold > comp_pixel) {
+                                    pixel = raw_data[(row + 3) * width + col - 1];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 2) * width + col + 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col + 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col + 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else {
+                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 2) * width + col + 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col + 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col + 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else if (pixel - threshold > comp_pixel) {
+                        pixel = raw_data[(row - 2) * width + col - 2];
+                        if (pixel - threshold > comp_pixel) {
+                            pixel = raw_data[(row + 1) * width + col - 3];
+                            if (pixel - threshold > comp_pixel) {
+                                pixel = raw_data[(row + 3) * width + col + 1];
+                                if (pixel - threshold > comp_pixel) {
+                                    pixel = raw_data[(row + 3) * width + col - 1];
+                                    if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row - 1) * width + col - 3];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col - 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row) * width + col - 3];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                pixel = raw_data[(row + 2) * width + col + 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 2) * width + col - 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col - 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else if (pixel - threshold > comp_pixel) {
+                pixel = raw_data[(row - 3) * width + col];
+                if (pixel + threshold < comp_pixel) {
+                    pixel = raw_data[(row) * width + col - 3];
+                    if (pixel + threshold < comp_pixel) {
+                        pixel = raw_data[(row + 2) * width + col - 2];
+                        if (pixel + threshold < comp_pixel) {
+                            pixel = raw_data[(row - 2) * width + col - 2];
+                            if (pixel + threshold < comp_pixel) {
+                                pixel = raw_data[(row + 3) * width + col];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row - 1) * width + col - 3];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row - 2) * width + col + 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                pixel = raw_data[(row + 2) * width + col + 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col - 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col + 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row) * width + col + 3];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col + 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row - 1) * width + col + 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row) * width + col + 3];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col + 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 1) * width + col + 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else if (pixel - threshold > comp_pixel) {
+                                    pixel = raw_data[(row - 2) * width + col + 2];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row - 3) * width + col - 1];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 3) * width + col + 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 1) * width + col - 3];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                    else {
+                                                        pixel = raw_data[(row) * width + col + 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row - 1) * width + col + 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col - 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 1) * width + col - 3];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 1) * width + col - 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col - 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col - 1];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col + 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 1) * width + col + 3];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col + 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row) * width + col + 3];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 3) * width + col + 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 1) * width + col - 3];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else {
+                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 1) * width + col - 3];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col - 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                    else if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col + 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                    else {
+                                                        pixel = raw_data[(row) * width + col + 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row - 1) * width + col + 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                pixel = raw_data[(row - 2) * width + col + 2];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col - 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 1) * width + col - 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                    else {
+                                                        pixel = raw_data[(row) * width + col + 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row - 1) * width + col + 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col - 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 1) * width + col - 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                    else if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col + 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row - 1) * width + col + 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                    else {
+                                                        pixel = raw_data[(row) * width + col + 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row - 1) * width + col + 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                pixel = raw_data[(row - 1) * width + col - 3];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else if (pixel - threshold > comp_pixel) {
+                                pixel = raw_data[(row - 3) * width + col + 1];
+                                if (pixel - threshold > comp_pixel) {
+                                    pixel = raw_data[(row + 3) * width + col - 1];
+                                    if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row + 3) * width + col + 1];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 1) * width + col + 3];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col + 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 2) * width + col + 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row) * width + col + 3];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else {
+                                pixel = raw_data[(row - 3) * width + col + 1];
+                                if (pixel - threshold > comp_pixel) {
+                                    pixel = raw_data[(row + 3) * width + col - 1];
+                                    if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row + 3) * width + col + 1];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 1) * width + col + 3];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col + 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row) * width + col + 3];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else if (pixel - threshold > comp_pixel) {
+                            pixel = raw_data[(row) * width + col + 3];
+                            if (pixel + threshold < comp_pixel) {
+                                pixel = raw_data[(row - 2) * width + col - 2];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row - 2) * width + col + 2];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row - 1) * width + col - 3];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 1) * width + col + 3];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col - 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else if (pixel - threshold > comp_pixel) {
+                                pixel = raw_data[(row - 1) * width + col + 3];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row - 2) * width + col - 2];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 1) * width + col - 3];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col - 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 2) * width + col + 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else if (pixel - threshold > comp_pixel) {
+                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col + 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col + 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row + 3) * width + col + 1];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 2) * width + col + 2];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col + 1];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 2) * width + col + 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else {
+                                pixel = raw_data[(row + 1) * width + col - 3];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row - 1) * width + col + 3];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row - 2) * width + col - 2];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 1) * width + col - 3];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            pixel = raw_data[(row - 1) * width + col + 3];
+                            if (pixel + threshold < comp_pixel) {
+                                pixel = raw_data[(row - 2) * width + col - 2];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row - 1) * width + col - 3];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col - 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row) * width + col + 3];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col - 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 1) * width + col - 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        pixel = raw_data[(row) * width + col + 3];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 1) * width + col - 3];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else if (pixel - threshold > comp_pixel) {
+                                pixel = raw_data[(row - 3) * width + col + 1];
+                                if (pixel - threshold > comp_pixel) {
+                                    pixel = raw_data[(row + 3) * width + col - 1];
+                                    if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row + 3) * width + col];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 2) * width + col + 2];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col + 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 2) * width + col + 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col + 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else if (pixel - threshold > comp_pixel) {
+                        pixel = raw_data[(row + 3) * width + col];
+                        if (pixel - threshold > comp_pixel) {
+                            pixel = raw_data[(row - 1) * width + col - 3];
+                            if (pixel + threshold < comp_pixel) {
+                                pixel = raw_data[(row) * width + col + 3];
+                                if (pixel - threshold > comp_pixel) {
+                                    pixel = raw_data[(row + 2) * width + col + 2];
+                                    if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row + 2) * width + col - 2];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 3) * width + col + 1];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 1) * width + col - 3];
+                                                if (pixel + threshold >= comp_pixel && pixel - threshold <= comp_pixel) {
+                                                    pixel = raw_data[(row - 2) * width + col + 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col + 1];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 1) * width + col - 3];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col - 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row - 2) * width + col + 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 1) * width + col + 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row - 3) * width + col + 1];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 1) * width + col + 3];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col - 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row + 3) * width + col + 1];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else if (pixel - threshold > comp_pixel) {
+                                pixel = raw_data[(row + 2) * width + col - 2];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                    if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 1) * width + col + 3];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col + 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col + 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row) * width + col + 3];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else if (pixel - threshold > comp_pixel) {
+                                    pixel = raw_data[(row + 3) * width + col + 1];
+                                    if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row + 2) * width + col + 2];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 1) * width + col - 3];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col - 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 2) * width + col - 2];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 1) * width + col - 3];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col + 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row) * width + col + 3];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 1) * width + col + 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row + 3) * width + col - 1];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                }
+                                            }
+                                            else {
+                                                pixel = raw_data[(row - 1) * width + col + 3];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 2) * width + col + 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col + 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row + 3) * width + col - 1];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col - 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else {
+                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                    if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 1) * width + col + 3];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col + 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row) * width + col + 3];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col + 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else {
+                                pixel = raw_data[(row) * width + col + 3];
+                                if (pixel - threshold > comp_pixel) {
+                                    pixel = raw_data[(row + 2) * width + col + 2];
+                                    if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row + 2) * width + col - 2];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 3) * width + col + 1];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 1) * width + col + 3];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col + 1];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row - 1) * width + col + 3];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                    else if (pixel - threshold > comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                    else {
+                                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row - 1) * width + col + 3];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row - 3) * width + col + 1];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 2) * width + col + 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col + 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row - 1) * width + col + 3];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        pixel = raw_data[(row - 1) * width + col + 3];
+                        if (pixel - threshold > comp_pixel) {
+                            pixel = raw_data[(row + 3) * width + col - 1];
+                            if (pixel - threshold > comp_pixel) {
+                                pixel = raw_data[(row + 3) * width + col + 1];
+                                if (pixel - threshold > comp_pixel) {
+                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 2) * width + col - 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col + 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 2) * width + col + 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col + 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row + 3) * width + col];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row) * width + col + 3];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 2) * width + col + 2];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                pixel = raw_data[(row - 3) * width + col + 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col + 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row + 2) * width + col + 2];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row) * width + col + 3];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 2) * width + col + 2];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col - 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                                else if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 2) * width + col - 2];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row) * width + col + 3];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 2) * width + col + 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                pixel = raw_data[(row - 3) * width + col + 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 2) * width + col + 2];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row) * width + col + 3];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else if (pixel - threshold > comp_pixel) {
+                    pixel = raw_data[(row - 1) * width + col - 3];
+                    if (pixel + threshold < comp_pixel) {
+                        pixel = raw_data[(row + 2) * width + col + 2];
+                        if (pixel + threshold < comp_pixel) {
+                            pixel = raw_data[(row - 2) * width + col - 2];
+                            if (pixel + threshold < comp_pixel) {
+                                pixel = raw_data[(row + 1) * width + col - 3];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row + 3) * width + col];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col + 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col - 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row) * width + col - 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else if (pixel - threshold > comp_pixel) {
+                            pixel = raw_data[(row - 1) * width + col + 3];
+                            if (pixel + threshold < comp_pixel) {
+                                pixel = raw_data[(row) * width + col + 3];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row + 3) * width + col + 1];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 1) * width + col - 3];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col - 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 2) * width + col - 2];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row + 2) * width + col - 2];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                pixel = raw_data[(row) * width + col - 3];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else if (pixel - threshold > comp_pixel) {
+                                    pixel = raw_data[(row) * width + col - 3];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row - 3) * width + col - 1];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col + 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 2) * width + col - 2];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row + 1) * width + col - 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col + 1];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col - 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else {
+                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row + 3) * width + col + 1];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col - 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 1) * width + col - 3];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col - 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row + 2) * width + col - 2];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                pixel = raw_data[(row - 2) * width + col - 2];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else if (pixel - threshold > comp_pixel) {
+                                pixel = raw_data[(row + 3) * width + col];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row - 2) * width + col - 2];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row - 3) * width + col - 1];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col + 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col - 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row) * width + col - 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col + 1];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col + 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col + 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 3) * width + col + 1];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row) * width + col + 3];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        pixel = raw_data[(row + 3) * width + col + 1];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col + 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col + 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else if (pixel - threshold > comp_pixel) {
+                                    pixel = raw_data[(row) * width + col + 3];
+                                    if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col + 1];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col + 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row + 2) * width + col - 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                pixel = raw_data[(row - 2) * width + col - 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col - 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row + 1) * width + col - 3];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col - 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col + 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else {
+                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                    if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row + 3) * width + col + 1];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col + 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row) * width + col + 3];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row - 2) * width + col - 2];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col + 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col + 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else {
+                                pixel = raw_data[(row) * width + col - 3];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row + 3) * width + col + 1];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col - 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col - 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 2) * width + col - 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row + 1) * width + col - 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else if (pixel - threshold > comp_pixel) {
+                                    pixel = raw_data[(row) * width + col + 3];
+                                    if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row + 3) * width + col];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 2) * width + col - 2];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 1) * width + col - 3];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col + 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            pixel = raw_data[(row - 3) * width + col - 1];
+                            if (pixel + threshold < comp_pixel) {
+                                pixel = raw_data[(row + 3) * width + col + 1];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row + 2) * width + col - 2];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row + 3) * width + col];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 2) * width + col - 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 1) * width + col - 3];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col - 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col - 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else if (pixel - threshold > comp_pixel) {
+                        pixel = raw_data[(row - 1) * width + col + 3];
+                        if (pixel + threshold < comp_pixel) {
+                            pixel = raw_data[(row + 1) * width + col - 3];
+                            if (pixel - threshold > comp_pixel) {
+                                pixel = raw_data[(row + 2) * width + col - 2];
+                                if (pixel - threshold > comp_pixel) {
+                                    pixel = raw_data[(row) * width + col - 3];
+                                    if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col - 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 2) * width + col - 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col + 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col - 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                    else if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col - 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                    else {
+                                                        pixel = raw_data[(row + 3) * width + col];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col + 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 2) * width + col - 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col - 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                                else if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                    else {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row - 2) * width + col - 2];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                pixel = raw_data[(row - 3) * width + col - 1];
+                                                                if (pixel - threshold > comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row - 2) * width + col - 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col - 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row + 3) * width + col];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                            else if (pixel + threshold >= comp_pixel && pixel - threshold <= comp_pixel) {
+                                                                pixel = raw_data[(row - 3) * width + col + 1];
+                                                                if (pixel - threshold > comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                pixel = raw_data[(row - 2) * width + col - 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                        else {
+                                                            pixel = raw_data[(row + 3) * width + col];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col - 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else if (pixel - threshold > comp_pixel) {
+                            pixel = raw_data[(row - 2) * width + col - 2];
+                            if (pixel + threshold < comp_pixel) {
+                                pixel = raw_data[(row + 3) * width + col + 1];
+                                if (pixel - threshold > comp_pixel) {
+                                    pixel = raw_data[(row + 2) * width + col + 2];
+                                    if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row + 3) * width + col];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col + 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 2) * width + col + 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col + 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 1) * width + col - 3];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 2) * width + col - 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row) * width + col - 3];
+                                                            if (pixel + threshold < comp_pixel || pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                            else {
+                                                                pixel = raw_data[(row) * width + col + 3];
+                                                                if (pixel - threshold > comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row) * width + col + 3];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row + 2) * width + col - 2];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                    else if (pixel - threshold > comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                    else {
+                                                        pixel = raw_data[(row + 2) * width + col - 2];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row + 3) * width + col - 1];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row + 2) * width + col - 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row + 3) * width + col - 1];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                pixel = raw_data[(row) * width + col - 3];
+                                                                if (pixel - threshold > comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                pixel = raw_data[(row + 2) * width + col - 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row) * width + col - 3];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                            else {
+                                                                pixel = raw_data[(row) * width + col + 3];
+                                                                if (pixel - threshold > comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col + 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row) * width + col + 3];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else if (pixel - threshold > comp_pixel) {
+                                pixel = raw_data[(row) * width + col + 3];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                    if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row) * width + col - 3];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col - 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col - 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                }
+                                            }
+                                            else if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col + 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row + 3) * width + col + 1];
+                                                            if (pixel + threshold < comp_pixel || pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 2) * width + col + 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                    else if (pixel - threshold > comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                    else {
+                                                        pixel = raw_data[(row + 2) * width + col - 2];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row + 3) * width + col - 1];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row + 3) * width + col];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 2) * width + col - 2];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row + 3) * width + col - 1];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                pixel = raw_data[(row + 2) * width + col - 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col + 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row + 2) * width + col + 2];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else if (pixel - threshold > comp_pixel) {
+                                    pixel = raw_data[(row - 2) * width + col + 2];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col + 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col - 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col - 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row + 2) * width + col - 2];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                pixel = raw_data[(row) * width + col - 3];
+                                                                if (pixel - threshold > comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col - 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col - 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col - 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                            else {
+                                                                pixel = raw_data[(row + 2) * width + col + 2];
+                                                                if (pixel - threshold > comp_pixel) {
+                                                                    pixel = raw_data[(row + 3) * width + col + 1];
+                                                                    if (pixel - threshold > comp_pixel) {
+                                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                        else {
+                                                            pixel = raw_data[(row + 2) * width + col + 2];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                pixel = raw_data[(row + 3) * width + col + 1];
+                                                                if (pixel - threshold > comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                pixel = raw_data[(row - 3) * width + col + 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col - 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col - 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row) * width + col - 3];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                pixel = raw_data[(row + 2) * width + col - 2];
+                                                                if (pixel - threshold > comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row - 3) * width + col - 1];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col + 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col + 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                        else {
+                                                            pixel = raw_data[(row + 3) * width + col - 1];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                pixel = raw_data[(row + 2) * width + col - 2];
+                                                                if (pixel - threshold > comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 3) * width + col + 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 2) * width + col - 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row + 1) * width + col - 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                pixel = raw_data[(row + 2) * width + col + 2];
+                                                                if (pixel - threshold > comp_pixel) {
+                                                                    pixel = raw_data[(row + 3) * width + col + 1];
+                                                                    if (pixel - threshold > comp_pixel) {
+                                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                                    }
+                                                                }
+                                                            }
+                                                            else if (pixel - threshold > comp_pixel) {
+                                                                pixel = raw_data[(row) * width + col - 3];
+                                                                if (pixel + threshold < comp_pixel) {
+                                                                    pixel = raw_data[(row + 2) * width + col + 2];
+                                                                    if (pixel - threshold > comp_pixel) {
+                                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                                    }
+                                                                }
+                                                                else if (pixel - threshold > comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                                else {
+                                                                    pixel = raw_data[(row + 2) * width + col + 2];
+                                                                    if (pixel - threshold > comp_pixel) {
+                                                                        pixel = raw_data[(row + 3) * width + col + 1];
+                                                                        if (pixel - threshold > comp_pixel) {
+                                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                            else {
+                                                                pixel = raw_data[(row + 3) * width + col + 1];
+                                                                if (pixel - threshold > comp_pixel) {
+                                                                    pixel = raw_data[(row + 2) * width + col + 2];
+                                                                    if (pixel - threshold > comp_pixel) {
+                                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else if (pixel - threshold > comp_pixel) {
+                                                keypoints.push_back(cv::Point2d(col, row));
+                                            }
+                                            else {
+                                                pixel = raw_data[(row + 3) * width + col];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 2) * width + col - 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row) * width + col - 3];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                pixel = raw_data[(row + 1) * width + col - 3];
+                                                                if (pixel - threshold > comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                                else {
+                                                                    pixel = raw_data[(row + 3) * width + col + 1];
+                                                                    if (pixel - threshold > comp_pixel) {
+                                                                        pixel = raw_data[(row + 2) * width + col + 2];
+                                                                        if (pixel - threshold > comp_pixel) {
+                                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                            else {
+                                                                pixel = raw_data[(row + 2) * width + col + 2];
+                                                                if (pixel - threshold > comp_pixel) {
+                                                                    pixel = raw_data[(row + 3) * width + col + 1];
+                                                                    if (pixel - threshold > comp_pixel) {
+                                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row + 3) * width + col];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col + 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col + 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                        else {
+                                                            pixel = raw_data[(row + 2) * width + col - 2];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                                if (pixel - threshold > comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 2) * width + col - 2];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                pixel = raw_data[(row) * width + col - 3];
+                                                                if (pixel - threshold > comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    else if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 2) * width + col + 2];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row + 3) * width + col + 1];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                pixel = raw_data[(row - 3) * width + col - 1];
+                                                                if (pixel - threshold > comp_pixel) {
+                                                                    pixel = raw_data[(row) * width + col - 3];
+                                                                    if (pixel - threshold > comp_pixel) {
+                                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                                    }
+                                                                }
+                                                            }
+                                                            else if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                            else {
+                                                                pixel = raw_data[(row) * width + col - 3];
+                                                                if (pixel - threshold > comp_pixel) {
+                                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                                    if (pixel - threshold > comp_pixel) {
+                                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                        else {
+                                                            pixel = raw_data[(row) * width + col - 3];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                pixel = raw_data[(row - 3) * width + col - 1];
+                                                                if (pixel - threshold > comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    else {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row) * width + col - 3];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                pixel = raw_data[(row - 3) * width + col - 1];
+                                                                if (pixel - threshold > comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else {
+                                    pixel = raw_data[(row) * width + col - 3];
+                                    if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col + 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 2) * width + col - 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row + 2) * width + col + 2];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col + 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 2) * width + col + 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row + 2) * width + col - 2];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                    else if (pixel - threshold > comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                    else {
+                                                        pixel = raw_data[(row + 2) * width + col - 2];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row + 3) * width + col - 1];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row + 3) * width + col];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 2) * width + col - 2];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row + 3) * width + col - 1];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                pixel = raw_data[(row + 2) * width + col - 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col + 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row + 2) * width + col + 2];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                pixel = raw_data[(row + 3) * width + col];
+                                                                if (pixel - threshold > comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else {
+                                pixel = raw_data[(row + 2) * width + col + 2];
+                                if (pixel - threshold > comp_pixel) {
+                                    pixel = raw_data[(row + 3) * width + col + 1];
+                                    if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 1) * width + col - 3];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 2) * width + col - 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row) * width + col + 3];
+                                                            if (pixel + threshold < comp_pixel || pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                            else {
+                                                                pixel = raw_data[(row) * width + col - 3];
+                                                                if (pixel - threshold > comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col - 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col + 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row) * width + col + 3];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 2) * width + col - 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row) * width + col - 3];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                                if (pixel - threshold > comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                    else {
+                                                        pixel = raw_data[(row + 2) * width + col - 2];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row + 3) * width + col - 1];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row + 2) * width + col - 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col - 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row + 1) * width + col - 3];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                                if (pixel - threshold > comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                pixel = raw_data[(row - 3) * width + col - 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row) * width + col + 3];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row + 1) * width + col - 3];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 2) * width + col - 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col - 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row + 3) * width + col];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                        else {
+                                                            pixel = raw_data[(row) * width + col + 3];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                pixel = raw_data[(row + 3) * width + col];
+                                                                if (pixel - threshold > comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            pixel = raw_data[(row + 1) * width + col - 3];
+                            if (pixel - threshold > comp_pixel) {
+                                pixel = raw_data[(row + 2) * width + col - 2];
+                                if (pixel - threshold > comp_pixel) {
+                                    pixel = raw_data[(row) * width + col - 3];
+                                    if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row + 3) * width + col];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col - 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 2) * width + col - 2];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 2) * width + col + 2];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 2) * width + col + 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col - 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row - 2) * width + col - 2];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                pixel = raw_data[(row - 3) * width + col + 1];
+                                                                if (pixel - threshold > comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col + 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                    else {
+                                                        pixel = raw_data[(row - 2) * width + col - 2];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row - 2) * width + col + 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 2) * width + col - 2];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                pixel = raw_data[(row - 3) * width + col + 1];
+                                                                if (pixel - threshold > comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                pixel = raw_data[(row - 2) * width + col - 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                        else if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                        else {
+                                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                pixel = raw_data[(row - 3) * width + col + 1];
+                                                                if (pixel - threshold > comp_pixel) {
+                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row - 3) * width + col + 1];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col - 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                        else {
+                                                            pixel = raw_data[(row + 3) * width + col - 1];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        pixel = raw_data[(row + 2) * width + col + 2];
+                        if (pixel - threshold > comp_pixel) {
+                            pixel = raw_data[(row) * width + col + 3];
+                            if (pixel - threshold > comp_pixel) {
+                                pixel = raw_data[(row - 1) * width + col + 3];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row) * width + col - 3];
+                                    if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col + 1];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 1) * width + col - 3];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 2) * width + col - 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else if (pixel - threshold > comp_pixel) {
+                                    pixel = raw_data[(row + 3) * width + col];
+                                    if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 1) * width + col - 3];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col - 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col + 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col + 1];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col + 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row + 2) * width + col - 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                pixel = raw_data[(row - 2) * width + col - 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col - 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row + 1) * width + col - 3];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col + 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 2) * width + col - 2];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        pixel = raw_data[(row - 2) * width + col - 2];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col + 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row + 3) * width + col + 1];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col - 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 2) * width + col + 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else {
+                                    pixel = raw_data[(row) * width + col - 3];
+                                    if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row + 3) * width + col];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 2) * width + col - 2];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 1) * width + col - 3];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col + 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else {
+                    pixel = raw_data[(row + 3) * width + col];
+                    if (pixel + threshold < comp_pixel) {
+                        pixel = raw_data[(row - 2) * width + col - 2];
+                        if (pixel + threshold < comp_pixel) {
+                            pixel = raw_data[(row + 3) * width + col + 1];
+                            if (pixel + threshold < comp_pixel) {
+                                pixel = raw_data[(row + 1) * width + col - 3];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row - 1) * width + col - 3];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col - 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col - 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row) * width + col - 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row + 2) * width + col + 2];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col - 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row) * width + col - 3];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 2) * width + col - 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 1) * width + col - 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        pixel = raw_data[(row + 2) * width + col + 2];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row) * width + col - 3];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 2) * width + col - 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 1) * width + col - 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else if (pixel - threshold > comp_pixel) {
+                        pixel = raw_data[(row) * width + col - 3];
+                        if (pixel + threshold < comp_pixel) {
+                            pixel = raw_data[(row - 1) * width + col + 3];
+                            if (pixel - threshold > comp_pixel) {
+                                pixel = raw_data[(row + 3) * width + col - 1];
+                                if (pixel - threshold > comp_pixel) {
+                                    pixel = raw_data[(row - 2) * width + col + 2];
+                                    if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row + 2) * width + col + 2];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col + 1];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col + 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row) * width + col + 3];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row + 2) * width + col - 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row) * width + col + 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 2) * width + col + 2];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row) * width + col + 3];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col + 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 2) * width + col - 2];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else if (pixel - threshold > comp_pixel) {
+                            pixel = raw_data[(row + 3) * width + col + 1];
+                            if (pixel - threshold > comp_pixel) {
+                                pixel = raw_data[(row + 3) * width + col - 1];
+                                if (pixel - threshold > comp_pixel) {
+                                    pixel = raw_data[(row) * width + col + 3];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row - 1) * width + col - 3];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 1) * width + col - 3];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col - 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 2) * width + col + 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                    else {
+                                                        pixel = raw_data[(row - 3) * width + col - 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row - 2) * width + col - 2];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row + 2) * width + col + 2];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 1) * width + col - 3];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 2) * width + col - 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 2) * width + col - 2];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row + 1) * width + col - 3];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 2) * width + col - 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col + 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 2) * width + col + 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 1) * width + col + 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 1) * width + col - 3];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row - 2) * width + col + 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 1) * width + col + 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                pixel = raw_data[(row - 3) * width + col + 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 1) * width + col + 3];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 1) * width + col - 3];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 2) * width + col - 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 2) * width + col - 2];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row + 1) * width + col - 3];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        pixel = raw_data[(row - 1) * width + col - 3];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 2) * width + col - 2];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 1) * width + col - 3];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 2) * width + col + 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                    else {
+                                                        pixel = raw_data[(row - 3) * width + col - 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row - 2) * width + col - 2];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            pixel = raw_data[(row - 1) * width + col + 3];
+                            if (pixel - threshold > comp_pixel) {
+                                pixel = raw_data[(row + 3) * width + col - 1];
+                                if (pixel - threshold > comp_pixel) {
+                                    pixel = raw_data[(row + 2) * width + col + 2];
+                                    if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row) * width + col + 3];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col + 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 2) * width + col - 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                    else {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row + 1) * width + col - 3];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row) * width + col + 3];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col + 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 2) * width + col - 2];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else {
+                pixel = raw_data[(row) * width + col - 3];
+                if (pixel + threshold < comp_pixel) {
+                    pixel = raw_data[(row - 2) * width + col - 2];
+                    if (pixel + threshold < comp_pixel) {
+                        pixel = raw_data[(row - 3) * width + col];
+                        if (pixel + threshold < comp_pixel) {
+                            pixel = raw_data[(row + 2) * width + col - 2];
+                            if (pixel + threshold < comp_pixel) {
+                                pixel = raw_data[(row - 1) * width + col - 3];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row + 3) * width + col];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row - 2) * width + col + 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                pixel = raw_data[(row + 2) * width + col + 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col - 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col + 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row) * width + col + 3];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col + 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 1) * width + col + 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col - 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row - 3) * width + col + 1];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col + 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                    else {
+                                                        pixel = raw_data[(row) * width + col + 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row - 1) * width + col + 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 3) * width + col + 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row + 3) * width + col - 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col + 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col - 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                    else {
+                                                        pixel = raw_data[(row) * width + col + 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            pixel = raw_data[(row - 1) * width + col + 3];
+                                                            if (pixel + threshold < comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else if (pixel - threshold > comp_pixel) {
+                                pixel = raw_data[(row - 1) * width + col + 3];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row) * width + col + 3];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 1) * width + col - 3];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col - 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 1) * width + col - 3];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col - 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 1) * width + col - 3];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else {
+                                pixel = raw_data[(row - 1) * width + col + 3];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row - 2) * width + col + 2];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 1) * width + col - 3];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col - 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row) * width + col + 3];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col + 1];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 1) * width + col - 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col - 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row) * width + col + 3];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 1) * width + col - 3];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else if (pixel - threshold > comp_pixel) {
+                            pixel = raw_data[(row + 3) * width + col + 1];
+                            if (pixel + threshold < comp_pixel) {
+                                pixel = raw_data[(row + 3) * width + col - 1];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row - 1) * width + col - 3];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row + 2) * width + col + 2];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 1) * width + col - 3];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 2) * width + col - 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col - 2];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 2) * width + col - 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            pixel = raw_data[(row + 3) * width + col + 1];
+                            if (pixel + threshold < comp_pixel) {
+                                pixel = raw_data[(row + 3) * width + col - 1];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row + 2) * width + col + 2];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 1) * width + col - 3];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 2) * width + col - 2];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row - 3) * width + col - 1];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 2) * width + col - 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row - 1) * width + col - 3];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        pixel = raw_data[(row - 3) * width + col - 1];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 2) * width + col - 2];
+                                            if (pixel + threshold < comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col];
+                                                if (pixel + threshold < comp_pixel) {
+                                                    pixel = raw_data[(row - 1) * width + col - 3];
+                                                    if (pixel + threshold < comp_pixel) {
+                                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                                        if (pixel + threshold < comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else if (pixel - threshold > comp_pixel) {
+                    pixel = raw_data[(row - 2) * width + col - 2];
+                    if (pixel - threshold > comp_pixel) {
+                        pixel = raw_data[(row - 3) * width + col];
+                        if (pixel + threshold < comp_pixel) {
+                            pixel = raw_data[(row + 3) * width + col + 1];
+                            if (pixel - threshold > comp_pixel) {
+                                pixel = raw_data[(row + 3) * width + col - 1];
+                                if (pixel - threshold > comp_pixel) {
+                                    pixel = raw_data[(row + 2) * width + col + 2];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row - 3) * width + col - 1];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 2) * width + col - 2];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 1) * width + col - 3];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 2) * width + col - 2];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 1) * width + col - 3];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        pixel = raw_data[(row - 3) * width + col - 1];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 3) * width + col];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 2) * width + col - 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 1) * width + col - 3];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else if (pixel - threshold > comp_pixel) {
+                            pixel = raw_data[(row - 1) * width + col - 3];
+                            if (pixel - threshold > comp_pixel) {
+                                pixel = raw_data[(row + 2) * width + col - 2];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row - 1) * width + col + 3];
+                                    if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row) * width + col + 3];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row + 1) * width + col - 3];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col - 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col - 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row + 1) * width + col - 3];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col + 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else if (pixel - threshold > comp_pixel) {
+                                    pixel = raw_data[(row + 3) * width + col];
+                                    if (pixel + threshold < comp_pixel) {
+                                        pixel = raw_data[(row - 2) * width + col + 2];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row - 3) * width + col + 1];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col + 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                    else {
+                                                        pixel = raw_data[(row) * width + col + 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row - 1) * width + col + 3];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row + 3) * width + col - 1];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col + 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col - 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row + 3) * width + col - 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row - 2) * width + col + 2];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                pixel = raw_data[(row + 2) * width + col + 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col - 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col + 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row) * width + col + 3];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col + 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 1) * width + col + 3];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col - 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row - 3) * width + col + 1];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 3) * width + col - 1];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col + 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                    else {
+                                                        pixel = raw_data[(row) * width + col + 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            pixel = raw_data[(row - 1) * width + col + 3];
+                                                            if (pixel - threshold > comp_pixel) {
+                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    pixel = raw_data[(row + 3) * width + col - 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else {
+                                    pixel = raw_data[(row - 1) * width + col + 3];
+                                    if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                        if (pixel + threshold < comp_pixel) {
+                                            pixel = raw_data[(row) * width + col + 3];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col + 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col - 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row - 2) * width + col + 2];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 3) * width + col - 1];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col + 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            pixel = raw_data[(row) * width + col + 3];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 2) * width + col + 2];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row - 3) * width + col + 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            pixel = raw_data[(row + 3) * width + col];
+                            if (pixel - threshold > comp_pixel) {
+                                pixel = raw_data[(row + 2) * width + col + 2];
+                                if (pixel + threshold < comp_pixel) {
+                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                    if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row + 3) * width + col + 1];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 2) * width + col - 2];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 1) * width + col - 3];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 1) * width + col - 3];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else if (pixel - threshold > comp_pixel) {
+                                    pixel = raw_data[(row + 2) * width + col - 2];
+                                    if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row + 3) * width + col - 1];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 1) * width + col - 3];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 1) * width + col - 3];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col + 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else {
+                                    pixel = raw_data[(row - 3) * width + col - 1];
+                                    if (pixel - threshold > comp_pixel) {
+                                        pixel = raw_data[(row + 3) * width + col + 1];
+                                        if (pixel - threshold > comp_pixel) {
+                                            pixel = raw_data[(row + 2) * width + col - 2];
+                                            if (pixel - threshold > comp_pixel) {
+                                                pixel = raw_data[(row - 1) * width + col - 3];
+                                                if (pixel - threshold > comp_pixel) {
+                                                    pixel = raw_data[(row + 3) * width + col - 1];
+                                                    if (pixel - threshold > comp_pixel) {
+                                                        pixel = raw_data[(row + 1) * width + col - 3];
+                                                        if (pixel - threshold > comp_pixel) {
+                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 /**
  * Part of Machine Learning framework for FAST. The goal is to minimize entropy. That is, within a set of pixels, we
  * want them to all be corners or all be non-corners. This calculates the entropy of a set of pixels
@@ -311,7 +6675,7 @@ int main(int argc, char* argv[]) {
         train(9, 10);
         return 0;
     }
-    cv::Mat img = cv::imread("image.png", cv::IMREAD_GRAYSCALE);
+    cv::Mat img = cv::imread("train_images/weitz.png", cv::IMREAD_GRAYSCALE);
 
     // Check if the image loaded successfully
     if (img.empty()) {
@@ -319,17 +6683,38 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
-    FASTDetector detector = FASTDetector(12, 10);
+    FASTDetector detector = FASTDetector(9, 10);
+    auto start = std::chrono::high_resolution_clock::now();
     std::vector<cv::Point> keypoints= detector.detect(img);
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    std::cout << "nonML took " << duration.count() << " microseconds to execute." << std::endl;
     std::cout << keypoints.size() << std::endl;
+
+    std::vector<cv::Point2d> fastKeypoints;
+    start = std::chrono::high_resolution_clock::now();
+    learnedFast(fastKeypoints, img, 10);
+    end = std::chrono::high_resolution_clock::now();
+    duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    std::cout << "ML took " << duration.count() << " microseconds to execute." << std::endl;
+    std::cout << fastKeypoints.size() << std::endl;
+
+    std::vector<cv::KeyPoint> kps;
+    auto thing = cv::FastFeatureDetector::create(10, false);
+    
+    start = std::chrono::high_resolution_clock::now();
+    thing->detect(img, kps);
+    end = std::chrono::high_resolution_clock::now();
+    duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    std::cout << "OpenCV took " << duration.count() << " microseconds to execute." << std::endl;
+    std::cout << kps.size() << std::endl;
 
     cv::Mat colorImg;
     cv::cvtColor(img, colorImg, cv::COLOR_GRAY2BGR);
 
-    for (cv::Point keypoint : keypoints) {
+    for (cv::Point2d keypoint : fastKeypoints) {
         colorImg.at<cv::Vec3b>(keypoint) = cv::Vec3b(0, 0, 255);
     }
-
 
     cv::imshow("Frame", colorImg);
     cv::waitKey(0);

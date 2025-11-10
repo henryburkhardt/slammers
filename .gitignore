@@ -1,1 +1,5 @@
 orb/FAST/FAST
+*.vscode
+*.DS_Store
+*CMakeCache.txt
+*/CMakeFiles/*

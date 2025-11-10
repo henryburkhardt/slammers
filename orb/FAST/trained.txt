@@ -1,0 +1,5788 @@
+5
+ 12
+  not corner
+  14
+   not corner
+   0
+    7
+     not corner
+     9
+      not corner
+      6
+       15
+        not corner
+        10
+         not corner
+         8
+          not corner
+          13
+           not corner
+           11
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+        not corner
+       11
+        not corner
+        13
+         not corner
+         8
+          not corner
+          10
+           not corner
+           corner
+           not corner
+          not corner
+         not corner
+        not corner
+       15
+        not corner
+        10
+         not corner
+         13
+          not corner
+          8
+           not corner
+           11
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+        not corner
+      not corner
+     not corner
+    10
+     3
+      not corner
+      2
+       not corner
+       11
+        4
+         not corner
+         13
+          not corner
+          15
+           not corner
+           1
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+        13
+         not corner
+         15
+          not corner
+          1
+           not corner
+           corner
+           not corner
+          not corner
+         not corner
+        4
+         not corner
+         1
+          not corner
+          13
+           not corner
+           15
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+       not corner
+      not corner
+     13
+      not corner
+      8
+       1
+        not corner
+        2
+         9
+          not corner
+          15
+           not corner
+           11
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         15
+          not corner
+          11
+           4
+            not corner
+            3
+             not corner
+             corner
+             not corner
+            not corner
+           corner
+           4
+            not corner
+            3
+             not corner
+             corner
+             not corner
+            not corner
+          not corner
+         9
+          not corner
+          15
+           not corner
+           11
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+        not corner
+       11
+        4
+         not corner
+         2
+          not corner
+          3
+           not corner
+           15
+            not corner
+            1
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+          not corner
+         not corner
+        15
+         6
+          not corner
+          9
+           not corner
+           7
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         9
+          2
+           not corner
+           1
+            not corner
+            corner
+            not corner
+           not corner
+          corner
+          2
+           not corner
+           1
+            not corner
+            corner
+            not corner
+           not corner
+         6
+          not corner
+          9
+           not corner
+           7
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+        4
+         not corner
+         2
+          not corner
+          3
+           not corner
+           15
+            not corner
+            1
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+          not corner
+         not corner
+       2
+        9
+         not corner
+         1
+          not corner
+          15
+           not corner
+           11
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+        15
+         not corner
+         1
+          not corner
+          11
+           4
+            not corner
+            3
+             not corner
+             corner
+             not corner
+            not corner
+           corner
+           4
+            not corner
+            3
+             not corner
+             corner
+             not corner
+            not corner
+          not corner
+         not corner
+        1
+         not corner
+         9
+          not corner
+          15
+           not corner
+           11
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+      not corner
+     3
+      not corner
+      4
+       11
+        not corner
+        2
+         not corner
+         13
+          not corner
+          15
+           not corner
+           1
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+        not corner
+       2
+        not corner
+        13
+         not corner
+         15
+          not corner
+          1
+           not corner
+           corner
+           not corner
+          not corner
+         not corner
+        not corner
+       11
+        not corner
+        13
+         not corner
+         15
+          not corner
+          1
+           not corner
+           2
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+        not corner
+      not corner
+    7
+     not corner
+     9
+      not corner
+      13
+       not corner
+       6
+        15
+         not corner
+         8
+          not corner
+          10
+           not corner
+           11
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+        11
+         not corner
+         8
+          not corner
+          10
+           not corner
+           corner
+           not corner
+          not corner
+         not corner
+        15
+         not corner
+         10
+          not corner
+          8
+           not corner
+           11
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+       not corner
+      not corner
+     not corner
+   not corner
+  14
+   not corner
+   not corner
+   0
+    8
+     not corner
+     not corner
+     6
+      15
+       not corner
+       not corner
+       7
+        not corner
+        not corner
+        10
+         not corner
+         not corner
+         13
+          not corner
+          not corner
+          9
+           not corner
+           not corner
+           11
+            not corner
+            not corner
+            corner
+      15
+       not corner
+       not corner
+       7
+        not corner
+        not corner
+        10
+         not corner
+         not corner
+         13
+          not corner
+          not corner
+          11
+           not corner
+           not corner
+           9
+            not corner
+            not corner
+            corner
+      10
+       not corner
+       not corner
+       9
+        not corner
+        not corner
+        11
+         not corner
+         not corner
+         13
+          not corner
+          not corner
+          7
+           not corner
+           not corner
+           corner
+    7
+     not corner
+     not corner
+     9
+      not corner
+      not corner
+      6
+       15
+        not corner
+        not corner
+        8
+         not corner
+         not corner
+         10
+          not corner
+          not corner
+          13
+           not corner
+           not corner
+           11
+            not corner
+            not corner
+            corner
+       15
+        not corner
+        not corner
+        10
+         not corner
+         not corner
+         13
+          not corner
+          not corner
+          8
+           not corner
+           not corner
+           11
+            not corner
+            not corner
+            corner
+       11
+        not corner
+        not corner
+        10
+         not corner
+         not corner
+         13
+          not corner
+          not corner
+          8
+           not corner
+           not corner
+           corner
+    13
+     not corner
+     not corner
+     10
+      3
+       not corner
+       not corner
+       11
+        4
+         not corner
+         not corner
+         2
+          not corner
+          not corner
+          15
+           not corner
+           not corner
+           1
+            not corner
+            not corner
+            corner
+        4
+         not corner
+         not corner
+         2
+          not corner
+          not corner
+          1
+           not corner
+           not corner
+           15
+            not corner
+            not corner
+            corner
+        2
+         not corner
+         not corner
+         15
+          not corner
+          not corner
+          1
+           not corner
+           not corner
+           corner
+      3
+       not corner
+       not corner
+       4
+        11
+         not corner
+         not corner
+         2
+          not corner
+          not corner
+          15
+           not corner
+           not corner
+           1
+            not corner
+            not corner
+            corner
+        11
+         not corner
+         not corner
+         15
+          not corner
+          not corner
+          1
+           not corner
+           not corner
+           2
+            not corner
+            not corner
+            corner
+        2
+         not corner
+         not corner
+         15
+          not corner
+          not corner
+          1
+           not corner
+           not corner
+           corner
+      8
+       1
+        not corner
+        not corner
+        15
+         not corner
+         not corner
+         2
+          9
+           not corner
+           not corner
+           11
+            not corner
+            not corner
+            corner
+          9
+           not corner
+           not corner
+           11
+            not corner
+            not corner
+            corner
+          11
+           4
+            not corner
+            not corner
+            3
+             not corner
+             not corner
+             corner
+           4
+            not corner
+            not corner
+            3
+             not corner
+             not corner
+             corner
+           corner
+       2
+        9
+         not corner
+         not corner
+         1
+          not corner
+          not corner
+          11
+           not corner
+           not corner
+           15
+            not corner
+            not corner
+            corner
+        1
+         not corner
+         not corner
+         9
+          not corner
+          not corner
+          15
+           not corner
+           not corner
+           11
+            not corner
+            not corner
+            corner
+        15
+         not corner
+         not corner
+         1
+          not corner
+          not corner
+          11
+           4
+            not corner
+            not corner
+            3
+             not corner
+             not corner
+             corner
+           4
+            not corner
+            not corner
+            3
+             not corner
+             not corner
+             corner
+           corner
+       11
+        4
+         not corner
+         not corner
+         2
+          not corner
+          not corner
+          3
+           not corner
+           not corner
+           15
+            not corner
+            not corner
+            1
+             not corner
+             not corner
+             corner
+        4
+         not corner
+         not corner
+         2
+          not corner
+          not corner
+          3
+           not corner
+           not corner
+           15
+            not corner
+            not corner
+            1
+             not corner
+             not corner
+             corner
+        15
+         6
+          not corner
+          not corner
+          9
+           not corner
+           not corner
+           7
+            not corner
+            not corner
+            corner
+         6
+          not corner
+          not corner
+          9
+           not corner
+           not corner
+           7
+            not corner
+            not corner
+            corner
+         9
+          2
+           not corner
+           not corner
+           1
+            not corner
+            not corner
+            corner
+          2
+           not corner
+           not corner
+           1
+            not corner
+            not corner
+            corner
+          corner
+ 0
+  8
+   not corner
+   12
+    3
+     not corner
+     10
+      1
+       not corner
+       9
+        not corner
+        6
+         not corner
+         2
+          not corner
+          7
+           not corner
+           4
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+        not corner
+       not corner
+      6
+       not corner
+       4
+        not corner
+        11
+         2
+          not corner
+          7
+           not corner
+           9
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         7
+          not corner
+          9
+           not corner
+           corner
+           not corner
+          not corner
+         2
+          not corner
+          7
+           not corner
+           9
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+        not corner
+       not corner
+      9
+       not corner
+       1
+        not corner
+        6
+         not corner
+         2
+          not corner
+          7
+           not corner
+           4
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+        not corner
+       not corner
+     not corner
+    9
+     not corner
+     7
+      not corner
+      13
+       4
+        not corner
+        6
+         not corner
+         10
+          1
+           not corner
+           2
+            not corner
+            3
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+          11
+           2
+            not corner
+            3
+             not corner
+             corner
+             not corner
+            not corner
+           corner
+           2
+            not corner
+            3
+             not corner
+             corner
+             not corner
+            not corner
+          1
+           not corner
+           2
+            not corner
+            3
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+         not corner
+        not corner
+       10
+        1
+         not corner
+         3
+          not corner
+          6
+           not corner
+           4
+            not corner
+            2
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+          not corner
+         not corner
+        6
+         15
+          not corner
+          14
+           not corner
+           11
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         11
+          3
+           not corner
+           2
+            not corner
+            4
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+          corner
+          3
+           not corner
+           4
+            not corner
+            2
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+         15
+          not corner
+          14
+           not corner
+           11
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+        1
+         not corner
+         3
+          not corner
+          6
+           not corner
+           4
+            not corner
+            2
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+          not corner
+         not corner
+       4
+        not corner
+        6
+         not corner
+         10
+          1
+           not corner
+           2
+            not corner
+            3
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+          11
+           2
+            not corner
+            3
+             not corner
+             corner
+             not corner
+            not corner
+           corner
+           2
+            not corner
+            corner
+            not corner
+          1
+           not corner
+           2
+            not corner
+            3
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+         not corner
+        not corner
+      not corner
+     not corner
+    3
+     not corner
+     9
+      not corner
+      1
+       10
+        not corner
+        2
+         11
+          not corner
+          6
+           not corner
+           4
+            not corner
+            7
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+          not corner
+         6
+          not corner
+          7
+           not corner
+           4
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         11
+          not corner
+          6
+           not corner
+           7
+            not corner
+            4
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+          not corner
+        not corner
+       6
+        not corner
+        7
+         not corner
+         2
+          11
+           not corner
+           4
+            not corner
+            10
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+          4
+           not corner
+           corner
+           not corner
+          11
+           not corner
+           13
+            not corner
+            4
+             not corner
+             corner
+             not corner
+            corner
+           not corner
+         not corner
+        not corner
+       11
+        2
+         not corner
+         10
+          not corner
+          6
+           not corner
+           7
+            not corner
+            4
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+          not corner
+         not corner
+        6
+         not corner
+         4
+          not corner
+          7
+           not corner
+           10
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+        2
+         not corner
+         10
+          not corner
+          7
+           not corner
+           6
+            not corner
+            4
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+          not corner
+         not corner
+      not corner
+     not corner
+   14
+    not corner
+    not corner
+    11
+     not corner
+     not corner
+     7
+      not corner
+      not corner
+      9
+       not corner
+       not corner
+       13
+        not corner
+        not corner
+        15
+         6
+          not corner
+          not corner
+          10
+           not corner
+           not corner
+           12
+            not corner
+            not corner
+            corner
+         6
+          not corner
+          not corner
+          10
+           not corner
+           not corner
+           12
+            not corner
+            not corner
+            corner
+         10
+          not corner
+          not corner
+          12
+           not corner
+           not corner
+           corner
+  13
+   6
+    not corner
+    4
+     not corner
+     7
+      14
+       not corner
+       2
+        not corner
+        3
+         not corner
+         1
+          not corner
+          15
+           not corner
+           corner
+           not corner
+          not corner
+         not corner
+        not corner
+       not corner
+      3
+       12
+        not corner
+        10
+         not corner
+         9
+          not corner
+          11
+           not corner
+           8
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+        not corner
+       2
+        11
+         not corner
+         9
+          not corner
+          10
+           not corner
+           8
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+        8
+         15
+          not corner
+          1
+           not corner
+           corner
+           not corner
+          not corner
+         1
+          10
+           not corner
+           9
+            not corner
+            corner
+            not corner
+           not corner
+          corner
+          10
+           not corner
+           9
+            not corner
+            corner
+            not corner
+           not corner
+         15
+          not corner
+          1
+           not corner
+           corner
+           not corner
+          not corner
+        11
+         not corner
+         9
+          not corner
+          10
+           not corner
+           8
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+       12
+        not corner
+        9
+         not corner
+         10
+          not corner
+          8
+           not corner
+           11
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+        not corner
+      14
+       not corner
+       3
+        not corner
+        1
+         not corner
+         2
+          not corner
+          15
+           not corner
+           corner
+           not corner
+          not corner
+         not corner
+        not corner
+       not corner
+     not corner
+    not corner
+   3
+    11
+     not corner
+     12
+      not corner
+      10
+       not corner
+       9
+        2
+         not corner
+         14
+          not corner
+          15
+           not corner
+           1
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+        6
+         14
+          not corner
+          15
+           not corner
+           1
+            8
+             not corner
+             corner
+             not corner
+            corner
+            8
+             not corner
+             corner
+             not corner
+           not corner
+          not corner
+         7
+          14
+           not corner
+           15
+            not corner
+            1
+             8
+              not corner
+              corner
+              not corner
+             corner
+             8
+              not corner
+              corner
+              not corner
+            not corner
+           not corner
+          8
+           1
+            not corner
+            14
+             not corner
+             15
+              not corner
+              corner
+              not corner
+             not corner
+            not corner
+           corner
+           1
+            not corner
+            14
+             not corner
+             15
+              not corner
+              corner
+              not corner
+             not corner
+            not corner
+          14
+           not corner
+           1
+            8
+             not corner
+             corner
+             not corner
+            15
+             not corner
+             corner
+             not corner
+            8
+             not corner
+             corner
+             not corner
+           not corner
+         14
+          not corner
+          1
+           8
+            not corner
+            15
+             not corner
+             corner
+             not corner
+            not corner
+           15
+            not corner
+            corner
+            not corner
+           8
+            not corner
+            15
+             not corner
+             corner
+             not corner
+            not corner
+          not corner
+        2
+         not corner
+         14
+          not corner
+          15
+           not corner
+           1
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+       not corner
+      not corner
+     not corner
+    14
+     6
+      not corner
+      7
+       not corner
+       8
+        15
+         not corner
+         2
+          not corner
+          1
+           not corner
+           4
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+        2
+         11
+          not corner
+          10
+           not corner
+           9
+            not corner
+            12
+             4
+              not corner
+              corner
+              not corner
+             corner
+             corner
+            not corner
+           not corner
+          not corner
+         4
+          11
+           not corner
+           10
+            not corner
+            12
+             not corner
+             9
+              not corner
+              corner
+              not corner
+             not corner
+            not corner
+           not corner
+          1
+           10
+            not corner
+            9
+             not corner
+             corner
+             not corner
+            not corner
+           corner
+           10
+            not corner
+            9
+             not corner
+             corner
+             not corner
+            not corner
+          11
+           not corner
+           12
+            not corner
+            9
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+         11
+          not corner
+          9
+           not corner
+           10
+            not corner
+            12
+             4
+              not corner
+              corner
+              not corner
+             corner
+             4
+              not corner
+              corner
+              not corner
+            not corner
+           not corner
+          not corner
+        15
+         not corner
+         2
+          not corner
+          1
+           not corner
+           4
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+       not corner
+      not corner
+     4
+      12
+       not corner
+       11
+        not corner
+        1
+         8
+          not corner
+          10
+           not corner
+           9
+            not corner
+            15
+             7
+              not corner
+              6
+               not corner
+               corner
+               not corner
+              not corner
+             corner
+             corner
+            not corner
+           not corner
+          not corner
+         15
+          7
+           not corner
+           10
+            not corner
+            6
+             not corner
+             9
+              not corner
+              8
+               not corner
+               corner
+               not corner
+              not corner
+             not corner
+            not corner
+           not corner
+          2
+           10
+            not corner
+            9
+             not corner
+             corner
+             not corner
+            not corner
+           corner
+           9
+            not corner
+            10
+             not corner
+             corner
+             not corner
+            not corner
+          9
+           not corner
+           6
+            not corner
+            10
+             not corner
+             7
+              not corner
+              8
+               not corner
+               corner
+               not corner
+              not corner
+             not corner
+            not corner
+           not corner
+         8
+          not corner
+          9
+           not corner
+           10
+            not corner
+            15
+             2
+              not corner
+              not corner
+              corner
+             corner
+             not corner
+            not corner
+           not corner
+          not corner
+        not corner
+       not corner
+      2
+       11
+        not corner
+        9
+         not corner
+         10
+          not corner
+          8
+           1
+            not corner
+            12
+             not corner
+             15
+              not corner
+              corner
+              not corner
+             not corner
+            not corner
+           6
+            12
+             not corner
+             15
+              not corner
+              corner
+              not corner
+             not corner
+            7
+             12
+              not corner
+              15
+               not corner
+               corner
+               not corner
+              not corner
+             corner
+             15
+              not corner
+              12
+               not corner
+               corner
+               not corner
+              not corner
+            15
+             not corner
+             12
+              not corner
+              corner
+              not corner
+             not corner
+           1
+            not corner
+            15
+             not corner
+             12
+              not corner
+              corner
+              not corner
+             not corner
+            not corner
+          not corner
+         not corner
+        not corner
+       1
+        8
+         not corner
+         10
+          not corner
+          9
+           not corner
+           11
+            6
+             not corner
+             7
+              not corner
+              corner
+              not corner
+             not corner
+            12
+             6
+              not corner
+              7
+               not corner
+               corner
+               not corner
+              not corner
+             15
+              7
+               not corner
+               6
+                not corner
+                corner
+                not corner
+               not corner
+              corner
+              6
+               not corner
+               7
+                not corner
+                corner
+                not corner
+               not corner
+             6
+              not corner
+              corner
+              not corner
+            6
+             not corner
+             7
+              not corner
+              corner
+              not corner
+             not corner
+           not corner
+          not corner
+         not corner
+        15
+         8
+          not corner
+          6
+           not corner
+           7
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         corner
+         8
+          not corner
+          6
+           not corner
+           7
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+        8
+         not corner
+         10
+          not corner
+          9
+           not corner
+           11
+            6
+             not corner
+             7
+              not corner
+              corner
+              not corner
+             not corner
+            15
+             7
+              not corner
+              6
+               not corner
+               corner
+               not corner
+              not corner
+             12
+              6
+               not corner
+               7
+                not corner
+                corner
+                not corner
+               not corner
+              corner
+              corner
+             7
+              not corner
+              corner
+              not corner
+            7
+             not corner
+             6
+              not corner
+              corner
+              not corner
+             not corner
+           not corner
+          not corner
+         not corner
+       8
+        1
+         not corner
+         9
+          not corner
+          11
+           not corner
+           10
+            not corner
+            15
+             not corner
+             12
+              not corner
+              corner
+              not corner
+             not corner
+            not corner
+           not corner
+          not corner
+         not corner
+        11
+         not corner
+         10
+          not corner
+          9
+           not corner
+           15
+            6
+             not corner
+             7
+              not corner
+              corner
+              not corner
+             not corner
+            12
+             6
+              not corner
+              7
+               not corner
+               corner
+               not corner
+              not corner
+             corner
+             6
+              not corner
+              corner
+              not corner
+            7
+             not corner
+             6
+              not corner
+              corner
+              not corner
+             not corner
+           not corner
+          not corner
+         not corner
+        1
+         not corner
+         9
+          not corner
+          11
+           not corner
+           10
+            not corner
+            12
+             not corner
+             15
+              not corner
+              corner
+              not corner
+             not corner
+            not corner
+           not corner
+          not corner
+         not corner
+      11
+       not corner
+       12
+        not corner
+        2
+         9
+          not corner
+          10
+           not corner
+           8
+            15
+             not corner
+             corner
+             not corner
+            corner
+            1
+             not corner
+             corner
+             not corner
+           not corner
+          not corner
+         1
+          8
+           not corner
+           9
+            not corner
+            15
+             corner
+             10
+              not corner
+              corner
+              not corner
+             7
+              not corner
+              corner
+              not corner
+            not corner
+           not corner
+          15
+           9
+            not corner
+            7
+             not corner
+             10
+              not corner
+              8
+               not corner
+               corner
+               not corner
+              not corner
+             not corner
+            not corner
+           corner
+           9
+            not corner
+            8
+             not corner
+             corner
+             not corner
+            not corner
+          8
+           not corner
+           10
+            not corner
+            9
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+         7
+          1
+           8
+            not corner
+            corner
+            not corner
+           9
+            not corner
+            corner
+            not corner
+           not corner
+          9
+           not corner
+           10
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+        not corner
+       not corner
+     7
+      not corner
+      6
+       not corner
+       8
+        15
+         not corner
+         2
+          not corner
+          4
+           not corner
+           1
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+        2
+         10
+          not corner
+          11
+           not corner
+           9
+            not corner
+            12
+             4
+              not corner
+              corner
+              not corner
+             corner
+             4
+              not corner
+              corner
+              not corner
+            not corner
+           not corner
+          not corner
+         4
+          10
+           not corner
+           12
+            not corner
+            11
+             not corner
+             9
+              not corner
+              corner
+              not corner
+             not corner
+            not corner
+           not corner
+          1
+           10
+            not corner
+            9
+             not corner
+             corner
+             not corner
+            not corner
+           corner
+           10
+            not corner
+            9
+             not corner
+             corner
+             not corner
+            not corner
+          11
+           not corner
+           12
+            not corner
+            10
+             not corner
+             9
+              not corner
+              corner
+              not corner
+             not corner
+            not corner
+           not corner
+         11
+          not corner
+          9
+           not corner
+           10
+            not corner
+            12
+             corner
+             corner
+             4
+              not corner
+              corner
+              not corner
+            not corner
+           not corner
+          not corner
+        15
+         not corner
+         2
+          not corner
+          1
+           not corner
+           4
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+       not corner
+      not corner
+    11
+     not corner
+     10
+      not corner
+      12
+       not corner
+       9
+        2
+         not corner
+         14
+          not corner
+          15
+           not corner
+           1
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+        7
+         14
+          not corner
+          15
+           not corner
+           1
+            8
+             not corner
+             corner
+             not corner
+            corner
+            8
+             not corner
+             corner
+             not corner
+           not corner
+          not corner
+         6
+          14
+           not corner
+           15
+            not corner
+            8
+             1
+              not corner
+              corner
+              not corner
+             corner
+             corner
+            not corner
+           not corner
+          8
+           1
+            not corner
+            14
+             not corner
+             15
+              not corner
+              corner
+              not corner
+             not corner
+            not corner
+           corner
+           1
+            not corner
+            15
+             not corner
+             corner
+             not corner
+            not corner
+          14
+           not corner
+           15
+            not corner
+            8
+             1
+              not corner
+              corner
+              not corner
+             corner
+             not corner
+            not corner
+           not corner
+         14
+          not corner
+          1
+           8
+            not corner
+            15
+             not corner
+             corner
+             not corner
+            not corner
+           15
+            not corner
+            corner
+            not corner
+           8
+            not corner
+            corner
+            not corner
+          not corner
+        2
+         not corner
+         14
+          not corner
+          15
+           not corner
+           1
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+       not corner
+      not corner
+     not corner
+   7
+    14
+     not corner
+     6
+      not corner
+      3
+       not corner
+       1
+        not corner
+        4
+         not corner
+         2
+          not corner
+          15
+           not corner
+           corner
+           not corner
+          not corner
+         not corner
+        not corner
+       not corner
+      not corner
+     not corner
+    3
+     12
+      not corner
+      4
+       not corner
+       9
+        not corner
+        6
+         not corner
+         10
+          not corner
+          11
+           not corner
+           8
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+        not corner
+       not corner
+      not corner
+     6
+      not corner
+      8
+       15
+        not corner
+        1
+         not corner
+         2
+          not corner
+          4
+           not corner
+           corner
+           not corner
+          not corner
+         not corner
+        not corner
+       4
+        not corner
+        2
+         11
+          not corner
+          10
+           not corner
+           9
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         1
+          10
+           not corner
+           9
+            not corner
+            corner
+            not corner
+           not corner
+          corner
+          10
+           not corner
+           9
+            not corner
+            corner
+            not corner
+           not corner
+         11
+          not corner
+          10
+           not corner
+           9
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+        not corner
+       15
+        not corner
+        1
+         not corner
+         2
+          not corner
+          4
+           not corner
+           corner
+           not corner
+          not corner
+         not corner
+        not corner
+      not corner
+     12
+      not corner
+      4
+       not corner
+       9
+        not corner
+        10
+         not corner
+         6
+          not corner
+          8
+           not corner
+           11
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+        not corner
+       not corner
+      not corner
+    14
+     not corner
+     6
+      not corner
+      3
+       not corner
+       1
+        not corner
+        2
+         not corner
+         4
+          not corner
+          15
+           not corner
+           corner
+           not corner
+          not corner
+         not corner
+        not corner
+       not corner
+      not corner
+     6
+      15
+       not corner
+       not corner
+       10
+        not corner
+        not corner
+        9
+         not corner
+         not corner
+         11
+          not corner
+          not corner
+          8
+           not corner
+           not corner
+           12
+            not corner
+            not corner
+            corner
+      15
+       not corner
+       not corner
+       10
+        not corner
+        not corner
+        8
+         not corner
+         not corner
+         11
+          not corner
+          not corner
+          9
+           not corner
+           not corner
+           12
+            not corner
+            not corner
+            corner
+      11
+       not corner
+       not corner
+       9
+        not corner
+        not corner
+        10
+         not corner
+         not corner
+         12
+          not corner
+          not corner
+          8
+           not corner
+           not corner
+           corner
+  12
+   3
+    not corner
+    9
+     not corner
+     7
+      not corner
+      4
+       not corner
+       11
+        2
+         not corner
+         10
+          1
+           not corner
+           8
+            not corner
+            6
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+          6
+           not corner
+           8
+            not corner
+            corner
+            not corner
+           not corner
+          1
+           not corner
+           8
+            not corner
+            6
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+         not corner
+        6
+         not corner
+         10
+          1
+           not corner
+           2
+            not corner
+            8
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+          8
+           not corner
+           corner
+           not corner
+          1
+           not corner
+           2
+            not corner
+            8
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+         not corner
+        2
+         not corner
+         10
+          1
+           not corner
+           6
+            not corner
+            8
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+          6
+           not corner
+           8
+            not corner
+            corner
+            not corner
+           not corner
+          1
+           not corner
+           6
+            not corner
+            8
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+         not corner
+       not corner
+      not corner
+     not corner
+    not corner
+   8
+    not corner
+    13
+     4
+      not corner
+      6
+       not corner
+       10
+        1
+         not corner
+         9
+          not corner
+          7
+           not corner
+           3
+            not corner
+            2
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+          not corner
+         not corner
+        9
+         not corner
+         7
+          not corner
+          11
+           2
+            not corner
+            3
+             not corner
+             corner
+             not corner
+            not corner
+           corner
+           2
+            not corner
+            corner
+            not corner
+          not corner
+         not corner
+        1
+         not corner
+         9
+          not corner
+          2
+           not corner
+           3
+            not corner
+            7
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+          not corner
+         not corner
+       not corner
+      not corner
+     10
+      1
+       not corner
+       9
+        not corner
+        3
+         not corner
+         6
+          not corner
+          7
+           not corner
+           4
+            not corner
+            2
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+          not corner
+         not corner
+        not corner
+       not corner
+      6
+       15
+        not corner
+        7
+         not corner
+         14
+          not corner
+          9
+           not corner
+           11
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+        not corner
+       9
+        not corner
+        7
+         not corner
+         11
+          2
+           not corner
+           3
+            not corner
+            4
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+          corner
+          2
+           not corner
+           4
+            not corner
+            3
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+         not corner
+        not corner
+       15
+        not corner
+        7
+         not corner
+         14
+          not corner
+          11
+           not corner
+           9
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+        not corner
+      1
+       not corner
+       9
+        not corner
+        3
+         not corner
+         6
+          not corner
+          7
+           not corner
+           2
+            not corner
+            4
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+          not corner
+         not corner
+        not corner
+       not corner
+     4
+      not corner
+      6
+       not corner
+       10
+        1
+         not corner
+         9
+          not corner
+          3
+           not corner
+           2
+            not corner
+            7
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+          not corner
+         not corner
+        9
+         not corner
+         11
+          2
+           not corner
+           3
+            not corner
+            7
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+          7
+           not corner
+           corner
+           not corner
+          1
+           not corner
+           corner
+           not corner
+         not corner
+        1
+         not corner
+         9
+          not corner
+          3
+           not corner
+           7
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+       not corner
+      not corner
+    not corner
+   14
+    3
+     not corner
+     9
+      not corner
+      11
+       2
+        not corner
+        7
+         not corner
+         10
+          1
+           not corner
+           15
+            not corner
+            not corner
+            4
+             not corner
+             6
+              not corner
+              corner
+              not corner
+             not corner
+           not corner
+          6
+           not corner
+           8
+            not corner
+            4
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+          1
+           not corner
+           13
+            15
+             corner
+             not corner
+             not corner
+            not corner
+            corner
+           not corner
+         not corner
+        not corner
+       6
+        not corner
+        7
+         not corner
+         4
+          not corner
+          10
+           1
+            not corner
+            corner
+            not corner
+           8
+            not corner
+            corner
+            not corner
+           1
+            not corner
+            corner
+            not corner
+          not corner
+         not corner
+        not corner
+       2
+        not corner
+        7
+         not corner
+         10
+          1
+           not corner
+           8
+            not corner
+            6
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+          8
+           not corner
+           6
+            not corner
+            4
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+          1
+           not corner
+           6
+            not corner
+            8
+             not corner
+             4
+              not corner
+              corner
+              not corner
+             not corner
+            not corner
+           not corner
+         not corner
+        not corner
+      not corner
+     not corner
+    7
+     not corner
+     3
+      not corner
+      9
+       not corner
+       6
+        not corner
+        10
+         1
+          not corner
+          8
+           not corner
+           2
+            not corner
+            4
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+          not corner
+         2
+          11
+           not corner
+           4
+            not corner
+            corner
+            not corner
+           not corner
+          8
+           not corner
+           4
+            not corner
+            corner
+            not corner
+           not corner
+          11
+           not corner
+           4
+            not corner
+            8
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+         1
+          not corner
+          8
+           not corner
+           2
+            not corner
+            4
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+          not corner
+        not corner
+       not corner
+      not corner
+     not corner
+    10
+     3
+      not corner
+      1
+       not corner
+       9
+        not corner
+        8
+         not corner
+         6
+          not corner
+          2
+           not corner
+           7
+            not corner
+            4
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+          not corner
+         not corner
+        not corner
+       not corner
+      11
+       4
+        not corner
+        not corner
+        13
+         not corner
+         not corner
+         2
+          not corner
+          not corner
+          15
+           not corner
+           not corner
+           1
+            not corner
+            not corner
+            corner
+       4
+        not corner
+        not corner
+        2
+         not corner
+         not corner
+         15
+          not corner
+          not corner
+          13
+           not corner
+           not corner
+           1
+            not corner
+            not corner
+            corner
+       13
+        not corner
+        not corner
+        2
+         not corner
+         not corner
+         15
+          not corner
+          not corner
+          1
+           not corner
+           not corner
+           corner
+     4
+      11
+       not corner
+       not corner
+       3
+        not corner
+        not corner
+        13
+         not corner
+         not corner
+         2
+          not corner
+          not corner
+          15
+           not corner
+           not corner
+           1
+            not corner
+            not corner
+            corner
+      3
+       not corner
+       11
+        2
+         not corner
+         8
+          not corner
+          6
+           not corner
+           9
+            not corner
+            7
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+          not corner
+         not corner
+        7
+         not corner
+         9
+          not corner
+          6
+           not corner
+           8
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+        2
+         not corner
+         8
+          not corner
+          7
+           not corner
+           9
+            not corner
+            6
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+          not corner
+         not corner
+       11
+        not corner
+        not corner
+        13
+         not corner
+         not corner
+         1
+          not corner
+          not corner
+          15
+           not corner
+           not corner
+           2
+            not corner
+            not corner
+            corner
+      13
+       not corner
+       not corner
+       2
+        not corner
+        not corner
+        1
+         not corner
+         not corner
+         3
+          not corner
+          not corner
+          15
+           not corner
+           not corner
+           corner
+     8
+      1
+       not corner
+       not corner
+       13
+        not corner
+        not corner
+        15
+         not corner
+         not corner
+         2
+          9
+           not corner
+           not corner
+           11
+            not corner
+            not corner
+            corner
+          9
+           not corner
+           not corner
+           11
+            not corner
+            not corner
+            corner
+          11
+           4
+            not corner
+            not corner
+            3
+             not corner
+             not corner
+             corner
+           4
+            not corner
+            not corner
+            corner
+           corner
+      2
+       9
+        not corner
+        not corner
+        1
+         not corner
+         not corner
+         13
+          not corner
+          not corner
+          15
+           not corner
+           not corner
+           11
+            not corner
+            not corner
+            corner
+       9
+        not corner
+        1
+         not corner
+         6
+          not corner
+          3
+           not corner
+           7
+            not corner
+            4
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+          not corner
+         not corner
+        1
+         not corner
+         not corner
+         13
+          not corner
+          not corner
+          15
+           not corner
+           not corner
+           11
+            not corner
+            not corner
+            corner
+       13
+        not corner
+        not corner
+        15
+         not corner
+         not corner
+         1
+          not corner
+          not corner
+          11
+           4
+            not corner
+            not corner
+            3
+             not corner
+             not corner
+             corner
+           4
+            not corner
+            not corner
+            3
+             not corner
+             not corner
+             corner
+           corner
+      13
+       not corner
+       not corner
+       11
+        4
+         not corner
+         not corner
+         2
+          not corner
+          not corner
+          15
+           not corner
+           not corner
+           1
+            not corner
+            not corner
+            3
+             not corner
+             not corner
+             corner
+        4
+         not corner
+         not corner
+         2
+          not corner
+          not corner
+          15
+           not corner
+           not corner
+           3
+            not corner
+            not corner
+            1
+             not corner
+             not corner
+             corner
+        15
+         6
+          not corner
+          not corner
+          9
+           not corner
+           not corner
+           7
+            not corner
+            not corner
+            corner
+         6
+          not corner
+          not corner
+          9
+           not corner
+           not corner
+           7
+            not corner
+            not corner
+            corner
+         9
+          2
+           not corner
+           not corner
+           1
+            not corner
+            not corner
+            corner
+          2
+           not corner
+           not corner
+           1
+            not corner
+            not corner
+            corner
+          corner
+ 0
+  8
+   not corner
+   14
+    not corner
+    7
+     not corner
+     11
+      not corner
+      15
+       6
+        not corner
+        12
+         not corner
+         9
+          not corner
+          10
+           not corner
+           13
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+        not corner
+       13
+        not corner
+        9
+         not corner
+         10
+          not corner
+          12
+           not corner
+           corner
+           not corner
+          not corner
+         not corner
+        not corner
+       6
+        not corner
+        9
+         not corner
+         12
+          not corner
+          10
+           not corner
+           13
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+        not corner
+      not corner
+     not corner
+    not corner
+   12
+    3
+     not corner
+     not corner
+     9
+      not corner
+      not corner
+      6
+       not corner
+       not corner
+       2
+        11
+         not corner
+         not corner
+         4
+          not corner
+          not corner
+          7
+           not corner
+           not corner
+           10
+            not corner
+            not corner
+            corner
+        11
+         not corner
+         not corner
+         4
+          not corner
+          not corner
+          7
+           not corner
+           not corner
+           10
+            not corner
+            not corner
+            corner
+        4
+         not corner
+         not corner
+         7
+          not corner
+          not corner
+          10
+           1
+            not corner
+            not corner
+            corner
+           1
+            not corner
+            not corner
+            corner
+           corner
+    3
+     not corner
+     not corner
+     9
+      not corner
+      not corner
+      2
+       11
+        not corner
+        not corner
+        6
+         not corner
+         not corner
+         4
+          not corner
+          not corner
+          7
+           not corner
+           not corner
+           10
+            not corner
+            not corner
+            corner
+       11
+        not corner
+        not corner
+        6
+         not corner
+         not corner
+         4
+          not corner
+          not corner
+          7
+           not corner
+           not corner
+           10
+            not corner
+            not corner
+            corner
+       6
+        not corner
+        not corner
+        7
+         not corner
+         not corner
+         1
+          10
+           not corner
+           not corner
+           4
+            not corner
+            not corner
+            corner
+          10
+           not corner
+           not corner
+           4
+            not corner
+            not corner
+            corner
+          4
+           not corner
+           not corner
+           corner
+    7
+     not corner
+     not corner
+     9
+      not corner
+      not corner
+      4
+       13
+        not corner
+        not corner
+        10
+         not corner
+         not corner
+         11
+          not corner
+          not corner
+          6
+           15
+            not corner
+            not corner
+            14
+             not corner
+             not corner
+             corner
+           15
+            not corner
+            not corner
+            14
+             not corner
+             not corner
+             corner
+           corner
+       13
+        not corner
+        not corner
+        11
+         not corner
+         not corner
+         10
+          not corner
+          not corner
+          6
+           15
+            not corner
+            not corner
+            14
+             not corner
+             not corner
+             corner
+           15
+            not corner
+            not corner
+            14
+             not corner
+             not corner
+             corner
+           corner
+       6
+        15
+         not corner
+         not corner
+         13
+          not corner
+          not corner
+          14
+           not corner
+           not corner
+           10
+            not corner
+            not corner
+            11
+             not corner
+             not corner
+             corner
+        15
+         not corner
+         not corner
+         13
+          not corner
+          not corner
+          10
+           not corner
+           not corner
+           14
+            not corner
+            not corner
+            11
+             not corner
+             not corner
+             corner
+        10
+         1
+          not corner
+          not corner
+          3
+           not corner
+           not corner
+           2
+            not corner
+            not corner
+            corner
+         1
+          not corner
+          not corner
+          2
+           not corner
+           not corner
+           3
+            not corner
+            not corner
+            corner
+         11
+          2
+           not corner
+           not corner
+           3
+            not corner
+            not corner
+            corner
+          2
+           not corner
+           not corner
+           3
+            not corner
+            not corner
+            corner
+          corner
+  12
+   3
+    not corner
+    not corner
+    9
+     not corner
+     not corner
+     7
+      not corner
+      not corner
+      11
+       2
+        not corner
+        not corner
+        10
+         1
+          not corner
+          not corner
+          8
+           not corner
+           not corner
+           6
+            not corner
+            not corner
+            4
+             not corner
+             not corner
+             corner
+         1
+          not corner
+          not corner
+          8
+           not corner
+           not corner
+           6
+            not corner
+            not corner
+            4
+             not corner
+             not corner
+             corner
+         4
+          not corner
+          not corner
+          6
+           not corner
+           not corner
+           8
+            not corner
+            not corner
+            corner
+       2
+        not corner
+        not corner
+        10
+         1
+          not corner
+          not corner
+          8
+           not corner
+           not corner
+           4
+            not corner
+            not corner
+            6
+             not corner
+             not corner
+             corner
+         1
+          not corner
+          not corner
+          6
+           not corner
+           not corner
+           4
+            not corner
+            not corner
+            8
+             not corner
+             not corner
+             corner
+         4
+          not corner
+          not corner
+          8
+           not corner
+           not corner
+           6
+            not corner
+            not corner
+            corner
+       4
+        not corner
+        not corner
+        6
+         not corner
+         not corner
+         10
+          1
+           not corner
+           not corner
+           8
+            not corner
+            not corner
+            2
+             not corner
+             not corner
+             corner
+          1
+           not corner
+           not corner
+           8
+            not corner
+            not corner
+            corner
+          8
+           not corner
+           not corner
+           corner
+   10
+    3
+     not corner
+     14
+      not corner
+      11
+       4
+        not corner
+        2
+         not corner
+         13
+          not corner
+          15
+           not corner
+           1
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+        not corner
+       13
+        not corner
+        2
+         not corner
+         15
+          not corner
+          1
+           not corner
+           corner
+           not corner
+          not corner
+         not corner
+        not corner
+       4
+        not corner
+        2
+         not corner
+         15
+          not corner
+          13
+           not corner
+           1
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+        not corner
+      not corner
+     1
+      not corner
+      not corner
+      9
+       not corner
+       not corner
+       8
+        not corner
+        not corner
+        6
+         not corner
+         not corner
+         7
+          not corner
+          not corner
+          2
+           not corner
+           not corner
+           4
+            not corner
+            not corner
+            corner
+    14
+     1
+      not corner
+      not corner
+      9
+       not corner
+       not corner
+       7
+        not corner
+        not corner
+        3
+         not corner
+         not corner
+         6
+          not corner
+          not corner
+          8
+           not corner
+           not corner
+           2
+            not corner
+            not corner
+            4
+             not corner
+             not corner
+             corner
+     8
+      1
+       not corner
+       9
+        2
+         not corner
+         15
+          not corner
+          11
+           4
+            not corner
+            3
+             not corner
+             13
+              not corner
+              corner
+              not corner
+             not corner
+            not corner
+           13
+            not corner
+            corner
+            not corner
+           4
+            not corner
+            3
+             not corner
+             corner
+             not corner
+            not corner
+          not corner
+         not corner
+        13
+         not corner
+         15
+          not corner
+          11
+           4
+            not corner
+            3
+             not corner
+             2
+              not corner
+              corner
+              not corner
+             not corner
+            not corner
+           corner
+           4
+            not corner
+            2
+             not corner
+             corner
+             not corner
+            not corner
+          not corner
+         not corner
+        2
+         not corner
+         15
+          not corner
+          11
+           4
+            not corner
+            3
+             not corner
+             corner
+             not corner
+            not corner
+           13
+            not corner
+            corner
+            not corner
+           4
+            not corner
+            3
+             not corner
+             corner
+             not corner
+            not corner
+          not corner
+         not corner
+       not corner
+      13
+       not corner
+       11
+        4
+         not corner
+         2
+          not corner
+          1
+           not corner
+           3
+            not corner
+            15
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+          not corner
+         not corner
+        15
+         6
+          not corner
+          9
+           not corner
+           7
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         9
+          2
+           not corner
+           1
+            not corner
+            corner
+            not corner
+           not corner
+          corner
+          2
+           not corner
+           1
+            not corner
+            corner
+            not corner
+           not corner
+         6
+          not corner
+          9
+           not corner
+           7
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+        4
+         not corner
+         2
+          not corner
+          15
+           not corner
+           1
+            not corner
+            3
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+          not corner
+         not corner
+       not corner
+      2
+       9
+        not corner
+        1
+         not corner
+         13
+          not corner
+          15
+           not corner
+           11
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+        not corner
+       15
+        not corner
+        1
+         not corner
+         13
+          not corner
+          11
+           4
+            not corner
+            3
+             not corner
+             corner
+             not corner
+            not corner
+           corner
+           4
+            not corner
+            3
+             not corner
+             corner
+             not corner
+            not corner
+          not corner
+         not corner
+        not corner
+       1
+        not corner
+        9
+         not corner
+         11
+          not corner
+          13
+           not corner
+           15
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+        9
+         not corner
+         not corner
+         6
+          not corner
+          not corner
+          3
+           not corner
+           not corner
+           7
+            not corner
+            not corner
+            4
+             not corner
+             not corner
+             corner
+     1
+      not corner
+      not corner
+      9
+       not corner
+       not corner
+       7
+        not corner
+        not corner
+        3
+         not corner
+         not corner
+         6
+          not corner
+          not corner
+          2
+           not corner
+           not corner
+           8
+            not corner
+            not corner
+            4
+             not corner
+             not corner
+             corner
+    4
+     11
+      not corner
+      3
+       not corner
+       14
+        not corner
+        2
+         not corner
+         13
+          not corner
+          15
+           not corner
+           1
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+        not corner
+       not corner
+      not corner
+     14
+      not corner
+      2
+       not corner
+       13
+        not corner
+        3
+         not corner
+         15
+          not corner
+          1
+           not corner
+           corner
+           not corner
+          not corner
+         not corner
+        not corner
+       not corner
+      not corner
+     3
+      not corner
+      11
+       not corner
+       14
+        not corner
+        13
+         not corner
+         15
+          not corner
+          2
+           not corner
+           1
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+        not corner
+       not corner
+      11
+       2
+        not corner
+        not corner
+        7
+         not corner
+         not corner
+         9
+          not corner
+          not corner
+          6
+           not corner
+           not corner
+           8
+            not corner
+            not corner
+            corner
+       2
+        not corner
+        not corner
+        8
+         not corner
+         not corner
+         6
+          not corner
+          not corner
+          7
+           not corner
+           not corner
+           9
+            not corner
+            not corner
+            corner
+       7
+        not corner
+        not corner
+        6
+         not corner
+         not corner
+         9
+          not corner
+          not corner
+          8
+           not corner
+           not corner
+           corner
+   8
+    not corner
+    not corner
+    13
+     4
+      not corner
+      not corner
+      6
+       not corner
+       not corner
+       10
+        1
+         not corner
+         not corner
+         9
+          not corner
+          not corner
+          2
+           not corner
+           not corner
+           7
+            not corner
+            not corner
+            3
+             not corner
+             not corner
+             corner
+        1
+         not corner
+         not corner
+         9
+          not corner
+          not corner
+          3
+           not corner
+           not corner
+           2
+            not corner
+            not corner
+            corner
+        7
+         not corner
+         not corner
+         9
+          not corner
+          not corner
+          11
+           2
+            not corner
+            not corner
+            3
+             not corner
+             not corner
+             corner
+           1
+            not corner
+            not corner
+            3
+             not corner
+             not corner
+             corner
+           corner
+     4
+      not corner
+      not corner
+      6
+       not corner
+       not corner
+       10
+        1
+         not corner
+         not corner
+         3
+          not corner
+          not corner
+          9
+           not corner
+           not corner
+           2
+            not corner
+            not corner
+            7
+             not corner
+             not corner
+             corner
+        1
+         not corner
+         not corner
+         11
+          2
+           not corner
+           not corner
+           9
+            not corner
+            not corner
+            corner
+          not corner
+          not corner
+        7
+         not corner
+         not corner
+         11
+          2
+           not corner
+           not corner
+           3
+            not corner
+            not corner
+            corner
+          2
+           not corner
+           not corner
+           3
+            not corner
+            not corner
+            corner
+          9
+           not corner
+           not corner
+           corner
+     10
+      1
+       not corner
+       not corner
+       9
+        not corner
+        not corner
+        3
+         not corner
+         not corner
+         6
+          not corner
+          not corner
+          4
+           not corner
+           not corner
+           7
+            not corner
+            not corner
+            2
+             not corner
+             not corner
+             corner
+      1
+       not corner
+       not corner
+       9
+        not corner
+        not corner
+        3
+         not corner
+         not corner
+         6
+          not corner
+          not corner
+          7
+           not corner
+           not corner
+           2
+            not corner
+            not corner
+            4
+             not corner
+             not corner
+             corner
+      7
+       not corner
+       not corner
+       6
+        15
+         not corner
+         not corner
+         14
+          not corner
+          not corner
+          11
+           not corner
+           not corner
+           9
+            not corner
+            not corner
+            corner
+        15
+         not corner
+         not corner
+         11
+          not corner
+          not corner
+          9
+           not corner
+           not corner
+           14
+            not corner
+            not corner
+            corner
+        11
+         3
+          not corner
+          not corner
+          2
+           not corner
+           not corner
+           4
+            not corner
+            not corner
+            9
+             not corner
+             not corner
+             corner
+         2
+          not corner
+          not corner
+          4
+           not corner
+           not corner
+           3
+            not corner
+            not corner
+            9
+             not corner
+             not corner
+             corner
+         9
+          not corner
+          not corner
+          corner
+  13
+   6
+    not corner
+    not corner
+    4
+     not corner
+     not corner
+     3
+      12
+       not corner
+       not corner
+       8
+        not corner
+        not corner
+        10
+         not corner
+         not corner
+         11
+          not corner
+          not corner
+          7
+           not corner
+           not corner
+           9
+            not corner
+            not corner
+            corner
+      12
+       not corner
+       not corner
+       9
+        not corner
+        not corner
+        7
+         not corner
+         not corner
+         11
+          not corner
+          not corner
+          10
+           not corner
+           not corner
+           8
+            not corner
+            not corner
+            corner
+      8
+       14
+        7
+         not corner
+         not corner
+         15
+          not corner
+          not corner
+          2
+           not corner
+           not corner
+           1
+            not corner
+            not corner
+            corner
+        7
+         not corner
+         not corner
+         15
+          not corner
+          not corner
+          2
+           not corner
+           not corner
+           1
+            not corner
+            not corner
+            corner
+        2
+         not corner
+         not corner
+         1
+          not corner
+          not corner
+          15
+           not corner
+           not corner
+           corner
+       14
+        7
+         not corner
+         not corner
+         15
+          not corner
+          not corner
+          2
+           not corner
+           not corner
+           1
+            not corner
+            not corner
+            corner
+        7
+         not corner
+         not corner
+         15
+          not corner
+          not corner
+          2
+           not corner
+           not corner
+           1
+            not corner
+            not corner
+            corner
+        2
+         not corner
+         not corner
+         1
+          not corner
+          not corner
+          15
+           not corner
+           not corner
+           corner
+       2
+        11
+         not corner
+         not corner
+         9
+          not corner
+          not corner
+          7
+           not corner
+           not corner
+           10
+            not corner
+            not corner
+            corner
+        11
+         not corner
+         not corner
+         10
+          not corner
+          not corner
+          7
+           not corner
+           not corner
+           9
+            not corner
+            not corner
+            corner
+        7
+         14
+          not corner
+          not corner
+          1
+           not corner
+           not corner
+           15
+            not corner
+            not corner
+            corner
+         14
+          not corner
+          not corner
+          1
+           not corner
+           not corner
+           15
+            not corner
+            not corner
+            corner
+         1
+          10
+           not corner
+           not corner
+           9
+            not corner
+            not corner
+            corner
+          10
+           not corner
+           not corner
+           9
+            not corner
+            not corner
+            corner
+          corner
+   6
+    15
+     not corner
+     7
+      not corner
+      10
+       not corner
+       8
+        not corner
+        14
+         not corner
+         11
+          not corner
+          9
+           not corner
+           12
+            not corner
+            corner
+            not corner
+           not corner
+          not corner
+         not corner
+        not corner
+       not corner
+      not corner
+     not corner
+    14
+     not corner
+     11
+      not corner
+      8
+       not corner
+       9
+        not corner
+        7
+         not corner
+         10
+          not corner
+          12
+           not corner
+           corner
+           not corner
+          not corner
+         not corner
+        not corner
+       not corner
+      not corner
+     not corner
+    3
+     12
+      not corner
+      15
+       not corner
+       7
+        not corner
+        9
+         not corner
+         10
+          not corner
+          14
+           not corner
+           8
+            not corner
+            11
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+          not corner
+         not corner
+        not corner
+       not corner
+      4
+       not corner
+       not corner
+       8
+        not corner
+        not corner
+        10
+         not corner
+         not corner
+         11
+          not corner
+          not corner
+          7
+           not corner
+           not corner
+           9
+            not corner
+            not corner
+            corner
+     4
+      15
+       not corner
+       7
+        not corner
+        9
+         not corner
+         11
+          not corner
+          8
+           not corner
+           12
+            not corner
+            10
+             not corner
+             14
+              not corner
+              corner
+              not corner
+             not corner
+            not corner
+           not corner
+          not corner
+         not corner
+        not corner
+       not corner
+      15
+       not corner
+       7
+        not corner
+        11
+         not corner
+         8
+          not corner
+          9
+           not corner
+           14
+            not corner
+            10
+             not corner
+             12
+              not corner
+              corner
+              not corner
+             not corner
+            not corner
+           not corner
+          not corner
+         not corner
+        not corner
+       not corner
+      12
+       not corner
+       15
+        not corner
+        7
+         not corner
+         9
+          not corner
+          8
+           not corner
+           14
+            not corner
+            11
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+          not corner
+         not corner
+        not corner
+       9
+        not corner
+        not corner
+        7
+         not corner
+         not corner
+         10
+          not corner
+          not corner
+          8
+           not corner
+           not corner
+           11
+            not corner
+            not corner
+            corner
+     8
+      15
+       not corner
+       not corner
+       7
+        14
+         not corner
+         not corner
+         2
+          not corner
+          not corner
+          1
+           not corner
+           not corner
+           4
+            not corner
+            not corner
+            corner
+        14
+         not corner
+         not corner
+         2
+          not corner
+          not corner
+          1
+           not corner
+           not corner
+           4
+            not corner
+            not corner
+            corner
+        2
+         not corner
+         not corner
+         1
+          not corner
+          not corner
+          4
+           not corner
+           not corner
+           corner
+      14
+       7
+        not corner
+        not corner
+        15
+         not corner
+         not corner
+         2
+          not corner
+          not corner
+          1
+           not corner
+           not corner
+           4
+            not corner
+            not corner
+            corner
+       15
+        not corner
+        7
+         not corner
+         10
+          not corner
+          11
+           not corner
+           9
+            not corner
+            12
+             not corner
+             corner
+             not corner
+            not corner
+           not corner
+          not corner
+         not corner
+        7
+         not corner
+         not corner
+         2
+          not corner
+          not corner
+          1
+           not corner
+           not corner
+           4
+            not corner
+            not corner
+            corner
+       2
+        not corner
+        not corner
+        1
+         not corner
+         not corner
+         4
+          not corner
+          not corner
+          15
+           not corner
+           not corner
+           corner
+      4
+       not corner
+       not corner
+       2
+        11
+         not corner
+         not corner
+         10
+          not corner
+          not corner
+          7
+           not corner
+           not corner
+           9
+            not corner
+            not corner
+            corner
+        11
+         not corner
+         not corner
+         10
+          not corner
+          not corner
+          7
+           not corner
+           not corner
+           9
+            not corner
+            not corner
+            corner
+        7
+         14
+          not corner
+          not corner
+          1
+           not corner
+           not corner
+           15
+            not corner
+            not corner
+            corner
+         14
+          not corner
+          not corner
+          1
+           not corner
+           not corner
+           15
+            not corner
+            not corner
+            corner
+         1
+          10
+           not corner
+           not corner
+           9
+            not corner
+            not corner
+            corner
+          10
+           not corner
+           not corner
+           9
+            not corner
+            not corner
+            corner
+          corner
+   3
+    11
+     not corner
+     not corner
+     10
+      not corner
+      not corner
+      12
+       not corner
+       not corner
+       8
+        1
+         not corner
+         not corner
+         14
+          not corner
+          not corner
+          15
+           not corner
+           not corner
+           2
+            9
+             not corner
+             not corner
+             corner
+            9
+             not corner
+             not corner
+             corner
+            corner
+        2
+         9
+          not corner
+          not corner
+          1
+           not corner
+           not corner
+           14
+            not corner
+            not corner
+            15
+             not corner
+             not corner
+             corner
+         9
+          not corner
+          not corner
+          1
+           not corner
+           not corner
+           14
+            not corner
+            not corner
+            15
+             not corner
+             not corner
+             corner
+         14
+          not corner
+          not corner
+          15
+           not corner
+           not corner
+           1
+            not corner
+            not corner
+            corner
+        6
+         14
+          not corner
+          not corner
+          15
+           not corner
+           not corner
+           9
+            2
+             not corner
+             not corner
+             1
+              not corner
+              not corner
+              corner
+            2
+             not corner
+             not corner
+             corner
+            corner
+         14
+          not corner
+          not corner
+          15
+           not corner
+           not corner
+           9
+            2
+             not corner
+             not corner
+             1
+              not corner
+              not corner
+              corner
+            2
+             not corner
+             not corner
+             corner
+            corner
+         9
+          2
+           not corner
+           not corner
+           14
+            not corner
+            not corner
+            15
+             not corner
+             not corner
+             1
+              not corner
+              not corner
+              corner
+          2
+           not corner
+           not corner
+           15
+            not corner
+            not corner
+            14
+             not corner
+             not corner
+             1
+              not corner
+              not corner
+              corner
+          7
+           14
+            not corner
+            not corner
+            15
+             not corner
+             not corner
+             corner
+           14
+            not corner
+            not corner
+            15
+             not corner
+             not corner
+             corner
+           corner
+    11
+     not corner
+     not corner
+     10
+      not corner
+      not corner
+      12
+       not corner
+       not corner
+       9
+        2
+         not corner
+         not corner
+         14
+          not corner
+          not corner
+          15
+           not corner
+           not corner
+           1
+            not corner
+            not corner
+            corner
+        2
+         not corner
+         not corner
+         15
+          not corner
+          not corner
+          14
+           not corner
+           not corner
+           1
+            not corner
+            not corner
+            corner
+        7
+         14
+          not corner
+          not corner
+          15
+           not corner
+           not corner
+           1
+            8
+             not corner
+             not corner
+             corner
+            8
+             not corner
+             not corner
+             corner
+            corner
+         14
+          not corner
+          not corner
+          1
+           8
+            not corner
+            not corner
+            corner
+           8
+            not corner
+            not corner
+            15
+             not corner
+             not corner
+             corner
+           15
+            not corner
+            not corner
+            corner
+         6
+          14
+           not corner
+           not corner
+           15
+            not corner
+            not corner
+            8
+             1
+              not corner
+              not corner
+              corner
+             not corner
+             corner
+          14
+           not corner
+           not corner
+           15
+            not corner
+            not corner
+            corner
+          8
+           1
+            not corner
+            not corner
+            14
+             not corner
+             not corner
+             15
+              not corner
+              not corner
+              corner
+           1
+            not corner
+            not corner
+            14
+             not corner
+             not corner
+             15
+              not corner
+              not corner
+              corner
+           corner
+    14
+     6
+      not corner
+      not corner
+      7
+       not corner
+       not corner
+       2
+        11
+         not corner
+         not corner
+         9
+          not corner
+          not corner
+          10
+           not corner
+           not corner
+           12
+            4
+             not corner
+             not corner
+             8
+              not corner
+              not corner
+              corner
+            4
+             not corner
+             not corner
+             8
+              not corner
+              not corner
+              corner
+            8
+             not corner
+             not corner
+             corner
+        11
+         not corner
+         not corner
+         9
+          not corner
+          not corner
+          10
+           not corner
+           not corner
+           8
+            not corner
+            not corner
+            4
+             12
+              not corner
+              not corner
+              corner
+             corner
+             corner
+        8
+         15
+          not corner
+          not corner
+          4
+           not corner
+           not corner
+           1
+            not corner
+            not corner
+            corner
+         15
+          not corner
+          not corner
+          1
+           not corner
+           not corner
+           4
+            not corner
+            not corner
+            corner
+         4
+          10
+           not corner
+           not corner
+           12
+            not corner
+            not corner
+            11
+             not corner
+             not corner
+             9
+              not corner
+              not corner
+              corner
+          10
+           not corner
+           not corner
+           11
+            not corner
+            not corner
+            12
+             not corner
+             not corner
+             9
+              not corner
+              not corner
+              corner
+          1
+           10
+            not corner
+            not corner
+            9
+             not corner
+             not corner
+             corner
+           10
+            not corner
+            not corner
+            9
+             not corner
+             not corner
+             corner
+           corner
+     7
+      not corner
+      not corner
+      6
+       not corner
+       not corner
+       8
+        15
+         not corner
+         not corner
+         2
+          not corner
+          not corner
+          4
+           not corner
+           not corner
+           1
+            not corner
+            not corner
+            corner
+        15
+         not corner
+         not corner
+         1
+          not corner
+          not corner
+          2
+           not corner
+           not corner
+           4
+            not corner
+            not corner
+            corner
+        2
+         10
+          not corner
+          not corner
+          11
+           not corner
+           not corner
+           9
+            not corner
+            not corner
+            12
+             4
+              not corner
+              not corner
+              corner
+             4
+              not corner
+              not corner
+              corner
+             corner
+         11
+          not corner
+          not corner
+          10
+           not corner
+           not corner
+           9
+            not corner
+            not corner
+            12
+             4
+              not corner
+              not corner
+              corner
+             corner
+             corner
+         4
+          10
+           not corner
+           not corner
+           11
+            not corner
+            not corner
+            9
+             not corner
+             not corner
+             12
+              not corner
+              not corner
+              corner
+          10
+           not corner
+           not corner
+           11
+            not corner
+            not corner
+            9
+             not corner
+             not corner
+             12
+              not corner
+              not corner
+              corner
+          1
+           10
+            not corner
+            not corner
+            9
+             not corner
+             not corner
+             corner
+           9
+            not corner
+            not corner
+            10
+             not corner
+             not corner
+             corner
+           corner
+     4
+      12
+       not corner
+       not corner
+       11
+        not corner
+        not corner
+        15
+         10
+          not corner
+          not corner
+          7
+           not corner
+           not corner
+           9
+            not corner
+            not corner
+            6
+             not corner
+             not corner
+             8
+              not corner
+              not corner
+              corner
+         7
+          not corner
+          not corner
+          10
+           not corner
+           not corner
+           9
+            not corner
+            not corner
+            6
+             not corner
+             not corner
+             corner
+         1
+          8
+           not corner
+           not corner
+           10
+            not corner
+            not corner
+            9
+             not corner
+             not corner
+             corner
+          8
+           not corner
+           not corner
+           10
+            not corner
+            not corner
+            9
+             not corner
+             not corner
+             corner
+          2
+           10
+            not corner
+            not corner
+            9
+             not corner
+             not corner
+             corner
+           9
+            not corner
+            not corner
+            10
+             not corner
+             not corner
+             corner
+           corner
+      11
+       not corner
+       not corner
+       12
+        not corner
+        not corner
+        15
+         10
+          not corner
+          not corner
+          7
+           not corner
+           not corner
+           9
+            not corner
+            not corner
+            6
+             not corner
+             not corner
+             corner
+         10
+          not corner
+          not corner
+          9
+           not corner
+           not corner
+           corner
+         1
+          8
+           not corner
+           not corner
+           10
+            not corner
+            not corner
+            9
+             not corner
+             not corner
+             corner
+          8
+           not corner
+           not corner
+           9
+            not corner
+            not corner
+            7
+             not corner
+             corner
+             corner
+          2
+           10
+            not corner
+            not corner
+            9
+             not corner
+             not corner
+             corner
+           9
+            not corner
+            not corner
+            corner
+           corner
+      2
+       11
+        not corner
+        not corner
+        10
+         not corner
+         not corner
+         9
+          not corner
+          not corner
+          8
+           1
+            not corner
+            not corner
+            12
+             not corner
+             not corner
+             15
+              not corner
+              not corner
+              corner
+           1
+            not corner
+            not corner
+            15
+             not corner
+             not corner
+             12
+              not corner
+              not corner
+              corner
+           6
+            12
+             not corner
+             not corner
+             15
+              not corner
+              not corner
+              corner
+            12
+             not corner
+             not corner
+             15
+              not corner
+              not corner
+              corner
+            7
+             12
+              not corner
+              not corner
+              15
+               not corner
+               not corner
+               corner
+             15
+              not corner
+              not corner
+              12
+               not corner
+               not corner
+               corner
+             corner
+       11
+        not corner
+        not corner
+        8
+         1
+          not corner
+          not corner
+          9
+           not corner
+           not corner
+           15
+            not corner
+            not corner
+            12
+             not corner
+             not corner
+             10
+              not corner
+              not corner
+              corner
+         1
+          not corner
+          not corner
+          9
+           not corner
+           not corner
+           15
+            not corner
+            not corner
+            10
+             not corner
+             not corner
+             12
+              not corner
+              not corner
+              corner
+         10
+          not corner
+          not corner
+          9
+           not corner
+           not corner
+           12
+            6
+             not corner
+             not corner
+             7
+              not corner
+              not corner
+              corner
+            6
+             not corner
+             not corner
+             7
+              not corner
+              not corner
+              corner
+            15
+             6
+              not corner
+              not corner
+              7
+               not corner
+               not corner
+               corner
+             6
+              not corner
+              not corner
+              7
+               not corner
+               not corner
+               corner
+             corner
+       15
+        8
+         not corner
+         not corner
+         6
+          not corner
+          not corner
+          7
+           not corner
+           not corner
+           1
+            10
+             not corner
+             not corner
+             9
+              not corner
+              not corner
+              corner
+            10
+             not corner
+             not corner
+             9
+              not corner
+              not corner
+              corner
+            corner
+        8
+         not corner
+         not corner
+         6
+          not corner
+          not corner
+          7
+           not corner
+           not corner
+           1
+            9
+             not corner
+             not corner
+             10
+              not corner
+              not corner
+              corner
+            9
+             not corner
+             not corner
+             10
+              not corner
+              not corner
+              corner
+            corner
+        1
+         8
+          not corner
+          not corner
+          10
+           not corner
+           not corner
+           9
+            not corner
+            not corner
+            12
+             6
+              not corner
+              not corner
+              7
+               not corner
+               not corner
+               corner
+             6
+              not corner
+              not corner
+              7
+               not corner
+               not corner
+               corner
+             11
+              7
+               not corner
+               not corner
+               6
+                not corner
+                not corner
+                corner
+              7
+               not corner
+               not corner
+               6
+                not corner
+                not corner
+                corner
+              corner
+         8
+          not corner
+          not corner
+          10
+           not corner
+           not corner
+           9
+            not corner
+            not corner
+            11
+             7
+              not corner
+              not corner
+              6
+               not corner
+               not corner
+               corner
+             6
+              not corner
+              not corner
+              7
+               not corner
+               not corner
+               corner
+             12
+              6
+               not corner
+               not corner
+               7
+                not corner
+                not corner
+                corner
+              6
+               not corner
+               not corner
+               corner
+              corner
+         corner
