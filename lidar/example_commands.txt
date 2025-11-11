@@ -1,0 +1,32 @@
+source /opt/ros/humble/setup.bash
+ign gazebo shapes.sdf
+
+# topics
+ign topic -l (list available topics)
+ros2 topic list (list running topics)
+ros2 topic list -t (list running topics with topic type)
+ros2 topic echo <topic_name> (display data published by topic)
+ros2 topic info <topic_name> (display topic information - # of publishers/subscribers)
+
+# bridging ros2 to gazebo
+ros2 run ros_gz_bridge parameter_bridge /model/vehicle_blue/cmd_vel@geometry_msgs/msg/Twist]ignition.msgs.Twist
+# /model/vehicle_blue/cmd_vel (topic) @ geometry_msgs/msg/Twist (topic type) ]ignition.msgs.Twist (???)
+
+# input motion commands
+ros2 topic pub /model/vehicle_blue/cmd_vel geometry_msgs/Twist "linear: { x: 0.1 }"
+
+# live motion: keypress -> twist messages
+ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r /cmd_vel:=/model/vehicle_blue/cmd_vel
+
+# another bridge b/w ros2 and gazebo
+ros2 run ros_gz_bridge parameter_bridge /lidar2@sensor_msgs/msg/LaserScan[ignition.msgs.LaserScan --ros-args -r /lidar2:=/laser_scan
+
+
+# initial code explanation
+# create package
+ros2 pkg create --license GPL-3.0-only --build-type ament_python <package_name>
+(ignore __init__.py, package, LICENSE, resource)
+setup.py --> 'console_scripts': key = value --> ros2 run <package_name> <key> --> will run value (python file)
+
+rclpy package: ros2 interface package for python
+LaserScan: data type (put later into self.create_subscription)
