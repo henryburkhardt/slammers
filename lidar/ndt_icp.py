@@ -1,20 +1,43 @@
+import typing
 import numpy as np
 import math
-type LaserScan = np.ndarray  # [(p1, p2), ...] OR [(r, theta), ...]
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+LaserScan = np.ndarray  # [(p1, p2), ...] OR [(r, theta), ...]
 
 
 MIN_PT_CNT = 3
-CELL_SIZE = 1.0   # cm
+CELL_SIZE = 10.0   # cm
 RANGE_MIN = 0.0
 RANGE_MAX = 500.0
+IT_MAX = 1
 
 COORD_LIMIT = math.ceil(RANGE_MAX)
 GRID_CNT = math.ceil(COORD_LIMIT / CELL_SIZE) * 2
+
+CHECK = True
 
 
 def cart2idx(point: np.ndarray):
     """Converts cartesian coordinates into row, col indices for grid indexing"""
     return int(-1 * point[1] / CELL_SIZE + (GRID_CNT / 2)), int(point[0] / CELL_SIZE + (GRID_CNT / 2))
+
+
+def covariance(points: list, mean: np.ndarray): 
+    cov = np.array([[0.0, 0.0], [0.0, 0.0]])
+    for pt in points:
+        cov += np.dot((np.array(pt) - mean)[:, np.newaxis], (np.array([np.array(pt) - mean])))
+    return cov / len(points)
+
+
+def transform(point: np.ndarray, tx: float, ty: float, phi: float):
+    """Returns the transformed point based on transformation parameters phi, tx, ty.
+    Note that @param phi denotes counterclockwise rotation."""
+    matrix_rot = np.array([
+        [np.cos(phi), -np.sin(phi)], [np.sin(phi), np.cos(phi)]
+    ])
+    return np.dot(matrix_rot, point[:, np.newaxis]).flatten() + np.array([tx, ty])
 
 
 def normal_prob_cell(mean: np.ndarray, cov: np.ndarray, x: np.ndarray):
@@ -24,22 +47,73 @@ def normal_prob_cell(mean: np.ndarray, cov: np.ndarray, x: np.ndarray):
     return np.exp(-1 * numer / 2)
 
 
-def transform(point: np.ndarray, phi: float, tx: float, ty: float):
-    """Returns the transformed point based on transformation parameters phi, tx, ty.
-    Note that @param phi is clockwise angle."""
-    matrix_rot = np.array([
-        [np.cos(phi), -np.sin(phi)], [np.sin(phi), np.cos(phi)]
-    ])
-    return np.dot(matrix_rot, point[:, np.newaxis]).flatten() + np.array([tx, ty])
+def compute_summand_increment(q: np.ndarray, xy: np.ndarray, cov: np.ndarray, cos_val: float, sin_val: float):
+    """Calculates gradient/hessian components for single summand of transformation score"""
+    x, y = xy
+    # pre-computing values
+    jacobian = np.array([[1.0, 0.0], [0.0, 1.0], [-1 * x * sin_val - y * cos_val, x * cos_val - y * sin_val]])
+    cov_inv = np.linalg.inv(cov)
+
+    q_t_cov_inv = np.dot(q, cov_inv)
+    exp_term = np.exp(-1 * np.dot(q_t_cov_inv, q[:, np.newaxis]) / 2)
+
+    # gradient
+    gradient = []
+    for i in range(3):
+        q_partial_p_i = jacobian[i, :]
+        left = np.dot(q_t_cov_inv, q_partial_p_i[:, np.newaxis])
+        gradient.append(np.dot(left, exp_term))
+
+    def q_dd(i: int, j: int):
+        if i == 2 and j == 2:
+            return np.array([-1 * x * cos_val + y * sin_val, -1 * x * sin_val - y * cos_val])
+        return np.array([0.0, 0.0])
+    
+    hessian = np.array([[0.0, 0.0, 0.0] for i in range(3)])
+
+    # hessian
+    for i in range(3):
+        for j in range(3):
+            q_partial_p_i = jacobian[i, :]
+            q_partial_p_j = jacobian[j, :]
+
+            hess_coeff = -1 * exp_term
+            term11 = np.dot(-1 * q_t_cov_inv, q_partial_p_i[:, np.newaxis])
+            term12 = np.dot(-1 * q_t_cov_inv, q_partial_p_j[:, np.newaxis])
+            term2 = np.dot(-1 * q_t_cov_inv, q_dd(i, j)[:, np.newaxis])
+            term3 = np.dot(np.dot(-1 * q_partial_p_j, cov_inv), q_partial_p_i[:, np.newaxis])
+
+            hessian[i, j] = np.dot(hess_coeff, np.dot(term11, term12) + term2 + term3)
+    
+    # Optional: enforce symmetry (helps tiny numerical drift)
+    hessian = 0.5 * (hessian + hessian.T)
+    return hessian, gradient
+
+
+
+def hessian_shift(hessian: np.ndarray, lam0=1e-9, factor=10.0, max_tries=8):
+    n = hessian.shape[0]
+    lam = 0.0
+    for k in range(max_tries + 1):
+        try:
+            L = np.linalg.cholesky(hessian + lam * np.eye(n))
+            return hessian + lam * np.eye(n)
+        except np.linalg.LinAlgError:
+            lam = lam0 if lam == 0.0 else lam * factor
+    # Fallback: minimal-shift eigen method
+    w = np.linalg.eigvalsh(hessian)
+    lam_min = w[0]
+    lam = 0.0 if lam_min > 0 else (-lam_min + lam0)
+    return hessian + lam * np.eye(n)
 
 
 def ndt(
         points1: LaserScan, 
         points2: LaserScan, 
-        phi_est: float = 0,     # clockwise
         tx_est: float = 0,
         ty_est: float = 0,
-        max_it: int=10
+        phi_est: float = 0,     # clockwise
+        max_it: int = IT_MAX
     ):
     """Returns transformation parameter estimates (phi, t_x, t_y) from points2 to points1"""
     # convert polar coordinates to cartesian coordinates (vectorized)
@@ -58,19 +132,41 @@ def ndt(
     points2_cart = np.column_stack((x2, y2))
 
     # split 2D space around robot into CELL_SIZE^2 cells
-    grid1 = np.array([[[] for i in range(GRID_CNT)] for j in range(GRID_CNT)])          # grid1[row, col] = [point1, point2, ...]
+    grid1 = [[[] for i in range(GRID_CNT)] for j in range(GRID_CNT)]                    # grid1[row, col] = [point1, point2, ...]
     occu1 = np.array([[0 for i in range(GRID_CNT)] for j in range(GRID_CNT)])           # occu1[row, col] = # of points in cell
-    g1ndt = np.array([[None for i in range(GRID_CNT)] for j in range(GRID_CNT)])        # g1ndt[row, col] = [mean, cov] or None
+    g1ndt = [[[] for i in range(GRID_CNT)] for j in range(GRID_CNT)]                  # g1ndt[row, col] = [mean, cov] or None
 
     for point in points1_cart:
         idx = cart2idx(point)
         # count grid occupancies
         occu1[idx] +=1
         # add point to cell list
-        np.append(grid1[idx], point)
+        grid1[idx[0]][idx[1]].append(point)
+
+
+    # # DEBUG
+    # if CHECK:
+    #     for point in points2_cart:
+    #         idx = cart2idx(point)
+    #         # count grid occupancies
+    #         occu1[idx] +=1
+    #         # add point to cell list
+    #         grid1[idx[0]][idx[1]].append(point)
+    #     ax = sns.heatmap(occu1)
+    #     plt.gca().set_aspect("equal")
+    #     # plt.imshow(occu1, cmap='hot', interpolation='nearest')
+    #     plt.show()
+    # return
     
     # note which cells to compute normal distribution
     grid1_check = occu1 >= MIN_PT_CNT
+
+    # # DEBUG
+    # if CHECK:
+    #     ax = sns.heatmap(grid1_check)
+    #     plt.gca().set_aspect("equal")
+    #     plt.show()
+    # return
 
     # compute first NDT
     for row in range(GRID_CNT):
@@ -79,29 +175,66 @@ def ndt(
             if not grid1_check[row, col]:
                 continue
             # compute mean & covariance of cell points
-            pt_mean = grid1[row, col].mean(axis=0)
-            pt_cov = np.cov(grid1[row, col], rowvar=False)
+            pt_mean = np.asarray(grid1[row][col]).mean(axis=0)
+            pt_cov = covariance(grid1[row][col], pt_mean)
             # save cell NDT
-            g1ndt[row, col] = np.array([pt_mean, pt_cov])
+            g1ndt[row][col] = [pt_mean, pt_cov]
     
     # initialize transformation parameters
-    phi_cur, tx_cur, ty_cur = phi_est, tx_est, ty_est
+    params = np.array([tx_est, ty_est, phi_est], dtype=np.float64)
 
-    # optimization loop
+    # optimization loop via newton's method
     for it in range(max_it):
-        # calculate transformation score
+        # initialize gradient/hessian
+        gradient = np.array([0.0, 0.0, 0.0])
+        hessian = np.array([[0.0, 0.0, 0.0] for i in range(3)])
+
+        # initialize transformation score
         total_score = 0
+
         for point in points2_cart:
             # map points in points2 according to transformation parameters
-            new_point = transform(point, phi=phi_est, tx=tx_est, ty=ty_est)
+            new_point = transform(point, tx=params[0], ty=params[1], phi=params[2])
             # find mean & covariance of corresponding cell
             idx = cart2idx(new_point)
-            [pt_mean, pt_cov] = g1ndt[idx]
+            if len(g1ndt[idx[0]][idx[1]]) == 0:
+                continue
+            [pt_mean, pt_cov] = g1ndt[idx[0]][idx[1]]
             # calculate point score
             pt_score = normal_prob_cell(pt_mean, pt_cov, new_point)
+
             total_score += pt_score
+
+            # precomputing trig values
+            cos_val = np.cos(params[2])
+            sin_val = np.sin(params[2])
+
+            hessian_summand, gradient_summand = compute_summand_increment(
+                q=new_point - pt_mean, 
+                xy=point, 
+                cov=pt_cov, 
+                cos_val=cos_val, 
+                sin_val=sin_val
+            )
+            gradient += gradient_summand
+            hessian += hessian_summand
+            
+        print('total score:', total_score)
+        print('hessian initial:\n', hessian)
         
-        # TODO: optimize with newton
+        # shift hessian to make positive definite
+        hessian = hessian_shift(hessian)
+
+        print('hessian:\n', hessian)
+        print('gradient:', gradient)
+        
+        # compute transformation parameters increment
+        p_delta = np.linalg.solve(hessian, -1 * gradient)
+        print('p_delta:', p_delta)
+        
+        # increment transformation parameters
+        params += p_delta
+        print('params:', params)
 
 
 
