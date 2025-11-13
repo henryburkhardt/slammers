@@ -90,7 +90,7 @@ def compute_summand_increment(q: np.ndarray, xy: np.ndarray, cov: np.ndarray, co
     return hessian, gradient
 
 
-
+# THIS FUNCTION IS FUCKED
 def hessian_shift(hessian: np.ndarray, lam0=1e-9, factor=10.0, max_tries=8):
     n = hessian.shape[0]
     lam = 0.0
@@ -236,6 +236,9 @@ def ndt(
         params += p_delta
         print('params:', params)
 
+
+def icp():
+    pass
 
 
 
