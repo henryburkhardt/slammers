@@ -64,6 +64,29 @@ def transform(point: np.ndarray, tx: float, ty: float, phi: float):
     return np.dot(matrix_rot, point[:, np.newaxis]).flatten() + np.array([tx, ty])
 
 
+def coords2homo(points: np.ndarray):  # [[x1, y1], [x2, y2], ...]
+    num_coords = points.shape[0]  # n * 2
+    homo_coords = np.vstack([points.T, np.ones(num_coords)])
+    return homo_coords  # 3 * n
+
+
+def homo2coords(homo_coords: np.ndarray):
+    return (homo_coords[0:2,:]).T
+
+
+def transform_mat(points: np.ndarray, tx: float, ty: float, phi: float):
+    cos_val = np.cos(phi)
+    sin_val = np.sin(phi)
+    homo_coord_mat = np.array([
+        [cos_val, -sin_val, tx], 
+        [sin_val, cos_val, ty], 
+        [0, 0, 1],
+    ])
+    homo_coords = coords2homo(points)
+    new_homo_coords = np.matmul(homo_coord_mat, homo_coords)
+    return homo2coords(new_homo_coords)
+
+
 def normal_prob_cell(mean: np.ndarray, cov: np.ndarray, x: np.ndarray):
     """Returns the probability of point x being a cell sample based on given normal distribution"""
     term = x - mean
@@ -250,10 +273,17 @@ def ndt_icp(
         # precomputing trig values
         cos_val = np.cos(params[2])
         sin_val = np.sin(params[2])
-        
-        for point in points2_cart:
-            # map points in points2 according to transformation parameters
-            new_point = transform(point, tx=params[0], ty=params[1], phi=params[2])
+
+        new_points_mat = transform_mat(points2_cart)
+
+        # ! TEST IMPLEMENTATION
+        for idx in range(points2_cart.shape[0]):
+            point = points2_cart[idx, :]
+            new_point = new_points_mat[idx, :]
+
+        # for point in points2_cart:
+        #     # map points in points2 according to transformation parameters
+        #     new_point = transform(point, tx=params[0], ty=params[1], phi=params[2])
             # find mean & covariance of corresponding cell
             idx = cart2idx(new_point)
             if len(g1ndt[idx[0]][idx[1]]) == 0:
@@ -327,10 +357,6 @@ def ndt_icp(
 
 
 ################## ICP ##################
-
-def icp():
-    pass
-
 
 
 if __name__ == "__main__":
