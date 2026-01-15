@@ -71,7 +71,7 @@ def coords2homo(points: np.ndarray):  # [[x1, y1], [x2, y2], ...]
 
 
 def homo2coords(homo_coords: np.ndarray):
-    return (homo_coords[0:1,:]).T
+    return (homo_coords[0:2,:]).T
 
 
 def transform_mat(points: np.ndarray, tx: float, ty: float, phi: float):
