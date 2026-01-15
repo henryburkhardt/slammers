@@ -1,16 +1,44 @@
 import numpy as np
 from numpy import genfromtxt
-from ndt_icp import ndt
+from ndt_icp import ndt_icp, transform
+import matplotlib.pyplot as plt
 
 
 points1 = genfromtxt('example_data/points1.csv', delimiter=',')
 points2 = genfromtxt('example_data/points2.csv', delimiter=',')
 
+p1 = np.asarray(points1)
+p2 = np.asarray(points2)
 
-ndt(points1, points2)
+r1, t1 = p1[:, 0], p1[:, 1]
+r2, t2 = p2[:, 0], p2[:, 1]
+
+x1 = r1 * np.cos(t1)
+y1 = r1 * np.sin(t1)
+points1_cart = np.column_stack((x1, y1))
+
+x2 = r2 * np.cos(t2)
+y2 = r2 * np.sin(t2)
+points2_cart = np.column_stack((x2, y2))
 
 
+# params = ndt_icp(points1, points2)   # tx, ty, phi
+params = ndt_icp(points1, points2, tx_est=-1, ty_est=-1, phi_est=0.0)
+points_estimate = np.array([transform(pt, params[0], params[1], params[2]) for pt in points2_cart])
 
+
+plt.figure(figsize=(7, 7))
+plt.scatter(points1_cart[:, 0], points1_cart[:, 1], s=3, alpha=0.5, label="Target Points")
+plt.scatter(points2_cart[:, 0], points2_cart[:, 1], s=3, alpha=0.5, label="Original Points")
+plt.scatter(points_estimate[:, 0], points_estimate[:, 1], s=3, alpha=0.5, label="Estimated Points")
+
+plt.xlabel("x")
+plt.ylabel("y")
+plt.axis("equal")          # keeps units the same on both axes
+plt.grid(True, linewidth=0.5, alpha=0.5)
+plt.legend()
+plt.tight_layout()
+plt.show()
 
 # ex_points = [[ 25.88190451, -96.59258263],[ 27.56373558, -96.12616959], [ 29.23717047, -95.6304756 ]]
 # ex_mean = np.array([ 27.56093685, -96.11640927])

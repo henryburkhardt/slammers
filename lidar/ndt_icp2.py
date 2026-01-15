@@ -9,7 +9,7 @@ LaserScan = np.ndarray  # [(p1, p2), ...] OR [(r, theta), ...]
 
 
 MIN_PT_CNT = 3
-CELL_SIZE = 50.0   # cm
+CELL_SIZE = 10.0   # cm
 RANGE_MIN = 0.0
 RANGE_MAX = 500.0
 IT_MAX = 100
@@ -110,7 +110,7 @@ def compute_summand_increment(q: np.ndarray, xy: np.ndarray, cov: np.ndarray, co
             hessian[i, j] = np.dot(hess_coeff, np.dot(term11, term12) + term2 + term3)
     
     # # Optional: enforce symmetry (helps tiny numerical drift)
-    hessian = 0.5 * (hessian + hessian.T)
+    # hessian = 0.5 * (hessian + hessian.T)
     return hessian, gradient
 
 
@@ -138,7 +138,7 @@ def hessian_shift(hessian: np.ndarray, factor=1.3):
     print("eig vals:", eig_vals)
     if eig_vals[0] >= 0:
         print("ERROR: eigvals aren't negative")
-        return hessian
+        return 0 * hessian
     return hessian + factor * np.abs(eig_vals[0]) * np.eye(n)
 
 
@@ -227,7 +227,7 @@ def ndt_icp(
 
     it = 0
     while it < max_it:
-        print(f"\n################ iteration {it} ################")
+        print(f"################ iteration {it} ################")
         if do_shift:
             print("SHIFT ITERATION")
             params = prev_params.copy()
