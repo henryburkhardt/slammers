@@ -64,6 +64,26 @@ def transform(point: np.ndarray, tx: float, ty: float, phi: float):
     return np.dot(matrix_rot, point[:, np.newaxis]).flatten() + np.array([tx, ty])
 
 
+def coords2homo(points: np.ndarray):  # [[x1, y1], [x2, y2], ...]
+    num_coords = points.shape[0]  # n * 2
+    homo_coords = np.vstack([points.T, np.ones(num_coords)])
+    return homo_coords  # 3 * n
+
+
+def transform_mat(points: np.ndarray, tx: float, ty: float, phi: float):
+    cos_val = np.cos(phi)
+    sin_val = np.sin(phi)
+    homo_coord_mat = np.array([
+        [cos_val, -sin_val, tx], 
+        [sin_val, cos_val, ty], 
+        [0, 0, 1],
+    ])
+    
+    homo_coords = coords2homo(points)
+    new_homo_coords = np.matmul(homo_coord_mat, homo_coords)
+    # ! NOT YET DONE
+
+
 def normal_prob_cell(mean: np.ndarray, cov: np.ndarray, x: np.ndarray):
     """Returns the probability of point x being a cell sample based on given normal distribution"""
     term = x - mean
@@ -243,6 +263,8 @@ def ndt_icp(
         # precomputing trig values
         cos_val = np.cos(params[2])
         sin_val = np.sin(params[2])
+
+        new_points_mat = transform_mat(points2_cart)
         
         for point in points2_cart:
             # map points in points2 according to transformation parameters
@@ -310,6 +332,9 @@ def ndt_icp(
 
         # increase iterator
         it += 1
+
+
+################## ICP ##################
 
 
 if __name__ == "__main__":
