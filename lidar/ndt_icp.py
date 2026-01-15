@@ -70,6 +70,10 @@ def coords2homo(points: np.ndarray):  # [[x1, y1], [x2, y2], ...]
     return homo_coords  # 3 * n
 
 
+def homo2coords(homo_coords: np.ndarray):
+    return (homo_coords[0:1,:]).T
+
+
 def transform_mat(points: np.ndarray, tx: float, ty: float, phi: float):
     cos_val = np.cos(phi)
     sin_val = np.sin(phi)
@@ -78,10 +82,9 @@ def transform_mat(points: np.ndarray, tx: float, ty: float, phi: float):
         [sin_val, cos_val, ty], 
         [0, 0, 1],
     ])
-    
     homo_coords = coords2homo(points)
     new_homo_coords = np.matmul(homo_coord_mat, homo_coords)
-    # ! NOT YET DONE
+    return homo2coords(new_homo_coords)
 
 
 def normal_prob_cell(mean: np.ndarray, cov: np.ndarray, x: np.ndarray):
@@ -265,10 +268,15 @@ def ndt_icp(
         sin_val = np.sin(params[2])
 
         new_points_mat = transform_mat(points2_cart)
-        
-        for point in points2_cart:
-            # map points in points2 according to transformation parameters
-            new_point = transform(point, tx=params[0], ty=params[1], phi=params[2])
+
+        # ! TEST IMPLEMENTATION
+        for idx in range(points2_cart.shape[0]):
+            point = points2_cart[idx, :]
+            new_point = new_points_mat[idx, :]
+
+        # for point in points2_cart:
+        #     # map points in points2 according to transformation parameters
+        #     new_point = transform(point, tx=params[0], ty=params[1], phi=params[2])
             # find mean & covariance of corresponding cell
             idx = cart2idx(new_point)
             if len(g1ndt[idx[0]][idx[1]]) == 0:
