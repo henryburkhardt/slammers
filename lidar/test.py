@@ -1,3 +1,4 @@
+import time
 import numpy as np
 from numpy import genfromtxt
 from ndt_icp import ndt_icp, transform
@@ -23,9 +24,13 @@ points2_cart = np.column_stack((x2, y2))
 
 
 # params = ndt_icp(points1, points2)   # tx, ty, phi
+start_time = time.time()
 params = ndt_icp(points1, points2, tx_est=-1, ty_est=-1, phi_est=0.0)
+end_time = time.time()
+
 points_estimate = np.array([transform(pt, params[0], params[1], params[2]) for pt in points2_cart])
 
+print("Elapsed Time:", end_time - start_time)
 
 plt.figure(figsize=(7, 7))
 plt.scatter(points1_cart[:, 0], points1_cart[:, 1], s=3, alpha=0.5, label="Target Points")

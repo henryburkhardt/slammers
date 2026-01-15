@@ -25,7 +25,7 @@ y1 = points1_cart[:, 1]
 plt.scatter(x1, y1)
 
 # shift points
-shifted_points = points1_cart + np.array([3, 3])
+shifted_points = points1_cart + np.array([2, 2])
 
 # plot
 x2 = shifted_points[:, 0]
