@@ -312,12 +312,5 @@ def ndt_icp(
         it += 1
 
 
-################## ICP ##################
-
-def icp():
-    pass
-
-
-
 if __name__ == "__main__":
     pass
