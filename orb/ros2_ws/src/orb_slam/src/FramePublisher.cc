@@ -40,6 +40,8 @@ FramePublisher::FramePublisher()
     mIm = cv::Mat(480,640,CV_8UC3, cv::Scalar(0,0,0));
     mbUpdated = true;
 
+    mNH = std::make_shared<rclcpp::Node>("frame_pub");
+
     // mImagePub = mNH.advertise<sensor_msgs::msg::Image>("ORB_SLAM/Frame",10,true);
     mImagePub = mNH->create_publisher<sensor_msgs::msg::Image>("ORB_SLAM/Frame", 10);
 

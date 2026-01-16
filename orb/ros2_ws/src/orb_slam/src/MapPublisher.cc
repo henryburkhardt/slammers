@@ -106,6 +106,8 @@ MapPublisher::MapPublisher(Map* pMap):mpMap(pMap), mbCameraUpdated(false)
     mReferencePoints.color.r =1.0f;
     mReferencePoints.color.a = 1.0;
 
+    nh = std::make_shared<rclcpp::Node>("map_pub");
+
     //Configure Publisher
     publisher = nh->create_publisher<visualization_msgs::msg::Marker>("ORB_SLAM/Map", 10);
 

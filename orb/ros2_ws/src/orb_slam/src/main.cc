@@ -48,9 +48,6 @@ int main(int argc, char *argv[])
 {
     // ros::init(argc, argv, "ORB_SLAM");
     rclcpp::init(argc, argv);
-    
-    RCLCPP_INFO(rclcpp::get_logger("test"), "Reached");
-    cout << "Started" << endl;
     // ros::start();
 
     cout << endl << "ORB-SLAM Copyright (C) 2014 Raul Mur-Artal" << endl <<
@@ -102,7 +99,7 @@ int main(int argc, char *argv[])
     // If you have an own .yml vocabulary, use the function
     // saveToTextFile in Thirdparty/DBoW2/DBoW2/TemplatedVocabulary.h
     // string strVocFile = ros::package::getPath("ORB_SLAM")+"/"+argv[1];
-    string strVocFile = ament_index_cpp::get_package_share_directory("ORB_SLAM")+"/"+argv[1];
+    string strVocFile = ament_index_cpp::get_package_share_directory("orb_slam")+"/"+argv[1];
     cout << endl << "Loading ORB Vocabulary. This could take a while." << endl;
     
     ORB_SLAM::ORBVocabulary Vocabulary;
@@ -131,6 +128,7 @@ int main(int argc, char *argv[])
     ORB_SLAM::MapPublisher MapPub(&World);
 
     //Initialize the Tracking Thread and launch
+    // TODO this crashes right now -- it doesn't like how I am handling optional.
     ORB_SLAM::Tracking Tracker(&Vocabulary, &FramePub, &MapPub, &World, strSettingsFile);
     boost::thread trackingThread(&ORB_SLAM::Tracking::Run,&Tracker);
 

@@ -148,6 +148,7 @@ Tracking::Tracking(ORBVocabulary* pVoc, FramePublisher *pFramePublisher, MapPubl
     transform.header.frame_id = "ORB_SLAM_MONO_CAMERA";
     tf2::toMsg(tfT, transform.transform);
     // br.sendTransform(transform);
+    br.emplace(std::make_shared<rclcpp::Node>("tracking_node"));
     br.value().sendTransform(transform);
 }
 
@@ -173,18 +174,11 @@ void Tracking::Run()
       [this](sensor_msgs::msg::Image::SharedPtr msg) -> void {
         Tracking::GrabImage(msg);
       };
-    // class NodeWrapper : public rclcpp::Node {
-    //     public:
-    //     NodeWrapper() : rclcpp::Node("tracker_node") {
-    //         this->create_subscription<sensor_msgs::msg::Image>("/camera/image_raw", 1, topic_callback);
-    //     }
-    // };
     std::shared_ptr<rclcpp::Node> node = std::make_shared<rclcpp::Node>("tracker_node");
     node->create_subscription<sensor_msgs::msg::Image>("/camera/image_raw", 1, topic_callback);
     // std::shared_ptr<rclcpp::Node> node = std::make_shared<rclcpp::Node>("/ORB_SLAM/tf_sub");
     // auto sub = node->create_subscription<sensor_msgs::msg::Image>("/camera/image_raw", 1, std::bind(&Tracking::GrabImage, node, std::placeholders::_1));
     // rclcpp::Subscriber sub = node.create_subscription("/camera/image_raw", 1, &Tracking::GrabImage, this);
-    br.emplace(std::make_shared<rclcpp::Node>("tracking_node"));
     rclcpp::spin(node);
 }
 
