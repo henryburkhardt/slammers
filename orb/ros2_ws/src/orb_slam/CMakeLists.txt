@@ -72,6 +72,27 @@ ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib/libDBoW2.so
 ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/lib/libg2o.so
 )
 
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    BUILD_RPATH "${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib"
+    INSTALL_RPATH "$ORIGIN/../Thirdparty/DBoW2/lib"
+)
+
+install(TARGETS
+${PROJECT_NAME}
+DESTINATION lib/${PROJECT_NAME}
+)
+
+install(
+  FILES Thirdparty/DBoW2/lib/libDBoW2.so
+  FILES Thirdparty/g2o/lib/libg2o.so
+  DESTINATION lib
+)
+# Install Data files.
+install(DIRECTORY
+  Data
+  DESTINATION share/${PROJECT_NAME}/
+)
+
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   # the following line skips the linter which checks for copyrights

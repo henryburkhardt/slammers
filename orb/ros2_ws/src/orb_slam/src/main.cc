@@ -44,10 +44,13 @@
 using namespace std;
 
 
-int main(int argc, char **argv)
+int main(int argc, char *argv[])
 {
     // ros::init(argc, argv, "ORB_SLAM");
     rclcpp::init(argc, argv);
+    
+    RCLCPP_INFO(rclcpp::get_logger("test"), "Reached");
+    cout << "Started" << endl;
     // ros::start();
 
     cout << endl << "ORB-SLAM Copyright (C) 2014 Raul Mur-Artal" << endl <<
@@ -57,7 +60,7 @@ int main(int argc, char **argv)
 
     if(argc != 3)
     {
-        cerr << endl << "Usage: rosrun ORB_SLAM ORB_SLAM path_to_vocabulary path_to_settings (absolute or relative to package directory)" << endl;
+        cerr << endl << "Usage: ros2 run orb_slam orb_slam path_to_vocabulary path_to_settings (absolute or relative to package directory)" << endl;
         // ros::shutdown();
         rclcpp::shutdown();
         return 1;
@@ -65,7 +68,7 @@ int main(int argc, char **argv)
 
     // Load Settings and Check
     // string strSettingsFile = ros::package::getPath("ORB_SLAM")+"/"+argv[2];
-    string strSettingsFile = ament_index_cpp::get_package_share_directory("ORB_SLAM")+"/"+argv[2];
+    string strSettingsFile = ament_index_cpp::get_package_share_directory("orb_slam")+"/"+argv[2];
 
     cv::FileStorage fsSettings(strSettingsFile.c_str(), cv::FileStorage::READ);
     if(!fsSettings.isOpened())
@@ -176,7 +179,7 @@ int main(int argc, char **argv)
 
     cout << endl << "Saving Keyframe Trajectory to KeyFrameTrajectory.txt" << endl;
     // string strFile = ros::package::getPath("ORB_SLAM")+"/"+"KeyFrameTrajectory.txt";
-    string strFile = ament_index_cpp::get_package_share_directory("ORB_SLAM")+"/"+"KeyFrameTrajectory.txt";
+    string strFile = ament_index_cpp::get_package_share_directory("orb_slam")+"/"+"KeyFrameTrajectory.txt";
     f.open(strFile.c_str());
     f << fixed;
 

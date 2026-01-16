@@ -181,7 +181,7 @@ protected:
     // Transfor broadcaster (for visualization in rviz)
     // CHANGES: added keyword static. Does it break? I don't know.
     // REASON: Gets rid of no default initializer error.
-    static tf2_ros::TransformBroadcaster mTfBr;
+    // static tf2_ros::TransformBroadcaster mTfBr;
 };
 
 } //namespace ORB_SLAM

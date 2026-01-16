@@ -41,10 +41,10 @@
 
 using namespace std;
 
-static tf2_ros::TransformBroadcaster br(std::make_shared<rclcpp::Node>("tracking_node"));
-
 namespace ORB_SLAM
 {
+
+static std::optional<tf2_ros::TransformBroadcaster> br;
 
 Tracking::Tracking(ORBVocabulary* pVoc, FramePublisher *pFramePublisher, MapPublisher *pMapPublisher, Map *pMap, string strSettingPath):
     mState(NO_IMAGES_YET), mpORBVocabulary(pVoc), mpFramePublisher(pFramePublisher), mpMapPublisher(pMapPublisher), mpMap(pMap),
@@ -147,7 +147,8 @@ Tracking::Tracking(ORBVocabulary* pVoc, FramePublisher *pFramePublisher, MapPubl
     geometry_msgs::msg::TransformStamped transform;
     transform.header.frame_id = "ORB_SLAM_MONO_CAMERA";
     tf2::toMsg(tfT, transform.transform);
-    br.sendTransform(transform);
+    // br.sendTransform(transform);
+    br.value().sendTransform(transform);
 }
 
 void Tracking::SetLocalMapper(LocalMapping *pLocalMapper)
@@ -183,6 +184,7 @@ void Tracking::Run()
     // std::shared_ptr<rclcpp::Node> node = std::make_shared<rclcpp::Node>("/ORB_SLAM/tf_sub");
     // auto sub = node->create_subscription<sensor_msgs::msg::Image>("/camera/image_raw", 1, std::bind(&Tracking::GrabImage, node, std::placeholders::_1));
     // rclcpp::Subscriber sub = node.create_subscription("/camera/image_raw", 1, &Tracking::GrabImage, this);
+    br.emplace(std::make_shared<rclcpp::Node>("tracking_node"));
     rclcpp::spin(node);
 }
 
@@ -334,7 +336,7 @@ void Tracking::GrabImage(const sensor_msgs::msg::Image::SharedPtr msg)
         geometry_msgs::msg::TransformStamped transform;
         transform.header.frame_id = "ORB_SLAM_MONO_CAMERA_GRAB_IMAGE";
         tf2::toMsg(tfTcw, transform.transform);
-        br.sendTransform(transform);
+        br.value().sendTransform(transform);
 
         // mTfBr.sendTransform(tf::StampedTransform(tfTcw,ros::Time::now(), "ORB_SLAM/World", "ORB_SLAM/Camera"));
     }
