@@ -42,7 +42,7 @@ LoopClosing::LoopClosing(Map *pMap, KeyFrameDatabase *pDB, ORBVocabulary *pVoc):
     mpMatchedKF = NULL;
 }
 
-void LoopClosing::SetTracker(Tracking *pTracker)
+void LoopClosing::SetTracker(Tracking* pTracker)
 {
     mpTracker=pTracker;
 }

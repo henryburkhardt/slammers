@@ -19,12 +19,10 @@
 */
 
 #include "Tracking.h"
-#include <rclcpp/rclcpp.hpp>
-#include <rcpputils/asserts.hpp>
+#include<rclcpp/rclcpp.hpp>
 #include <cv_bridge/cv_bridge.hpp>
 
 #include<opencv2/opencv.hpp>
-#include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
 
 #include"ORBmatcher.h"
 #include"FramePublisher.h"
@@ -37,6 +35,9 @@
 
 #include<iostream>
 #include<fstream>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
+#include <geometry_msgs/msg/transform_stamped.h>
+#include <rcpputils/asserts.hpp>
 
 
 using namespace std;
@@ -44,11 +45,10 @@ using namespace std;
 namespace ORB_SLAM
 {
 
-static std::optional<tf2_ros::TransformBroadcaster> br;
 
 Tracking::Tracking(ORBVocabulary* pVoc, FramePublisher *pFramePublisher, MapPublisher *pMapPublisher, Map *pMap, string strSettingPath):
     mState(NO_IMAGES_YET), mpORBVocabulary(pVoc), mpFramePublisher(pFramePublisher), mpMapPublisher(pMapPublisher), mpMap(pMap),
-    mnLastRelocFrameId(0), mbPublisherStopped(false), mbReseting(false), mbForceRelocalisation(false), mbMotionModel(false)
+    mnLastRelocFrameId(0), mbPublisherStopped(false), mbReseting(false), mbForceRelocalisation(false), mbMotionModel(false), rclcpp::Node("track_thread"), mTfBr(this)
 {
     // Load camera parameters from settings file
 
@@ -140,16 +140,20 @@ Tracking::Tracking(ORBVocabulary* pVoc, FramePublisher *pFramePublisher, MapPubl
         cout << endl << "Motion Model: Disabled (not recommended, change settings UseMotionModel: 1)" << endl << endl;
 
 
-    // tf::Transform tfT;
     tf2::Transform tfT;
     tfT.setIdentity();
+    geometry_msgs::msg::TransformStamped msg;
+    msg.header.stamp = this->get_clock()->now();
+    msg.header.frame_id = "/ORB_SLAM/World";
+    msg.child_frame_id = "/ORB_SLAM/Camera";
+    tf2::toMsg(tfT, msg.transform);
     // mTfBr.sendTransform(tf::StampedTransform(tfT,ros::Time::now(), "/ORB_SLAM/World", "/ORB_SLAM/Camera"));
-    geometry_msgs::msg::TransformStamped transform;
-    transform.header.frame_id = "ORB_SLAM_MONO_CAMERA";
-    tf2::toMsg(tfT, transform.transform);
-    // br.sendTransform(transform);
-    br.emplace(std::make_shared<rclcpp::Node>("tracking_node"));
-    br.value().sendTransform(transform);
+    mTfBr.sendTransform(msg);
+    auto callback = 
+    [this](sensor_msgs::msg::Image::SharedPtr msg) {
+        this->GrabImage(msg);
+    };
+    this->subscription_ = this->create_subscription<sensor_msgs::msg::Image>("/oakd/rgb/preview/image_raw", 1, callback);
 }
 
 void Tracking::SetLocalMapper(LocalMapping *pLocalMapper)
@@ -167,20 +171,13 @@ void Tracking::SetKeyFrameDatabase(KeyFrameDatabase *pKFDB)
     mpKeyFrameDB = pKFDB;
 }
 
-void Tracking::Run()
-{
-    // rclcpp::Subscription<sensor_msgs::msg::Image> sub;
-    auto topic_callback =
-      [this](sensor_msgs::msg::Image::SharedPtr msg) -> void {
-        Tracking::GrabImage(msg);
-      };
-    std::shared_ptr<rclcpp::Node> node = std::make_shared<rclcpp::Node>("tracker_node");
-    node->create_subscription<sensor_msgs::msg::Image>("/camera/image_raw", 1, topic_callback);
-    // std::shared_ptr<rclcpp::Node> node = std::make_shared<rclcpp::Node>("/ORB_SLAM/tf_sub");
-    // auto sub = node->create_subscription<sensor_msgs::msg::Image>("/camera/image_raw", 1, std::bind(&Tracking::GrabImage, node, std::placeholders::_1));
-    // rclcpp::Subscriber sub = node.create_subscription("/camera/image_raw", 1, &Tracking::GrabImage, this);
-    rclcpp::spin(node);
-}
+// void Tracking::Run()
+// {
+//     ros::NodeHandle nodeHandler;
+//     ros::Subscriber sub = nodeHandler.subscribe("/camera/image_raw", 1, &Tracking::GrabImage, this);
+
+//     ros::spin();
+// }
 
 void Tracking::GrabImage(const sensor_msgs::msg::Image::SharedPtr msg)
 {
@@ -195,7 +192,7 @@ void Tracking::GrabImage(const sensor_msgs::msg::Image::SharedPtr msg)
     }
     catch (cv_bridge::Exception& e)
     {
-        RCLCPP_ERROR(rclcpp::get_logger("tracking_logger"), "cv_bridge exception: %s", e.what());
+        RCLCPP_ERROR(this->get_logger(), "cv_bridge exception: %s", e.what());
         return;
     }
 
@@ -214,7 +211,7 @@ void Tracking::GrabImage(const sensor_msgs::msg::Image::SharedPtr msg)
     }
 
     if(mState==WORKING || mState==LOST)
-        mCurrentFrame = Frame(im,cv_ptr->header.stamp.sec, mpORBextractor,mpORBVocabulary,mK,mDistCoef);
+        mCurrentFrame = Frame(im,cv_ptr->header.stamp.sec,mpORBextractor,mpORBVocabulary,mK,mDistCoef);
     else
         mCurrentFrame = Frame(im,cv_ptr->header.stamp.sec,mpIniORBextractor,mpORBVocabulary,mK,mDistCoef);
 
@@ -327,12 +324,16 @@ void Tracking::GrabImage(const sensor_msgs::msg::Image::SharedPtr msg)
         tf2::Vector3 V(twc.at<float>(0), twc.at<float>(1), twc.at<float>(2));
 
         tf2::Transform tfTcw(M,V);
-        geometry_msgs::msg::TransformStamped transform;
-        transform.header.frame_id = "ORB_SLAM_MONO_CAMERA_GRAB_IMAGE";
-        tf2::toMsg(tfTcw, transform.transform);
-        br.value().sendTransform(transform);
 
-        // mTfBr.sendTransform(tf::StampedTransform(tfTcw,ros::Time::now(), "ORB_SLAM/World", "ORB_SLAM/Camera"));
+        tf2::Transform tfT;
+        tfT.setIdentity();
+        geometry_msgs::msg::TransformStamped msg;
+        msg.header.stamp = this->get_clock()->now();
+        msg.header.frame_id = "/ORB_SLAM/World";
+        msg.child_frame_id = "/ORB_SLAM/Camera";
+        tf2::toMsg(tfT, msg.transform);
+
+        mTfBr.sendTransform(msg);
     }
 
 }
@@ -452,7 +453,7 @@ void Tracking::CreateInitialMap(cv::Mat &Rcw, cv::Mat &tcw)
     pKFcur->UpdateConnections();
 
     // Bundle Adjustment
-    RCLCPP_INFO(rclcpp::get_logger("tracking_library"), "New Map created with %d points",mpMap->MapPointsInMap());
+    RCLCPP_INFO(this->get_logger(), "New Map created with %d points",mpMap->MapPointsInMap());
 
     Optimizer::GlobalBundleAdjustemnt(mpMap,20);
 
@@ -462,7 +463,7 @@ void Tracking::CreateInitialMap(cv::Mat &Rcw, cv::Mat &tcw)
 
     if(medianDepth<0 || pKFcur->TrackedMapPoints()<100)
     {
-        RCLCPP_INFO(rclcpp::get_logger("tracking_library"), "Wrong initialization, reseting...");
+        RCLCPP_INFO(this->get_logger(), "Wrong initialization, reseting...");
         Reset();
         return;
     }
@@ -499,6 +500,8 @@ void Tracking::CreateInitialMap(cv::Mat &Rcw, cv::Mat &tcw)
     mpMap->SetReferenceMapPoints(mvpLocalMapPoints);
 
     mpMapPublisher->SetCurrentCameraPose(pKFcur->GetPose());
+
+    RCLCPP_INFO(this->get_logger(), "Map Initialized");
 
     mState=WORKING;
 }

@@ -10,12 +10,12 @@ find_package(ament_cmake REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
-find_package(std_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
 find_package(rclcpp REQUIRED)
 
 add_executable(listener src/listener.cpp)
 add_executable(publisher src/publisher.cpp)
-ament_target_dependencies(listener rclcpp std_msgs)
+ament_target_dependencies(listener rclcpp sensor_msgs)
 ament_target_dependencies(publisher rclcpp std_msgs)
 
 install(TARGETS

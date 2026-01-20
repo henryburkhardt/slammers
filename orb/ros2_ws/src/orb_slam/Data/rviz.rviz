@@ -1,5 +1,5 @@
 Panels:
-  - Class: rviz/Displays
+  - Class: rviz2/Displays
     Help Height: 78
     Name: Displays
     Property Tree Widget:
@@ -10,21 +10,21 @@ Panels:
         - /Marker1/Namespaces1
       Splitter Ratio: 0.5
     Tree Height: 514
-  - Class: rviz/Selection
+  - Class: rviz2/Selection
     Name: Selection
-  - Class: rviz/Tool Properties
+  - Class: rviz2/Tool Properties
     Expanded:
       - /2D Pose Estimate1
       - /2D Nav Goal1
       - /Publish Point1
     Name: Tool Properties
     Splitter Ratio: 0.588679
-  - Class: rviz/Views
+  - Class: rviz2/Views
     Expanded:
       - /Current View1
     Name: Views
     Splitter Ratio: 0.5
-  - Class: rviz/Time
+  - Class: rviz2/Time
     Experimental: false
     Name: Time
     SyncMode: 0
@@ -32,7 +32,7 @@ Panels:
 Visualization Manager:
   Class: ""
   Displays:
-    - Class: rviz/Marker
+    - Class: rviz2/Marker
       Enabled: true
       Marker Topic: /ORB_SLAM/Map
       Name: Marker
@@ -49,23 +49,23 @@ Visualization Manager:
     Fixed Frame: /ORB_SLAM/Camera
   Name: root
   Tools:
-    - Class: rviz/Interact
+    - Class: rviz2/Interact
       Hide Inactive Objects: true
-    - Class: rviz/MoveCamera
-    - Class: rviz/Select
-    - Class: rviz/FocusCamera
-    - Class: rviz/Measure
-    - Class: rviz/SetInitialPose
+    - Class: rviz2/MoveCamera
+    - Class: rviz2/Select
+    - Class: rviz2/FocusCamera
+    - Class: rviz2/Measure
+    - Class: rviz2/SetInitialPose
       Topic: /initialpose
-    - Class: rviz/SetGoal
+    - Class: rviz2/SetGoal
       Topic: /move_base_simple/goal
-    - Class: rviz/PublishPoint
+    - Class: rviz2/PublishPoint
       Single click: true
       Topic: /clicked_point
   Value: true
   Views:
     Current:
-      Class: rviz/Orbit
+      Class: rviz2/Orbit
       Distance: 3.996
       Focal Point:
         X: -0.111169
@@ -75,7 +75,7 @@ Visualization Manager:
       Near Clip Distance: 0.01
       Pitch: -0.854796
       Target Frame: /ORB_SLAM/Camera
-      Value: Orbit (rviz)
+      Value: Orbit (rviz2)
       Yaw: 4.6604
     Saved: ~
 Window Geometry:

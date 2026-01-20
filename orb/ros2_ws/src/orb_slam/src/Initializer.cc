@@ -64,6 +64,7 @@ bool Initializer::Initialize(const Frame &CurrentFrame, const vector<int> &vMatc
 
     const int N = mvMatches12.size();
 
+
     // Indices for minimum set selection
     vector<size_t> vAllIndices;
     vAllIndices.reserve(N);

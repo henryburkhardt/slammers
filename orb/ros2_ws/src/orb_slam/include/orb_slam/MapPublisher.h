@@ -50,7 +50,7 @@ private:
     bool isCamUpdated();
     void ResetCamFlag();
 
-    rclcpp::Node::SharedPtr nh;
+    std::shared_ptr<rclcpp::Node> nh;
     std::shared_ptr<rclcpp::Publisher<visualization_msgs::msg::Marker>> publisher;
 
 

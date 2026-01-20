@@ -24,7 +24,7 @@
 #include<opencv2/core/core.hpp>
 #include<opencv2/features2d/features2d.hpp>
 #include<sensor_msgs/msg/image.hpp>
-// #include<sensor_msgs/image_encodings.h>
+// #include<sensor_msgs/msg/image_encodings.h>
 
 #include"FramePublisher.h"
 #include"Map.h"
@@ -36,8 +36,9 @@
 #include"ORBextractor.h"
 #include "Initializer.h"
 #include "MapPublisher.h"
+#include <rclcpp/rclcpp.hpp>;
 
-#include<tf2_ros/transform_broadcaster.h>
+#include<tf2_ros/transform_broadcaster.hpp>
 
 
 namespace ORB_SLAM
@@ -48,7 +49,7 @@ class Map;
 class LocalMapping;
 class LoopClosing;
 
-class Tracking
+class Tracking : public rclcpp::Node
 {  
 
 public:
@@ -179,9 +180,8 @@ protected:
     bool mbRGB;
 
     // Transfor broadcaster (for visualization in rviz)
-    // CHANGES: added keyword static. Does it break? I don't know.
-    // REASON: Gets rid of no default initializer error.
-    // static tf2_ros::TransformBroadcaster mTfBr;
+    tf2_ros::TransformBroadcaster mTfBr;
+    std::shared_ptr<rclcpp::Subscription<sensor_msgs::msg::Image>> subscription_;
 };
 
 } //namespace ORB_SLAM

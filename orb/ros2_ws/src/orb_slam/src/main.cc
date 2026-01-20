@@ -43,6 +43,12 @@
 
 using namespace std;
 
+void spin_node(rclcpp::Node::SharedPtr node) {
+    rclcpp::executors::SingleThreadedExecutor executor;
+    executor.add_node(node);
+    executor.spin();
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -129,10 +135,13 @@ int main(int argc, char *argv[])
 
     //Initialize the Tracking Thread and launch
     // TODO this crashes right now -- it doesn't like how I am handling optional.
-    ORB_SLAM::Tracking Tracker(&Vocabulary, &FramePub, &MapPub, &World, strSettingsFile);
-    boost::thread trackingThread(&ORB_SLAM::Tracking::Run,&Tracker);
+    // ORB_SLAM::Tracking Tracker(&Vocabulary, &FramePub, &MapPub, &World, strSettingsFile);
+    // boost::thread trackingThread(&ORB_SLAM::Tracking::Run,&Tracker);
 
-    Tracker.SetKeyFrameDatabase(&Database);
+    std::shared_ptr<ORB_SLAM::Tracking> Tracker = std::make_shared<ORB_SLAM::Tracking>(&Vocabulary, &FramePub, &MapPub, &World, strSettingsFile);
+    boost::thread trackingThread(spin_node, Tracker);
+
+    Tracker->SetKeyFrameDatabase(&Database);
 
     //Initialize the Local Mapping Thread and launch
     ORB_SLAM::LocalMapping LocalMapper(&World);
@@ -143,13 +152,13 @@ int main(int argc, char *argv[])
     boost::thread loopClosingThread(&ORB_SLAM::LoopClosing::Run, &LoopCloser);
 
     //Set pointers between threads
-    Tracker.SetLocalMapper(&LocalMapper);
-    Tracker.SetLoopClosing(&LoopCloser);
+    Tracker->SetLocalMapper(&LocalMapper);
+    Tracker->SetLoopClosing(&LoopCloser);
 
-    LocalMapper.SetTracker(&Tracker);
+    LocalMapper.SetTracker(Tracker.get());
     LocalMapper.SetLoopCloser(&LoopCloser);
 
-    LoopCloser.SetTracker(&Tracker);
+    LoopCloser.SetTracker(Tracker.get());
     LoopCloser.SetLocalMapper(&LocalMapper);
 
     //This "main" thread will show the current processed frame and publish the map
@@ -165,7 +174,7 @@ int main(int argc, char *argv[])
     {
         FramePub.Refresh();
         MapPub.Refresh();
-        Tracker.CheckResetByPublishers();
+        Tracker->CheckResetByPublishers();
         r.sleep();
     }
 
