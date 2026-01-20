@@ -6,6 +6,7 @@ class Pose2D:
     x: float
     y: float
     theta: float = 0.0 # rotation
+    id: int = 0
     
     def to_matrix():
         # TOOD: fill in
