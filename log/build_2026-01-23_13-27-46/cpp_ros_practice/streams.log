@@ -1,0 +1,73 @@
+[0.009s] Invoking command in '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/cpp_ros_practice': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/src/cpp_ros_practice -DCMAKE_INSTALL_PREFIX=/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice
+[0.045s] -- The C compiler identification is GNU 13.3.0
+[0.075s] -- The CXX compiler identification is GNU 13.3.0
+[0.085s] -- Detecting C compiler ABI info
+[0.157s] -- Detecting C compiler ABI info - done
+[0.162s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.162s] -- Detecting C compile features
+[0.162s] -- Detecting C compile features - done
+[0.168s] -- Detecting CXX compiler ABI info
+[0.222s] -- Detecting CXX compiler ABI info - done
+[0.228s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.228s] -- Detecting CXX compile features
+[0.228s] -- Detecting CXX compile features - done
+[0.230s] -- Found ament_cmake: 2.5.4 (/opt/ros/jazzy/share/ament_cmake/cmake)
+[0.315s] -- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter 
+[0.381s] -- Found sensor_msgs: 5.3.6 (/opt/ros/jazzy/share/sensor_msgs/cmake)
+[0.408s] -- Found rosidl_generator_c: 4.6.6 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)
+[0.417s] -- Found rosidl_generator_cpp: 4.6.6 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)
+[0.427s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.438s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[0.485s] -- Found rclcpp: 28.1.13 (/opt/ros/jazzy/share/rclcpp/cmake)
+[0.514s] -- Found rmw_implementation_cmake: 7.3.2 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)
+[0.516s] -- Found rmw_fastrtps_cpp: 8.4.3 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)
+[0.573s] -- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.13")  
+[0.585s] -- Found FastRTPS: /opt/ros/jazzy/include (Required is at least version "2.13") 
+[0.602s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[0.646s] -- Found ament_lint_auto: 0.17.3 (/opt/ros/jazzy/share/ament_lint_auto/cmake)
+[0.709s] -- Added test 'cppcheck' to perform static code analysis on C / C++ code
+[0.709s] -- Configured cppcheck include dirs: 
+[0.709s] -- Configured cppcheck exclude dirs and/or files: 
+[0.710s] -- Added test 'lint_cmake' to check CMake code style
+[0.710s] -- Added test 'uncrustify' to check C / C++ code style
+[0.710s] -- Configured uncrustify additional arguments: 
+[0.711s] -- Added test 'xmllint' to check XML markup files
+[0.712s] -- Configuring done (0.7s)
+[0.718s] -- Generating done (0.0s)
+[0.720s] -- Build files have been written to: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/cpp_ros_practice
+[0.727s] Invoked command in '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/cpp_ros_practice' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/src/cpp_ros_practice -DCMAKE_INSTALL_PREFIX=/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice
+[0.727s] Invoking command in '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/cpp_ros_practice': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/cpp_ros_practice -- -j28 -l28
+[0.756s] [ 50%] [32mBuilding CXX object CMakeFiles/publisher.dir/src/publisher.cpp.o[0m
+[0.756s] [ 50%] [32mBuilding CXX object CMakeFiles/listener.dir/src/listener.cpp.o[0m
+[2.149s] [01m[K/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/src/cpp_ros_practice/src/listener.cpp:[m[K In lambda function:
+[2.149s] [01m[K/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/src/cpp_ros_practice/src/listener.cpp:10:75:[m[K [01;35m[Kwarning: [m[Kunused parameter ‘[01m[Kmsg[m[K’ [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-parameter-Wunused-parameter]8;;[m[K]
+[2.149s]    10 | uto listenerCallback = [this]([01;35m[Ksensor_msgs::msg::Image::SharedPtr msg[m[K) {
+[2.149s]       |                               [01;35m[K~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~[m[K
+[2.149s] 
+[3.376s] [ 75%] [32m[1mLinking CXX executable publisher[0m
+[3.486s] [ 75%] Built target publisher
+[5.458s] [100%] [32m[1mLinking CXX executable listener[0m
+[5.644s] [100%] Built target listener
+[5.656s] Invoked command in '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/cpp_ros_practice' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/cpp_ros_practice -- -j28 -l28
+[5.664s] Invoking command in '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/cpp_ros_practice': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/cpp_ros_practice
+[5.669s] -- Install configuration: ""
+[5.670s] -- Installing: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/lib/cpp_ros_practice/listener
+[5.672s] -- Set non-toolchain portion of runtime path of "/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/lib/cpp_ros_practice/listener" to ""
+[5.672s] -- Installing: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/lib/cpp_ros_practice/publisher
+[5.673s] -- Set non-toolchain portion of runtime path of "/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/lib/cpp_ros_practice/publisher" to ""
+[5.673s] -- Installing: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/ament_index/resource_index/package_run_dependencies/cpp_ros_practice
+[5.673s] -- Installing: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/ament_index/resource_index/parent_prefix_path/cpp_ros_practice
+[5.673s] -- Installing: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/environment/ament_prefix_path.sh
+[5.673s] -- Installing: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/environment/ament_prefix_path.dsv
+[5.673s] -- Installing: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/environment/path.sh
+[5.673s] -- Installing: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/environment/path.dsv
+[5.673s] -- Installing: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/local_setup.bash
+[5.674s] -- Installing: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/local_setup.sh
+[5.674s] -- Installing: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/local_setup.zsh
+[5.674s] -- Installing: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/local_setup.dsv
+[5.674s] -- Installing: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/package.dsv
+[5.674s] -- Installing: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/ament_index/resource_index/packages/cpp_ros_practice
+[5.674s] -- Installing: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/cmake/cpp_ros_practiceConfig.cmake
+[5.674s] -- Installing: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/cmake/cpp_ros_practiceConfig-version.cmake
+[5.674s] -- Installing: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/package.xml
+[5.675s] Invoked command in '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/cpp_ros_practice' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/cpp_ros_practice

@@ -1,0 +1,276 @@
+[0.099s] DEBUG:colcon:Command line arguments: ['/usr/bin/colcon', 'build']
+[0.099s] DEBUG:colcon:Parsed command line arguments: Namespace(log_base=None, log_level=None, verb_name='build', build_base='build', install_base='install', merge_install=False, symlink_install=False, test_result_base=None, continue_on_error=False, executor='parallel', parallel_workers=28, event_handlers=None, ignore_user_meta=False, metas=['./colcon.meta'], base_paths=['.'], packages_ignore=None, packages_ignore_regex=None, paths=None, packages_up_to=None, packages_up_to_regex=None, packages_above=None, packages_above_and_dependencies=None, packages_above_depth=None, packages_select_by_dep=None, packages_skip_by_dep=None, packages_skip_up_to=None, packages_select_build_failed=False, packages_skip_build_finished=False, packages_select_test_failures=False, packages_skip_test_passed=False, packages_select=None, packages_skip=None, packages_select_regex=None, packages_skip_regex=None, packages_start=None, packages_end=None, allow_overriding=[], cmake_args=None, cmake_target=None, cmake_target_skip_unavailable=False, cmake_clean_cache=False, cmake_clean_first=False, cmake_force_configure=False, ament_cmake_args=None, catkin_cmake_args=None, catkin_skip_building_tests=False, mixin_files=None, mixin=None, verb_parser=<colcon_mixin.mixin.mixin_argument.MixinArgumentDecorator object at 0x798e6ed05490>, verb_extension=<colcon_core.verb.build.BuildVerb object at 0x798e6ed05070>, main=<bound method BuildVerb.main of <colcon_core.verb.build.BuildVerb object at 0x798e6ed05070>>, mixin_verb=('build',))
+[0.119s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) check parameters
+[0.119s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) check parameters
+[0.119s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) check parameters
+[0.119s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) check parameters
+[0.119s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) discover
+[0.119s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) discover
+[0.120s] INFO:colcon.colcon_core.package_discovery:Crawling recursively for packages in '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws'
+[0.120s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ignore', 'ignore_ament_install']
+[0.120s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore'
+[0.120s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore_ament_install'
+[0.120s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_pkg']
+[0.120s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_pkg'
+[0.120s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_meta']
+[0.120s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_meta'
+[0.120s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ros']
+[0.120s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ros'
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['cmake', 'python']
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'cmake'
+[0.135s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['python_setup_py']
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python_setup_py'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extensions ['ignore', 'ignore_ament_install']
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extension 'ignore'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(build) ignored
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extensions ['ignore', 'ignore_ament_install']
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extension 'ignore'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(install) ignored
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extensions ['ignore', 'ignore_ament_install']
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extension 'ignore'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(log) ignored
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ignore', 'ignore_ament_install']
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore_ament_install'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_pkg']
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_pkg'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_meta']
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_meta'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ros']
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ros'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['cmake', 'python']
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'cmake'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['python_setup_py']
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python_setup_py'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(src/cpp_ros_practice) by extensions ['ignore', 'ignore_ament_install']
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(src/cpp_ros_practice) by extension 'ignore'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(src/cpp_ros_practice) by extension 'ignore_ament_install'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(src/cpp_ros_practice) by extensions ['colcon_pkg']
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(src/cpp_ros_practice) by extension 'colcon_pkg'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(src/cpp_ros_practice) by extensions ['colcon_meta']
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(src/cpp_ros_practice) by extension 'colcon_meta'
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(src/cpp_ros_practice) by extensions ['ros']
+[0.136s] Level 1:colcon.colcon_core.package_identification:_identify(src/cpp_ros_practice) by extension 'ros'
+[0.138s] DEBUG:colcon.colcon_core.package_identification:Package 'src/cpp_ros_practice' with type 'ros.ament_cmake' and name 'cpp_ros_practice'
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(src/orb_slam) by extensions ['ignore', 'ignore_ament_install']
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(src/orb_slam) by extension 'ignore'
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(src/orb_slam) by extension 'ignore_ament_install'
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(src/orb_slam) by extensions ['colcon_pkg']
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(src/orb_slam) by extension 'colcon_pkg'
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(src/orb_slam) by extensions ['colcon_meta']
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(src/orb_slam) by extension 'colcon_meta'
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(src/orb_slam) by extensions ['ros']
+[0.138s] Level 1:colcon.colcon_core.package_identification:_identify(src/orb_slam) by extension 'ros'
+[0.139s] DEBUG:colcon.colcon_core.package_identification:Package 'src/orb_slam' with type 'ros.ament_cmake' and name 'orb_slam'
+[0.139s] Level 1:colcon.colcon_core.package_identification:_identify(src/webpub) by extensions ['ignore', 'ignore_ament_install']
+[0.139s] Level 1:colcon.colcon_core.package_identification:_identify(src/webpub) by extension 'ignore'
+[0.139s] Level 1:colcon.colcon_core.package_identification:_identify(src/webpub) by extension 'ignore_ament_install'
+[0.139s] Level 1:colcon.colcon_core.package_identification:_identify(src/webpub) by extensions ['colcon_pkg']
+[0.139s] Level 1:colcon.colcon_core.package_identification:_identify(src/webpub) by extension 'colcon_pkg'
+[0.139s] Level 1:colcon.colcon_core.package_identification:_identify(src/webpub) by extensions ['colcon_meta']
+[0.139s] Level 1:colcon.colcon_core.package_identification:_identify(src/webpub) by extension 'colcon_meta'
+[0.139s] Level 1:colcon.colcon_core.package_identification:_identify(src/webpub) by extensions ['ros']
+[0.139s] Level 1:colcon.colcon_core.package_identification:_identify(src/webpub) by extension 'ros'
+[0.139s] DEBUG:colcon.colcon_core.package_identification:Package 'src/webpub' with type 'ros.ament_cmake' and name 'webpub'
+[0.139s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) using defaults
+[0.139s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) discover
+[0.139s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) using defaults
+[0.139s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) discover
+[0.139s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) using defaults
+[0.149s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) check parameters
+[0.149s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) discover
+[0.152s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 437 installed packages in /opt/ros/jazzy
+[0.152s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) using defaults
+[0.176s] Level 5:colcon.colcon_core.verb:set package 'cpp_ros_practice' build argument 'cmake_args' from command line to 'None'
+[0.176s] Level 5:colcon.colcon_core.verb:set package 'cpp_ros_practice' build argument 'cmake_target' from command line to 'None'
+[0.176s] Level 5:colcon.colcon_core.verb:set package 'cpp_ros_practice' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.176s] Level 5:colcon.colcon_core.verb:set package 'cpp_ros_practice' build argument 'cmake_clean_cache' from command line to 'False'
+[0.176s] Level 5:colcon.colcon_core.verb:set package 'cpp_ros_practice' build argument 'cmake_clean_first' from command line to 'False'
+[0.176s] Level 5:colcon.colcon_core.verb:set package 'cpp_ros_practice' build argument 'cmake_force_configure' from command line to 'False'
+[0.176s] Level 5:colcon.colcon_core.verb:set package 'cpp_ros_practice' build argument 'ament_cmake_args' from command line to 'None'
+[0.176s] Level 5:colcon.colcon_core.verb:set package 'cpp_ros_practice' build argument 'catkin_cmake_args' from command line to 'None'
+[0.176s] Level 5:colcon.colcon_core.verb:set package 'cpp_ros_practice' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.176s] DEBUG:colcon.colcon_core.verb:Building package 'cpp_ros_practice' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/cpp_ros_practice', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice', 'merge_install': False, 'path': '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/src/cpp_ros_practice', 'symlink_install': False, 'test_result_base': None}
+[0.176s] Level 5:colcon.colcon_core.verb:set package 'orb_slam' build argument 'cmake_args' from command line to 'None'
+[0.176s] Level 5:colcon.colcon_core.verb:set package 'orb_slam' build argument 'cmake_target' from command line to 'None'
+[0.176s] Level 5:colcon.colcon_core.verb:set package 'orb_slam' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.176s] Level 5:colcon.colcon_core.verb:set package 'orb_slam' build argument 'cmake_clean_cache' from command line to 'False'
+[0.176s] Level 5:colcon.colcon_core.verb:set package 'orb_slam' build argument 'cmake_clean_first' from command line to 'False'
+[0.176s] Level 5:colcon.colcon_core.verb:set package 'orb_slam' build argument 'cmake_force_configure' from command line to 'False'
+[0.176s] Level 5:colcon.colcon_core.verb:set package 'orb_slam' build argument 'ament_cmake_args' from command line to 'None'
+[0.176s] Level 5:colcon.colcon_core.verb:set package 'orb_slam' build argument 'catkin_cmake_args' from command line to 'None'
+[0.176s] Level 5:colcon.colcon_core.verb:set package 'orb_slam' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.176s] DEBUG:colcon.colcon_core.verb:Building package 'orb_slam' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/orb_slam', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam', 'merge_install': False, 'path': '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/src/orb_slam', 'symlink_install': False, 'test_result_base': None}
+[0.177s] Level 5:colcon.colcon_core.verb:set package 'webpub' build argument 'cmake_args' from command line to 'None'
+[0.177s] Level 5:colcon.colcon_core.verb:set package 'webpub' build argument 'cmake_target' from command line to 'None'
+[0.177s] Level 5:colcon.colcon_core.verb:set package 'webpub' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.177s] Level 5:colcon.colcon_core.verb:set package 'webpub' build argument 'cmake_clean_cache' from command line to 'False'
+[0.177s] Level 5:colcon.colcon_core.verb:set package 'webpub' build argument 'cmake_clean_first' from command line to 'False'
+[0.177s] Level 5:colcon.colcon_core.verb:set package 'webpub' build argument 'cmake_force_configure' from command line to 'False'
+[0.177s] Level 5:colcon.colcon_core.verb:set package 'webpub' build argument 'ament_cmake_args' from command line to 'None'
+[0.177s] Level 5:colcon.colcon_core.verb:set package 'webpub' build argument 'catkin_cmake_args' from command line to 'None'
+[0.177s] Level 5:colcon.colcon_core.verb:set package 'webpub' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.177s] DEBUG:colcon.colcon_core.verb:Building package 'webpub' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/webpub', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub', 'merge_install': False, 'path': '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/src/webpub', 'symlink_install': False, 'test_result_base': None}
+[0.177s] INFO:colcon.colcon_core.executor:Executing jobs using 'parallel' executor
+[0.177s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete
+[0.177s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/src/cpp_ros_practice' with build type 'ament_cmake'
+[0.177s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/src/cpp_ros_practice'
+[0.180s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_core.shell.bat': Not used on non-Windows systems
+[0.180s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.180s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.182s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/src/orb_slam' with build type 'ament_cmake'
+[0.182s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/src/orb_slam'
+[0.182s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.182s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.184s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/src/webpub' with build type 'ament_cmake'
+[0.184s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/src/webpub'
+[0.184s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.184s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.187s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/cpp_ros_practice': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/cpp_ros_practice -- -j28 -l28
+[0.189s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/orb_slam': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/orb_slam -- -j28 -l28
+[0.190s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/webpub': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/webpub -- -j28 -l28
+[0.227s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/cpp_ros_practice' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/cpp_ros_practice -- -j28 -l28
+[0.232s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/cpp_ros_practice': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/cpp_ros_practice
+[0.233s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/webpub' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/webpub -- -j28 -l28
+[0.234s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/webpub': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/webpub
+[0.238s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(cpp_ros_practice)
+[0.238s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/cpp_ros_practice' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/cpp_ros_practice
+[0.242s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice' for CMake module files
+[0.242s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice' for CMake config files
+[0.242s] Level 1:colcon.colcon_core.shell:create_environment_hook('cpp_ros_practice', 'cmake_prefix_path')
+[0.242s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/hook/cmake_prefix_path.ps1'
+[0.243s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/hook/cmake_prefix_path.dsv'
+[0.243s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/hook/cmake_prefix_path.sh'
+[0.243s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/lib'
+[0.243s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/bin'
+[0.243s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/lib/pkgconfig/cpp_ros_practice.pc'
+[0.244s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/lib/python3.12/site-packages'
+[0.244s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/bin'
+[0.244s] INFO:colcon.colcon_core.shell:Creating package script '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/package.ps1'
+[0.244s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/package.dsv'
+[0.245s] INFO:colcon.colcon_core.shell:Creating package script '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/package.sh'
+[0.245s] INFO:colcon.colcon_core.shell:Creating package script '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/package.bash'
+[0.245s] INFO:colcon.colcon_core.shell:Creating package script '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/package.zsh'
+[0.245s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/colcon-core/packages/cpp_ros_practice)
+[0.246s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(cpp_ros_practice)
+[0.246s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice' for CMake module files
+[0.246s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice' for CMake config files
+[0.246s] Level 1:colcon.colcon_core.shell:create_environment_hook('cpp_ros_practice', 'cmake_prefix_path')
+[0.246s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/hook/cmake_prefix_path.ps1'
+[0.247s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/hook/cmake_prefix_path.dsv'
+[0.247s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/hook/cmake_prefix_path.sh'
+[0.247s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/lib'
+[0.247s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/bin'
+[0.247s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/lib/pkgconfig/cpp_ros_practice.pc'
+[0.247s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/lib/python3.12/site-packages'
+[0.247s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/bin'
+[0.247s] INFO:colcon.colcon_core.shell:Creating package script '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/package.ps1'
+[0.248s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/package.dsv'
+[0.248s] INFO:colcon.colcon_core.shell:Creating package script '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/package.sh'
+[0.248s] INFO:colcon.colcon_core.shell:Creating package script '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/package.bash'
+[0.248s] INFO:colcon.colcon_core.shell:Creating package script '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/package.zsh'
+[0.248s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/colcon-core/packages/cpp_ros_practice)
+[0.249s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(webpub)
+[0.249s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub' for CMake module files
+[0.249s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/webpub' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/webpub
+[0.249s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub' for CMake config files
+[0.249s] Level 1:colcon.colcon_core.shell:create_environment_hook('webpub', 'cmake_prefix_path')
+[0.250s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/share/webpub/hook/cmake_prefix_path.ps1'
+[0.250s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/share/webpub/hook/cmake_prefix_path.dsv'
+[0.250s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/share/webpub/hook/cmake_prefix_path.sh'
+[0.250s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/lib'
+[0.250s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/bin'
+[0.250s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/lib/pkgconfig/webpub.pc'
+[0.250s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/lib/python3.12/site-packages'
+[0.250s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/bin'
+[0.251s] INFO:colcon.colcon_core.shell:Creating package script '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/share/webpub/package.ps1'
+[0.251s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/share/webpub/package.dsv'
+[0.251s] INFO:colcon.colcon_core.shell:Creating package script '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/share/webpub/package.sh'
+[0.251s] INFO:colcon.colcon_core.shell:Creating package script '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/share/webpub/package.bash'
+[0.251s] INFO:colcon.colcon_core.shell:Creating package script '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/share/webpub/package.zsh'
+[0.251s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/share/colcon-core/packages/webpub)
+[0.251s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(webpub)
+[0.251s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub' for CMake module files
+[0.252s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub' for CMake config files
+[0.252s] Level 1:colcon.colcon_core.shell:create_environment_hook('webpub', 'cmake_prefix_path')
+[0.252s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/share/webpub/hook/cmake_prefix_path.ps1'
+[0.252s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/share/webpub/hook/cmake_prefix_path.dsv'
+[0.252s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/share/webpub/hook/cmake_prefix_path.sh'
+[0.252s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/lib'
+[0.252s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/bin'
+[0.252s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/lib/pkgconfig/webpub.pc'
+[0.253s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/lib/python3.12/site-packages'
+[0.253s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/bin'
+[0.253s] INFO:colcon.colcon_core.shell:Creating package script '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/share/webpub/package.ps1'
+[0.254s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/share/webpub/package.dsv'
+[0.254s] INFO:colcon.colcon_core.shell:Creating package script '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/share/webpub/package.sh'
+[0.254s] INFO:colcon.colcon_core.shell:Creating package script '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/share/webpub/package.bash'
+[0.254s] INFO:colcon.colcon_core.shell:Creating package script '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/share/webpub/package.zsh'
+[0.254s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/share/colcon-core/packages/webpub)
+[4.180s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/orb_slam' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/orb_slam -- -j28 -l28
+[4.180s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/orb_slam': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/orb_slam
+[4.190s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(orb_slam)
+[4.191s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam' for CMake module files
+[4.191s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam' for CMake config files
+[4.191s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/orb_slam' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/orb_slam
+[4.191s] Level 1:colcon.colcon_core.shell:create_environment_hook('orb_slam', 'cmake_prefix_path')
+[4.192s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/hook/cmake_prefix_path.ps1'
+[4.192s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/hook/cmake_prefix_path.dsv'
+[4.192s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/hook/cmake_prefix_path.sh'
+[4.193s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/lib'
+[4.193s] Level 1:colcon.colcon_core.shell:create_environment_hook('orb_slam', 'ld_library_path_lib')
+[4.193s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/hook/ld_library_path_lib.ps1'
+[4.193s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/hook/ld_library_path_lib.dsv'
+[4.194s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/hook/ld_library_path_lib.sh'
+[4.194s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/bin'
+[4.194s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/lib/pkgconfig/orb_slam.pc'
+[4.194s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/lib/python3.12/site-packages'
+[4.194s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/bin'
+[4.194s] INFO:colcon.colcon_core.shell:Creating package script '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/package.ps1'
+[4.195s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/package.dsv'
+[4.195s] INFO:colcon.colcon_core.shell:Creating package script '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/package.sh'
+[4.195s] INFO:colcon.colcon_core.shell:Creating package script '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/package.bash'
+[4.195s] INFO:colcon.colcon_core.shell:Creating package script '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/package.zsh'
+[4.196s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/colcon-core/packages/orb_slam)
+[4.196s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(orb_slam)
+[4.196s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam' for CMake module files
+[4.196s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam' for CMake config files
+[4.196s] Level 1:colcon.colcon_core.shell:create_environment_hook('orb_slam', 'cmake_prefix_path')
+[4.196s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/hook/cmake_prefix_path.ps1'
+[4.197s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/hook/cmake_prefix_path.dsv'
+[4.197s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/hook/cmake_prefix_path.sh'
+[4.197s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/lib'
+[4.197s] Level 1:colcon.colcon_core.shell:create_environment_hook('orb_slam', 'ld_library_path_lib')
+[4.197s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/hook/ld_library_path_lib.ps1'
+[4.198s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/hook/ld_library_path_lib.dsv'
+[4.198s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/hook/ld_library_path_lib.sh'
+[4.198s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/bin'
+[4.198s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/lib/pkgconfig/orb_slam.pc'
+[4.198s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/lib/python3.12/site-packages'
+[4.198s] Level 1:colcon.colcon_core.environment:checking '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/bin'
+[4.198s] INFO:colcon.colcon_core.shell:Creating package script '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/package.ps1'
+[4.199s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/package.dsv'
+[4.199s] INFO:colcon.colcon_core.shell:Creating package script '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/package.sh'
+[4.199s] INFO:colcon.colcon_core.shell:Creating package script '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/package.bash'
+[4.199s] INFO:colcon.colcon_core.shell:Creating package script '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/package.zsh'
+[4.200s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/colcon-core/packages/orb_slam)
+[4.200s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:closing loop
+[4.200s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:loop closed
+[4.200s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete finished with '0'
+[4.200s] DEBUG:colcon.colcon_core.event_reactor:joining thread
+[4.205s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.terminal_notifier': Not used on non-Darwin systems
+[4.205s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.win32': Not used on non-Windows systems
+[4.205s] INFO:colcon.colcon_notification.desktop_notification:Sending desktop notification using 'notify2'
+[4.219s] DEBUG:colcon.colcon_core.event_reactor:joined thread
+[4.219s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/local_setup.ps1'
+[4.220s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/_local_setup_util_ps1.py'
+[4.220s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/setup.ps1'
+[4.221s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/local_setup.sh'
+[4.221s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/_local_setup_util_sh.py'
+[4.222s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/setup.sh'
+[4.222s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/local_setup.bash'
+[4.223s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/setup.bash'
+[4.223s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/local_setup.zsh'
+[4.224s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/setup.zsh'

@@ -1,0 +1,33 @@
+[0.007s] Invoking command in '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/orb_slam': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/orb_slam -- -j28 -l28
+[0.148s] [  5%] [32mBuilding CXX object CMakeFiles/orb_slam.dir/src/PnPsolver.cc.o[0m
+[3.786s] [ 10%] [32m[1mLinking CXX executable /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/src/orb_slam/bin/orb_slam[0m
+[4.052s] [100%] Built target orb_slam
+[4.059s] Invoked command in '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/orb_slam' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/orb_slam -- -j28 -l28
+[4.060s] Invoking command in '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/orb_slam': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/orb_slam
+[4.063s] -- Install configuration: ""
+[4.063s] -- Installing: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/lib/orb_slam/orb_slam
+[4.065s] -- Set non-toolchain portion of runtime path of "/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/lib/orb_slam/orb_slam" to "$ORIGIN/../Thirdparty/DBoW2/lib"
+[4.065s] -- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/lib/libDBoW2.so
+[4.065s] -- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/lib/libg2o.so
+[4.065s] -- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam//Data
+[4.065s] -- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam//Data/rviz.vcg
+[4.065s] -- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam//Data/Settings.yaml
+[4.065s] -- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam//Data/ORBvoc.txt
+[4.065s] -- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam//Data/ORBvoc.txt.tar.gz
+[4.065s] -- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam//Data/rviz.rviz
+[4.065s] -- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/ament_index/resource_index/package_run_dependencies/orb_slam
+[4.065s] -- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/ament_index/resource_index/parent_prefix_path/orb_slam
+[4.065s] -- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/environment/ament_prefix_path.sh
+[4.066s] -- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/environment/ament_prefix_path.dsv
+[4.066s] -- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/environment/path.sh
+[4.066s] -- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/environment/path.dsv
+[4.066s] -- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/local_setup.bash
+[4.066s] -- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/local_setup.sh
+[4.066s] -- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/local_setup.zsh
+[4.066s] -- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/local_setup.dsv
+[4.066s] -- Installing: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/package.dsv
+[4.066s] -- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/ament_index/resource_index/packages/orb_slam
+[4.066s] -- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/cmake/orb_slamConfig.cmake
+[4.066s] -- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/cmake/orb_slamConfig-version.cmake
+[4.066s] -- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/package.xml
+[4.066s] Invoked command in '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/orb_slam' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/orb_slam

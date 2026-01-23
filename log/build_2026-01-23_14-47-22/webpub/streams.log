@@ -1,0 +1,22 @@
+[0.006s] Invoking command in '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/webpub': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/webpub -- -j28 -l28
+[0.040s] [100%] Built target main
+[0.049s] Invoked command in '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/webpub' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/webpub -- -j28 -l28
+[0.050s] Invoking command in '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/webpub': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/webpub
+[0.054s] -- Install configuration: ""
+[0.054s] -- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/lib/webpub/main
+[0.055s] -- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/share/ament_index/resource_index/package_run_dependencies/webpub
+[0.055s] -- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/share/ament_index/resource_index/parent_prefix_path/webpub
+[0.055s] -- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/share/webpub/environment/ament_prefix_path.sh
+[0.055s] -- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/share/webpub/environment/ament_prefix_path.dsv
+[0.055s] -- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/share/webpub/environment/path.sh
+[0.055s] -- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/share/webpub/environment/path.dsv
+[0.055s] -- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/share/webpub/local_setup.bash
+[0.055s] -- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/share/webpub/local_setup.sh
+[0.055s] -- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/share/webpub/local_setup.zsh
+[0.055s] -- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/share/webpub/local_setup.dsv
+[0.055s] -- Installing: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/share/webpub/package.dsv
+[0.055s] -- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/share/ament_index/resource_index/packages/webpub
+[0.055s] -- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/share/webpub/cmake/webpubConfig.cmake
+[0.055s] -- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/share/webpub/cmake/webpubConfig-version.cmake
+[0.055s] -- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/webpub/share/webpub/package.xml
+[0.066s] Invoked command in '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/webpub' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/webpub

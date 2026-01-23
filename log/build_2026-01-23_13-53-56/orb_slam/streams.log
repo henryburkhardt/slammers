@@ -1,0 +1,12 @@
+[0.004s] Invoking command in '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/orb_slam': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/orb_slam -- -j28 -l28
+[0.136s] [  5%] [32mBuilding CXX object CMakeFiles/orb_slam.dir/src/PnPsolver.cc.o[0m
+[0.166s] [ 10%] [32m[1mLinking CXX executable /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/src/orb_slam/bin/orb_slam[0m
+[0.384s] /usr/bin/ld: CMakeFiles/orb_slam.dir/src/Tracking.cc.o: in function `ORB_SLAM::Tracking::Relocalisation()':
+[0.385s] Tracking.cc:(.text+0x4c26): undefined reference to `ORB_SLAM::PnPsolver::PnPsolver(ORB_SLAM::Frame const&, std::vector<ORB_SLAM::MapPoint*, std::allocator<ORB_SLAM::MapPoint*> > const&)'
+[0.385s] /usr/bin/ld: Tracking.cc:(.text+0x4c55): undefined reference to `ORB_SLAM::PnPsolver::SetRansacParameters(double, int, int, int, float, float)'
+[0.385s] /usr/bin/ld: Tracking.cc:(.text+0x4ee5): undefined reference to `ORB_SLAM::PnPsolver::iterate(int, bool&, std::vector<bool, std::allocator<bool> >&, int&)'
+[0.407s] collect2: error: ld returned 1 exit status
+[0.408s] gmake[2]: *** [CMakeFiles/orb_slam.dir/build.make:560: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/src/orb_slam/bin/orb_slam] Error 1
+[0.408s] gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/orb_slam.dir/all] Error 2
+[0.408s] gmake: *** [Makefile:146: all] Error 2
+[0.410s] Invoked command in '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/orb_slam' returned '2': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/orb_slam -- -j28 -l28

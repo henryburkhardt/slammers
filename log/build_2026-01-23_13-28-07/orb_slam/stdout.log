@@ -1,0 +1,29 @@
+[  5%] [32mBuilding CXX object CMakeFiles/orb_slam.dir/src/Tracking.cc.o[0m
+[ 10%] [32m[1mLinking CXX executable /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/src/orb_slam/bin/orb_slam[0m
+[100%] Built target orb_slam
+-- Install configuration: ""
+-- Installing: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/lib/orb_slam/orb_slam
+-- Set non-toolchain portion of runtime path of "/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/lib/orb_slam/orb_slam" to "$ORIGIN/../Thirdparty/DBoW2/lib"
+-- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/lib/libDBoW2.so
+-- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/lib/libg2o.so
+-- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam//Data
+-- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam//Data/rviz.vcg
+-- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam//Data/Settings.yaml
+-- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam//Data/ORBvoc.txt
+-- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam//Data/ORBvoc.txt.tar.gz
+-- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam//Data/rviz.rviz
+-- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/ament_index/resource_index/package_run_dependencies/orb_slam
+-- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/ament_index/resource_index/parent_prefix_path/orb_slam
+-- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/environment/ament_prefix_path.sh
+-- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/environment/ament_prefix_path.dsv
+-- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/environment/path.sh
+-- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/environment/path.dsv
+-- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/local_setup.bash
+-- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/local_setup.sh
+-- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/local_setup.zsh
+-- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/local_setup.dsv
+-- Installing: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/package.dsv
+-- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/ament_index/resource_index/packages/orb_slam
+-- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/cmake/orb_slamConfig.cmake
+-- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/cmake/orb_slamConfig-version.cmake
+-- Up-to-date: /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/orb_slam/share/orb_slam/package.xml

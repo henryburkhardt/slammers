@@ -1,0 +1,17 @@
+/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/lib/cpp_ros_practice/listener
+/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/lib/cpp_ros_practice/publisher
+/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/ament_index/resource_index/package_run_dependencies/cpp_ros_practice
+/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/ament_index/resource_index/parent_prefix_path/cpp_ros_practice
+/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/environment/ament_prefix_path.sh
+/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/environment/ament_prefix_path.dsv
+/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/environment/path.sh
+/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/environment/path.dsv
+/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/local_setup.bash
+/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/local_setup.sh
+/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/local_setup.zsh
+/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/local_setup.dsv
+/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/package.dsv
+/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/ament_index/resource_index/packages/cpp_ros_practice
+/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/cmake/cpp_ros_practiceConfig.cmake
+/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/cmake/cpp_ros_practiceConfig-version.cmake
+/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/install/cpp_ros_practice/share/cpp_ros_practice/package.xml

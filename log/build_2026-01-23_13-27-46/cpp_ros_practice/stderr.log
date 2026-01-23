@@ -1,0 +1,5 @@
+[01m[K/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/src/cpp_ros_practice/src/listener.cpp:[m[K In lambda function:
+[01m[K/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/src/cpp_ros_practice/src/listener.cpp:10:75:[m[K [01;35m[Kwarning: [m[Kunused parameter ‘[01m[Kmsg[m[K’ [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-parameter-Wunused-parameter]8;;[m[K]
+   10 | uto listenerCallback = [this]([01;35m[Ksensor_msgs::msg::Image::SharedPtr msg[m[K) {
+      |                               [01;35m[K~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~[m[K
+

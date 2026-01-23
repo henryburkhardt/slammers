@@ -1,0 +1,2 @@
+Invoking command in '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/orb_slam': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/orb_slam -- -j28 -l28
+Invoked command in '/home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/orb_slam' returned '2': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/bernsteinb/Desktop/slammers-bryce/orb/ros2_ws/build/orb_slam -- -j28 -l28

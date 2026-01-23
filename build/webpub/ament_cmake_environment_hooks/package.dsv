@@ -1,0 +1,4 @@
+source;share/webpub/local_setup.bash
+source;share/webpub/local_setup.dsv
+source;share/webpub/local_setup.sh
+source;share/webpub/local_setup.zsh
