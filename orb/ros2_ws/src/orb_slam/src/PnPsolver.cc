@@ -904,7 +904,7 @@ void PnPsolver::qr_solve(cv::Mat& A, cv::Mat& b, cv::Mat& X)
 
     if (eta == 0) {
       A1[k] = A2[k] = 0.0;
-      cerr << "God damnit, A is singular, this shoucv::Matldn." << endl;
+      cerr << "God damnit, A is singular, this shouldn't happen." << endl;
       return;
     } else {
       double * ppAik = ppAkk, sum = 0.0, inv_eta = 1. / eta;
