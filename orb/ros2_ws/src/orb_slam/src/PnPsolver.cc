@@ -54,9 +54,8 @@
 
 #include <vector>
 #include <cmath>
-#include <opencv2/core/core.hpp>
+#include <opencv2/opencv.hpp>
 #include "Thirdparty/DBoW2/DUtils/Random.h"
-#include <rclcpp/rclcpp.hpp>
 #include <algorithm>
 
 using namespace std;
@@ -386,28 +385,21 @@ void PnPsolver::choose_control_points(void)
 
 
   // Take C1, C2, and C3 from PCA on the reference points:
-  // cv::Mat& PW0 = cvCreateMat(number_of_correspondences, 3, CV_64F);
   cv::Mat PW0(number_of_correspondences, 3, CV_64F);
 
   double pw0tpw0[3 * 3], dc[3], uct[3 * 3];
-  // CvMat PW0tPW0 = cvMat(3, 3, CV_64F, pw0tpw0);
-  // CvMat DC      = cvMat(3, 1, CV_64F, dc);
-  // CvMat UCt     = cvMat(3, 3, CV_64F, uct);
   cv::Mat PW0tPW0(3, 3, CV_64F, pw0tpw0);
   cv::Mat DC(3, 1, CV_64F, dc);
   cv::Mat UCt(3, 3, CV_64F, uct);
 
+  double *PW0_data = PW0.ptr<double>();
+
   for(int i = 0; i < number_of_correspondences; i++)
     for(int j = 0; j < 3; j++)
-      // PW0->data.db[3 * i + j] = pws[3 * i + j] - cws[0][j];
-      PW0.ptr<double>(i)[j] = pws[3 * i + j] - cws[0][j];
+      PW0_data[3 * i + j] = pws[3 * i + j] - cws[0][j];
 
-  // cvMulTransposed(PW0, &PW0tPW0, 1);
   cv::mulTransposed(PW0, PW0tPW0, 1);
-  // cvSVD(&PW0tPW0, &DC, &UCt, 0, CV_SVD_MODIFY_A | CV_SVD_U_T);
-  cv::SVD::compute(PW0tPW0, DC, UCt, cv::noArray(), cv::SVD::MODIFY_A | cv::SVD::FULL_UV); // TODO may be wrong
-
-  // cvReleaseMat(&PW0);
+  cv::SVD::compute(PW0tPW0, DC, UCt, cv::noArray(), cv::SVD::MODIFY_A | cv::SVD::FULL_UV);
 
   for(int i = 1; i < 4; i++) {
     double k = sqrt(dc[i - 1] / number_of_correspondences);
@@ -426,9 +418,7 @@ void PnPsolver::compute_barycentric_coordinates(void)
     for(int j = 1; j < 4; j++)
       cc[3 * i + j - 1] = cws[j][i] - cws[0][i];
 
-  // cvInvert(&CC, &CC_inv, CV_SVD);
   cv::invert(CC, CC_inv, cv::DECOMP_SVD);
-  // double * ci = cc_inv;
   double * ci = cc_inv;
   for(int i = 0; i < number_of_correspondences; i++) {
     double * pi = pws + 3 * i;
@@ -446,8 +436,8 @@ void PnPsolver::compute_barycentric_coordinates(void)
 void PnPsolver::fill_M(cv::Mat& M,
 		  const int row, const double * as, const double u, const double v)
 {
-  // double * M1 = M->data.db + row * 12;
-  double * M1 = M.ptr<double>(row); // TODO not 100% does same thing
+  double *M_data = M.ptr<double>();
+  double * M1 = M_data + row * 12;
   double * M2 = M1 + 12;
 
   for(int i = 0; i < 4; i++) {
@@ -490,7 +480,7 @@ double PnPsolver::compute_pose(double R[3][3], double t[3])
   choose_control_points();
   compute_barycentric_coordinates();
 
-  cv::Mat M = cv::Mat(2 * number_of_correspondences, 12, CV_64F);
+  cv::Mat M(2 * number_of_correspondences, 12, CV_64F);
 
   for(int i = 0; i < number_of_correspondences; i++)
     fill_M(M, 2 * i, alphas + 4 * i, us[2 * i], us[2 * i + 1]);
@@ -501,7 +491,6 @@ double PnPsolver::compute_pose(double R[3][3], double t[3])
   cv::Mat Ut(12, 12, CV_64F, ut);
 
   cv::mulTransposed(M, MtM, 1);
-  // cvSVD(&MtM, &D, &Ut, 0, CV_SVD_MODIFY_A | CV_SVD_U_T);
   cv::SVD::compute(MtM, D, Ut, cv::noArray(), cv::SVD::MODIFY_A | cv::SVD::FULL_UV);
   // cvReleaseMat(&M);
 
@@ -605,8 +594,7 @@ void PnPsolver::estimate_R_and_t(double R[3][3], double t[3])
   cv::Mat ABt_U(3, 3, CV_64F, abt_u);
   cv::Mat ABt_V(3, 3, CV_64F, abt_v);
 
-  // cvSetZero(&ABt);
-  ABt.setTo(cv::Scalar(0));
+  ABt.setTo(0);
   for(int i = 0; i < number_of_correspondences; i++) {
     double * pc = pcs + 3 * i;
     double * pw = pws + 3 * i;
@@ -618,7 +606,6 @@ void PnPsolver::estimate_R_and_t(double R[3][3], double t[3])
     }
   }
 
-  // cvSVD(&ABt, &ABt_D, &ABt_U, &ABt_V, CV_SVD_MODIFY_A);
   cv::SVD::compute(ABt, ABt_D, ABt_U, ABt_V, cv::SVD::MODIFY_A);
 
   for(int i = 0; i < 3; i++)
@@ -828,8 +815,8 @@ void PnPsolver::compute_A_and_b_gauss_newton(const double * l_6x10, const double
 {
   for(int i = 0; i < 6; i++) {
     const double * rowL = l_6x10 + i * 10;
-    // double * rowA = A->data.db + i * 4; // TODO still iffy on whether this is how to translate
-    double *rowA = A.ptr<double>(i);
+    double *A_data = A.ptr<double>();
+    double * rowA = A_data + i * 4;
 
     rowA[0] = 2 * rowL[0] * betas[0] +     rowL[1] * betas[1] +     rowL[3] * betas[2] +     rowL[6] * betas[3];
     rowA[1] =     rowL[1] * betas[0] + 2 * rowL[2] * betas[1] +     rowL[4] * betas[2] +     rowL[7] * betas[3];
@@ -863,8 +850,6 @@ void PnPsolver::gauss_newton(const cv::Mat& L_6x10, const cv::Mat& Rho,
   cv::Mat X(4, 1, CV_64F, x);
 
   for(int k = 0; k < iterations_number; k++) {
-    // compute_A_and_b_gauss_newton(L_6x10->data.db, Rho->data.db,
-		// 		 betas, A, B);
     compute_A_and_b_gauss_newton(L_6x10.ptr<double>(), Rho.ptr<double>(),
 				 betas, A, B);
     qr_solve(A, B, X);
@@ -892,8 +877,9 @@ void PnPsolver::qr_solve(cv::Mat& A, cv::Mat& b, cv::Mat& X)
     A2 = new double[nr];
   }
 
-  // double * pA = A->data.db, * ppAkk = pA;
-  double * pA = A.ptr<double>(), * ppAkk = pA;
+  double *A_data = A.ptr<double>();
+  double *b_data = b.ptr<double>();
+  double * pA = A_data, * ppAkk = pA;
   for(int k = 0; k < nc; k++) {
     double * ppAik = ppAkk, eta = fabs(*ppAik);
     for(int i = k + 1; i < nr; i++) {
@@ -937,8 +923,7 @@ void PnPsolver::qr_solve(cv::Mat& A, cv::Mat& b, cv::Mat& X)
   }
 
   // b <- Qt b
-  // double * ppAjj = pA, * pb = b->data.db;
-  double * ppAjj = pA, * pb = b.ptr<double>();
+  double * ppAjj = pA, * pb = b_data;
   for(int j = 0; j < nc; j++) {
     double * ppAij = ppAjj, tau = 0;
     for(int i = j; i < nr; i++)	{
@@ -955,7 +940,6 @@ void PnPsolver::qr_solve(cv::Mat& A, cv::Mat& b, cv::Mat& X)
   }
 
   // X = R-1 b
-  // double * pX = X->data.db;
   double * pX = X.ptr<double>();
   pX[nc - 1] = pb[nc - 1] / A2[nc - 1];
   for(int i = nc - 2; i >= 0; i--) {

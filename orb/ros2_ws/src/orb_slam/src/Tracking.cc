@@ -143,17 +143,17 @@ Tracking::Tracking(ORBVocabulary* pVoc, FramePublisher *pFramePublisher, MapPubl
     tf2::Transform tfT;
     tfT.setIdentity();
     geometry_msgs::msg::TransformStamped msg;
+    tf2::toMsg(tfT, msg.transform);
     msg.header.stamp = this->get_clock()->now();
     msg.header.frame_id = "/ORB_SLAM/World";
     msg.child_frame_id = "/ORB_SLAM/Camera";
-    tf2::toMsg(tfT, msg.transform);
     // mTfBr.sendTransform(tf::StampedTransform(tfT,ros::Time::now(), "/ORB_SLAM/World", "/ORB_SLAM/Camera"));
     mTfBr.sendTransform(msg);
     auto callback = 
     [this](sensor_msgs::msg::Image::SharedPtr msg) {
         this->GrabImage(msg);
     };
-    this->subscription_ = this->create_subscription<sensor_msgs::msg::Image>("/oakd/rgb/preview/image_raw", 1, callback);
+    this->subscription_ = this->create_subscription<sensor_msgs::msg::Image>("/camera/image_raw", 1, callback);
 }
 
 void Tracking::SetLocalMapper(LocalMapping *pLocalMapper)
@@ -324,14 +324,12 @@ void Tracking::GrabImage(const sensor_msgs::msg::Image::SharedPtr msg)
         tf2::Vector3 V(twc.at<float>(0), twc.at<float>(1), twc.at<float>(2));
 
         tf2::Transform tfTcw(M,V);
-
-        tf2::Transform tfT;
-        tfT.setIdentity();
         geometry_msgs::msg::TransformStamped msg;
+        tf2::toMsg(tfTcw, msg.transform);
+
         msg.header.stamp = this->get_clock()->now();
         msg.header.frame_id = "/ORB_SLAM/World";
         msg.child_frame_id = "/ORB_SLAM/Camera";
-        tf2::toMsg(tfT, msg.transform);
 
         mTfBr.sendTransform(msg);
     }
@@ -1011,6 +1009,7 @@ bool Tracking::Relocalisation()
                 }
 
 
+                std::cout << nGood << std::endl;
                 // If the pose is supported by enough inliers stop ransacs and continue
                 if(nGood>=50)
                 {                    

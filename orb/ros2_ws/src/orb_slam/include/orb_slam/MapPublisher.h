@@ -21,7 +21,7 @@
 #ifndef MAPPUBLISHER_H
 #define MAPPUBLISHER_H
 
-#include "rclcpp/rclcpp.hpp"
+#include<rclcpp/rclcpp.hpp>
 #include <visualization_msgs/msg/marker.hpp>
 
 #include"Map.h"
@@ -31,7 +31,7 @@
 namespace ORB_SLAM
 {
 
-class MapPublisher
+class MapPublisher : public rclcpp::Node
 {
 public:
     MapPublisher(Map* pMap);
@@ -50,9 +50,8 @@ private:
     bool isCamUpdated();
     void ResetCamFlag();
 
-    std::shared_ptr<rclcpp::Node> nh;
+    // ros::NodeHandle nh;
     std::shared_ptr<rclcpp::Publisher<visualization_msgs::msg::Marker>> publisher;
-
 
     visualization_msgs::msg::Marker mPoints;
     visualization_msgs::msg::Marker mReferencePoints;

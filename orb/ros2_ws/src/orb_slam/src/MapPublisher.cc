@@ -26,7 +26,7 @@ namespace ORB_SLAM
 {
 
 
-MapPublisher::MapPublisher(Map* pMap):mpMap(pMap), mbCameraUpdated(false)
+MapPublisher::MapPublisher(Map* pMap):mpMap(pMap), mbCameraUpdated(false), rclcpp::Node("map_publisher")
 {
     const char* MAP_FRAME_ID = "/ORB_SLAM/World";
     const char* POINTS_NAMESPACE = "MapPoints";
@@ -106,10 +106,8 @@ MapPublisher::MapPublisher(Map* pMap):mpMap(pMap), mbCameraUpdated(false)
     mReferencePoints.color.r =1.0f;
     mReferencePoints.color.a = 1.0;
 
-    nh = std::make_shared<rclcpp::Node>("map_pub");
-
     //Configure Publisher
-    publisher = nh->create_publisher<visualization_msgs::msg::Marker>("ORB_SLAM/Map", 10);
+    publisher = this->create_publisher<visualization_msgs::msg::Marker>("ORB_SLAM/Map", 10);
 
     publisher->publish(mPoints);
     publisher->publish(mReferencePoints);
@@ -172,11 +170,8 @@ void MapPublisher::PublishMapPoints(const vector<MapPoint*> &vpMPs, const vector
         mReferencePoints.points.push_back(p);
     }
 
-    // mPoints.header.stamp = ros::Time::now();
-    // mReferencePoints.header.stamp = ros::Time::now();
-    mPoints.header.stamp = nh->get_clock()->now();
-    mReferencePoints.header.stamp = nh->get_clock()->now();    
-    
+    mPoints.header.stamp = this->get_clock()->now();
+    mReferencePoints.header.stamp = this->get_clock()->now();
     publisher->publish(mPoints);
     publisher->publish(mReferencePoints);
 }
@@ -285,13 +280,10 @@ void MapPublisher::PublishKeyFrames(const vector<KeyFrame*> &vpKFs)
         }
     }
 
-    // mKeyFrames.header.stamp = ros::Time::now();
-    // mCovisibilityGraph.header.stamp = ros::Time::now();
-    // mMST.header.stamp = ros::Time::now();
-    mKeyFrames.header.stamp = nh->get_clock()->now();
-    mCovisibilityGraph.header.stamp = nh->get_clock()->now();
-    mMST.header.stamp = nh->get_clock()->now();
-    
+    mKeyFrames.header.stamp = this->get_clock()->now();
+    mCovisibilityGraph.header.stamp = this->get_clock()->now();
+    mMST.header.stamp = this->get_clock()->now();
+
     publisher->publish(mKeyFrames);
     publisher->publish(mCovisibilityGraph);
     publisher->publish(mMST);
@@ -351,8 +343,7 @@ void MapPublisher::PublishCurrentCamera(const cv::Mat &Tcw)
     mCurrentCamera.points.push_back(msgs_p4);
     mCurrentCamera.points.push_back(msgs_p1);
 
-    // mCurrentCamera.header.stamp = ros::Time::now();
-    mCurrentCamera.header.stamp = nh->get_clock()->now();
+    mCurrentCamera.header.stamp = this->get_clock()->now();
 
     publisher->publish(mCurrentCamera);
 }
