@@ -25,7 +25,7 @@ points2_cart = np.column_stack((x2, y2))
 
 # params = ndt_icp(points1, points2)   # tx, ty, phi
 start_time = time.time()
-params = ndt_icp(points1, points2, tx_est=-1, ty_est=-1, phi_est=0.0)
+params = ndt_icp(points1, points2, tx_est=0.0, ty_est=0.0, phi_est=0.0)
 end_time = time.time()
 
 points_estimate = np.array([transform(pt, params[0], params[1], params[2]) for pt in points2_cart])

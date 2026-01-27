@@ -19,7 +19,7 @@ COORD_LIMIT = math.ceil(RANGE_MAX)
 GRID_CNT = math.ceil(COORD_LIMIT / CELL_SIZE) * 2
 
 CHECK = True
-DO_PRINT = False
+DO_PRINT = True
 
 
 def cart2idx(point: np.ndarray):
@@ -193,6 +193,8 @@ def ndt_icp(
     y2 = r2 * np.sin(t2)
     points2_cart = np.column_stack((x2, y2))
 
+    # np.savetxt('test.txt', points2_cart, fmt='%4.6f', delimiter=',')
+
     # split 2D space around robot into CELL_SIZE^2 cells
     grid1 = [[[] for i in range(GRID_CNT)] for j in range(GRID_CNT)]                    # grid1[row, col] = [point1, point2, ...]
     occu1 = np.array([[0 for i in range(GRID_CNT)] for j in range(GRID_CNT)])           # occu1[row, col] = # of points in cell
@@ -274,8 +276,7 @@ def ndt_icp(
         cos_val = np.cos(params[2])
         sin_val = np.sin(params[2])
 
-        new_points_mat = transform_mat(points2_cart)
-
+        new_points_mat = transform_mat(points2_cart, tx=params[0], ty=params[1], phi=params[2])
         # ! TEST IMPLEMENTATION
         for idx in range(points2_cart.shape[0]):
             point = points2_cart[idx, :]
@@ -284,10 +285,18 @@ def ndt_icp(
         # for point in points2_cart:
         #     # map points in points2 according to transformation parameters
         #     new_point = transform(point, tx=params[0], ty=params[1], phi=params[2])
+            
             # find mean & covariance of corresponding cell
             idx = cart2idx(new_point)
+
+            # check idx isn't out of range of coordinate grid
+            if not 0 <= idx[0] < GRID_CNT or not 0 <= idx[1] < GRID_CNT:
+                continue
+            
+            # check occupancy grid
             if len(g1ndt[idx[0]][idx[1]]) == 0:
                 continue
+
             [pt_mean, pt_cov] = g1ndt[idx[0]][idx[1]]
             # calculate point score
             pt_score = normal_prob_cell(pt_mean, pt_cov, new_point)
