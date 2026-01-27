@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 
 LaserScan = np.ndarray  # [(p1, p2), ...] OR [(r, theta), ...]
 
+# COPY OF ICP ALG from RAYMONDS BRANCH (just copied over). Current as of 12:05pm 1/27
 
 MIN_PT_CNT = 3
 CELL_SIZE = 50.0   # cm
@@ -18,12 +19,12 @@ COORD_LIMIT = math.ceil(RANGE_MAX)
 GRID_CNT = math.ceil(COORD_LIMIT / CELL_SIZE) * 2
 
 CHECK = True
+DO_PRINT = True
 
 
 def cart2idx(point: np.ndarray):
     """Converts cartesian coordinates into row, col indices for grid indexing"""
     return int(-1 * point[1] / CELL_SIZE + (GRID_CNT / 2)), int(point[0] / CELL_SIZE + (GRID_CNT / 2))
-
 
 
 ################## NDT ##################
@@ -153,13 +154,16 @@ def compute_summand_increment(q: np.ndarray, xy: np.ndarray, cov: np.ndarray, co
 #     lam = 0.0 if lam_min > 0 else (-lam_min + lam0)
 #     return hessian + lam * np.eye(n)
 
+
 def hessian_shift(hessian: np.ndarray, factor=1.3):
     n = hessian.shape[0]
-    eig_vals = np.sort(scipy.linalg.eigvals(hessian, check_finite=False))
-    # eig_vals = np.sort(scipy.linalg.eigsh(hessian, check_finite=False))  # if hessian symmetry is enforced
-    print("eig vals:", eig_vals)
+    # eig_vals = np.sort(scipy.linalg.eigvals(hessian, check_finite=False))
+    eig_vals = np.sort(scipy.linalg.eigh(hessian, eigvals_only=True, check_finite=False))  # if hessian symmetry is enforced
+    if DO_PRINT:
+        print("eig vals:", eig_vals)
     if eig_vals[0] >= 0:
-        print("ERROR: eigvals aren't negative")
+        if DO_PRINT:
+            print("WARNING: eigvals aren't negative")
         return hessian
     return hessian + factor * np.abs(eig_vals[0]) * np.eye(n)
 
@@ -189,6 +193,8 @@ def ndt_icp(
     y2 = r2 * np.sin(t2)
     points2_cart = np.column_stack((x2, y2))
 
+    # np.savetxt('test.txt', points2_cart, fmt='%4.6f', delimiter=',')
+
     # split 2D space around robot into CELL_SIZE^2 cells
     grid1 = [[[] for i in range(GRID_CNT)] for j in range(GRID_CNT)]                    # grid1[row, col] = [point1, point2, ...]
     occu1 = np.array([[0 for i in range(GRID_CNT)] for j in range(GRID_CNT)])           # occu1[row, col] = # of points in cell
@@ -214,7 +220,7 @@ def ndt_icp(
     #     plt.gca().set_aspect("equal")
     #     # plt.imshow(occu1, cmap='hot', interpolation='nearest')
     #     plt.show()
-    # return
+    #     return
     
     # note which cells to compute normal distribution
     grid1_check = occu1 >= MIN_PT_CNT
@@ -224,7 +230,7 @@ def ndt_icp(
     #     ax = sns.heatmap(grid1_check)
     #     plt.gca().set_aspect("equal")
     #     plt.show()
-    # return
+    #     return
 
     # compute first NDT
     for row in range(GRID_CNT):
@@ -249,11 +255,15 @@ def ndt_icp(
 
     it = 0
     while it < max_it:
-        print(f"\n################ iteration {it} ################")
+        if DO_PRINT:
+            print(f"\n################ iteration {it} ################")
         if do_shift:
-            print("SHIFT ITERATION")
+            if DO_PRINT:
+                print("SHIFT ITERATION")
             params = prev_params.copy()
-        print("cur params:", params)
+        
+        if DO_PRINT:
+            print("cur params:", params)
 
         # initialize gradient/hessian
         gradient = np.array([0.0, 0.0, 0.0])
@@ -266,8 +276,7 @@ def ndt_icp(
         cos_val = np.cos(params[2])
         sin_val = np.sin(params[2])
 
-        new_points_mat = transform_mat(points2_cart)
-
+        new_points_mat = transform_mat(points2_cart, tx=params[0], ty=params[1], phi=params[2])
         # ! TEST IMPLEMENTATION
         for idx in range(points2_cart.shape[0]):
             point = points2_cart[idx, :]
@@ -276,10 +285,18 @@ def ndt_icp(
         # for point in points2_cart:
         #     # map points in points2 according to transformation parameters
         #     new_point = transform(point, tx=params[0], ty=params[1], phi=params[2])
+            
             # find mean & covariance of corresponding cell
             idx = cart2idx(new_point)
+
+            # check idx isn't out of range of coordinate grid
+            if not 0 <= idx[0] < GRID_CNT or not 0 <= idx[1] < GRID_CNT:
+                continue
+            
+            # check occupancy grid
             if len(g1ndt[idx[0]][idx[1]]) == 0:
                 continue
+
             [pt_mean, pt_cov] = g1ndt[idx[0]][idx[1]]
             # calculate point score
             pt_score = normal_prob_cell(pt_mean, pt_cov, new_point)
@@ -295,23 +312,27 @@ def ndt_icp(
             )
             gradient += gradient_summand
             hessian += hessian_summand
-            
-        print('total score:', total_score)
+        
+        if DO_PRINT:
+            print('total score:', total_score)
 
         # check for convergence
         if not do_shift and prev_total_score - conv_line <= total_score <= prev_total_score + conv_line:
-            print("FINAL:")
-            print('hessian:\n', hessian)
-            print('gradient:', gradient)
-            print('params:', params)
+            if DO_PRINT:
+                print("FINAL:")
+                print('hessian:\n', hessian)
+                print('gradient:', gradient)
+                print('params:', params)
             return params
         
         # else continue updating params
-        print('hessian:\n', hessian)
+        if DO_PRINT:
+            print('hessian:\n', hessian)
 
         if do_shift:
             hessian = hessian_shift(hessian)
-            print('hessian post-shift:\n', hessian)
+            if DO_PRINT:
+                print('hessian post-shift:\n', hessian)
             do_shift = False
             prev_shift = True
         else:
@@ -326,16 +347,19 @@ def ndt_icp(
         # update running total_score
         prev_total_score = total_score
 
-        print('gradient:', gradient)
+        if DO_PRINT:
+            print('gradient:', gradient)
         
         # compute transformation parameters increment
         p_delta = np.linalg.solve(hessian, -1 * gradient)
-        print('p_delta:', p_delta)
+        if DO_PRINT:
+            print('p_delta:', p_delta)
         
         # increment transformation parameters
         prev_params = params.copy()
         params += p_delta
-        print('new params:', params)
+        if DO_PRINT:
+            print('new params:', params)
 
         # increase iterator
         it += 1
