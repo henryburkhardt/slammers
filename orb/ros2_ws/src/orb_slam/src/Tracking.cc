@@ -1008,8 +1008,6 @@ bool Tracking::Relocalisation()
                     }
                 }
 
-
-                std::cout << nGood << std::endl;
                 // If the pose is supported by enough inliers stop ransacs and continue
                 if(nGood>=50)
                 {                    

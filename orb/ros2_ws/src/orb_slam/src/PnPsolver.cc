@@ -387,10 +387,12 @@ void PnPsolver::choose_control_points(void)
   // Take C1, C2, and C3 from PCA on the reference points:
   cv::Mat PW0(number_of_correspondences, 3, CV_64F);
 
-  double pw0tpw0[3 * 3], dc[3], uct[3 * 3];
+  // double pw0tpw0[3 * 3], dc[3], uct[3 * 3];
+  double pw0tpw0[3 * 3], dc[3];
   cv::Mat PW0tPW0(3, 3, CV_64F, pw0tpw0);
   cv::Mat DC(3, 1, CV_64F, dc);
-  cv::Mat UCt(3, 3, CV_64F, uct);
+  // cv::Mat UCt(3, 3, CV_64F, uct);
+  cv::Mat UC(3, 3, CV_64F);
 
   double *PW0_data = PW0.ptr<double>();
 
@@ -399,7 +401,9 @@ void PnPsolver::choose_control_points(void)
       PW0_data[3 * i + j] = pws[3 * i + j] - cws[0][j];
 
   cv::mulTransposed(PW0, PW0tPW0, 1);
-  cv::SVD::compute(PW0tPW0, DC, UCt, cv::noArray(), cv::SVD::MODIFY_A | cv::SVD::FULL_UV);
+  cv::SVD::compute(PW0tPW0, DC, UC, cv::noArray(), cv::SVD::MODIFY_A | cv::SVD::FULL_UV);
+  cv::Mat UCt = UC.t();
+  double *uct = UCt.ptr<double>();
 
   for(int i = 1; i < 4; i++) {
     double k = sqrt(dc[i - 1] / number_of_correspondences);
@@ -485,14 +489,16 @@ double PnPsolver::compute_pose(double R[3][3], double t[3])
   for(int i = 0; i < number_of_correspondences; i++)
     fill_M(M, 2 * i, alphas + 4 * i, us[2 * i], us[2 * i + 1]);
 
-  double mtm[12 * 12], d[12], ut[12 * 12];
+  double mtm[12 * 12], d[12];
   cv::Mat MtM(12, 12, CV_64F, mtm);
   cv::Mat D(12,  1, CV_64F, d);
-  cv::Mat Ut(12, 12, CV_64F, ut);
+  cv::Mat U(12, 12, CV_64F);
 
   cv::mulTransposed(M, MtM, 1);
-  cv::SVD::compute(MtM, D, Ut, cv::noArray(), cv::SVD::MODIFY_A | cv::SVD::FULL_UV);
+  cv::SVD::compute(MtM, D, U, cv::noArray(), cv::SVD::MODIFY_A | cv::SVD::FULL_UV);
   // cvReleaseMat(&M);
+  cv::Mat Ut = U.t();
+  double *ut = Ut.ptr<double>();
 
   double l_6x10[6 * 10], rho[6];
   cv::Mat L_6x10(6, 10, CV_64F, l_6x10);
