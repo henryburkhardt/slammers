@@ -10,7 +10,7 @@ angles = np.linspace(-np.pi, np.pi, N_BEAMS, endpoint=False)
 
 
 G2O_PATH = Path("./data/graph.txt")
-SCAN_DIR = Path("./data/scans")
+SCAN_DIR = Path("./data/lidar")
 UPDATE_MS = 200
 
 # -----------------------------

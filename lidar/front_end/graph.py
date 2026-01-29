@@ -39,7 +39,7 @@ class Vertex:
         return f"Vertex(key={self.key}, pose={self.pose}, neighbors={list(self.neighbors.keys())})"
 
 
-class Graph:
+class PoseGraph:
     def __init__(self):
         self.vert_list = {}
         self.num_vertices = 0

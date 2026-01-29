@@ -11,23 +11,26 @@ import tty
 import select
 from dataclasses import dataclass
 from pathlib import Path
-from graph import Graph, Vertex, Pose2D, Edge
+from graph import PoseGraph, Vertex, Pose2D, Edge
 
 
 class SlamFrontEnd(Node):
     def __init__(self):
         super().__init__('slam_frontend')
 
-        # ROS subscriptions
+        # ROS subscriptions - subscribes to the lidar scan and odometry topics
         self.create_subscription(LaserScan, '/mikey/scan', self.lidar_cb, 10)
         self.create_subscription(Odometry, '/mikey/odom', self.odom_cb, 10)
 
-        self.latest_scan = None
+        # store the latest information from the subscriptions
+        self.latest_ranges = None
         self.latest_angles = None
         self.latest_odom = None
 
-        self.graph = Graph()
+        # initialize the pose graph
+        self.pose_graph = PoseGraph()
 
+        # store the most recently created vertex id
         self.last_vertex_key = None
 
         # Keyboard thread - to handle keypresses to trigger pose generation
@@ -38,10 +41,11 @@ class SlamFrontEnd(Node):
         self.get_logger().info("SLAM Frontend running. Press SPACE to create a new pose vertex.")
     
     def reset_slam_data(
-            self,
+        self,
         graph_path: Path = Path("./data/graph.txt"),
-        scans_dir: Path = Path("./data/scans"),
+        scans_dir: Path = Path("./data/lidar"),
     ):
+        """clears all data (in the ./data folder)"""
         # Delete graph file
         if graph_path.exists():
             graph_path.unlink()
@@ -54,7 +58,7 @@ class SlamFrontEnd(Node):
 
     
     def odom_cb(self, msg: Odometry):
-        """Callback to unpack/store odom data"""
+        """Callback to unpack/store odom data -- called everytime there is fresh odom data"""
         x = msg.pose.pose.position.x
         y = msg.pose.pose.position.y
         q = msg.pose.pose.orientation
@@ -67,8 +71,8 @@ class SlamFrontEnd(Node):
 
 
     def lidar_cb(self, msg: LaserScan):
-        """Callback to unpack/store lidar data"""
-        self.latest_scan = np.array(msg.ranges, dtype=np.float32)
+        """Callback to unpack/store lidar data -- called everytime there is fresh lidar data"""
+        self.latest_ranges = np.array(msg.ranges, dtype=np.float32)
         self.latest_angles = (
             msg.angle_min
             + np.arange(len(msg.ranges)) * msg.angle_increment
@@ -76,39 +80,42 @@ class SlamFrontEnd(Node):
 
 
     def add_pose_vertex(self):
-        """
-        Add a pose vertext to the pose graph
-        """
-        if self.latest_scan is None or self.latest_odom is None:
+        """Add a pose vertext to the pose graph"""
+        if self.latest_ranges is None or self.latest_odom is None:
             self.get_logger().warn("No data yet")
             return  
 
-        # add vertext to graph
-        new_vertex_key = self.graph.num_vertices + 1
+        # create new vertext id
+        new_vertex_key = self.pose_graph.num_vertices + 1
 
+        # create the pose object (x, y, theta) and add to graph
         new_pose = Pose2D(self.latest_odom[0], self.latest_odom[1], self.latest_odom[2])
+        self.pose_graph.add_vertex(key=new_vertex_key, pose=new_pose, scan=self.latest_ranges.copy(), angles=self.latest_angles.copy()) 
         
-        self.graph.add_vertex(key=new_vertex_key, pose=new_pose, scan=self.latest_scan.copy(), angles=self.latest_angles.copy()) 
-        
-        self.save_scan_to_disk(new_vertex_key, ranges=self.latest_scan.copy(), angles=self.latest_angles.copy())
+        # save the point cloud to disk as npz (in ./data/scans)
+        self.save_scan_to_disk(new_vertex_key, ranges=self.latest_ranges.copy(), angles=self.latest_angles.copy())
 
         if self.last_vertex_key == None: 
             self.last_vertex_key = new_vertex_key
             return 
         
+        # add edge between current pose and previous pose
+        # TODO: set edge metadata correctly
         new_edge = Edge(dx=0, dy=0, dtheta=0, information=(1,1,1))
-
-        self.graph.add_edge(from_key=self.last_vertex_key, to_key=new_vertex_key, edge=new_edge)
-
-        self.graph.save_g2o(filepath="./data/graph.txt")
+        self.pose_graph.add_edge(from_key=self.last_vertex_key, to_key=new_vertex_key, edge=new_edge)
+        
+        # save graph to g2o output file
+        self.pose_graph.save_g2o(filepath="./data/graph.txt")
 
         self.last_vertex_key = new_vertex_key
 
+        # TODO: finish implimenting looop closure detection
         self.add_virtual_edges(new_vertex_key)
 
     def save_scan_to_disk(self, vertex_id: int, ranges, angles):
+        """save lidar scan to disk as npz"""
         print(ranges)
-        filepath = f"./data/scans/{vertex_id}.npz"
+        filepath = f"./data/lidar/{vertex_id}.npz"
         np.savez(filepath, ranges=ranges, angles=angles)
         return
  
@@ -120,9 +127,8 @@ class SlamFrontEnd(Node):
         # generate an edge (or multiple?) from the response
         pass
 
-
-    # Keyboard listener - to create new pose on each space bar press
     def keyboard_listener(self):
+        """Keyboard listener - to create new pose on each space bar press"""
         self.reset_slam_data()
 
         fd = sys.stdin.fileno()
