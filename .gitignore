@@ -3,3 +3,4 @@ orb/FAST/FAST
 *.DS_Store
 *CMakeCache.txt
 */CMakeFiles/*
+orb/ros2_ws/src/orb_slam/Data/ORBvoc.txt
