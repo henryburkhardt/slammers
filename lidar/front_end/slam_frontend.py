@@ -99,6 +99,8 @@ class SlamFrontEnd(Node):
             self.last_vertex_key = new_vertex_key
             return 
         
+        # OPTIONAL: we could run icp here between the two new scans to improve the odometry calculation even more - this isn't a virtual edge though - just like an imporved odom update.
+        
         # add edge between current pose and previous pose
         # TODO: set edge metadata correctly
         new_edge = Edge(dx=0, dy=0, dtheta=0, information=(1,1,1))
@@ -120,12 +122,19 @@ class SlamFrontEnd(Node):
         return
  
 
+    def is_pose_near_previsouly_explored_area(self, vertext_key) -> bool:
+        """check if given pose is an a previsouly explored area that is being revisited"""
+        # TODO: finish function
+        return True
 
     def add_virtual_edges(self, vertext_key:int):
         # TODO: finish 
-        # run icp between the scan in the given vertex, and other vertices that are near by, 
-        # generate an edge (or multiple?) from the response
-        pass
+        # check if the pose is back in an area that the robot has not visited for a while
+        if(self.is_pose_near_previsouly_explored_area(vertext_key)):
+            # run loop closure alg!
+            pass
+        else: 
+            return 
 
     def keyboard_listener(self):
         """Keyboard listener - to create new pose on each space bar press"""
