@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/bryce/Desktop/comps/ros2_ws/src/orb_slam/Thirdparty/g2o/lib/libg2o.pdb"
-  "/home/bryce/Desktop/comps/ros2_ws/src/orb_slam/Thirdparty/g2o/lib/libg2o.so"
+  "/home/bryce/Desktop/comps/slammers/orb/ros2_ws/src/orb_slam/Thirdparty/g2o/lib/libg2o.pdb"
+  "/home/bryce/Desktop/comps/slammers/orb/ros2_ws/src/orb_slam/Thirdparty/g2o/lib/libg2o.so"
   "CMakeFiles/g2o.dir/g2o/core/batch_stats.cpp.o"
   "CMakeFiles/g2o.dir/g2o/core/batch_stats.cpp.o.d"
   "CMakeFiles/g2o.dir/g2o/core/cache.cpp.o"

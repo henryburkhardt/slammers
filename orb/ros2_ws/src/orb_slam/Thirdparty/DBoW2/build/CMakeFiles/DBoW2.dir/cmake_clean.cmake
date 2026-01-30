@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/bryce/Desktop/comps/ros2_ws/src/orb_slam/Thirdparty/DBoW2/lib/libDBoW2.pdb"
-  "/home/bryce/Desktop/comps/ros2_ws/src/orb_slam/Thirdparty/DBoW2/lib/libDBoW2.so"
+  "/home/bryce/Desktop/comps/slammers/orb/ros2_ws/src/orb_slam/Thirdparty/DBoW2/lib/libDBoW2.pdb"
+  "/home/bryce/Desktop/comps/slammers/orb/ros2_ws/src/orb_slam/Thirdparty/DBoW2/lib/libDBoW2.so"
   "CMakeFiles/DBoW2.dir/DBoW2/BowVector.cpp.o"
   "CMakeFiles/DBoW2.dir/DBoW2/BowVector.cpp.o.d"
   "CMakeFiles/DBoW2.dir/DBoW2/FORB.cpp.o"

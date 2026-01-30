@@ -1,4 +1,4 @@
-# Install script for directory: /home/bryce/Desktop/comps/ros2_ws/src/orb_slam/Thirdparty/DBoW2
+# Install script for directory: /home/bryce/Desktop/comps/slammers/orb/ros2_ws/src/orb_slam/Thirdparty/DBoW2
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/bryce/Desktop/comps/ros2_ws/src/orb_slam/Thirdparty/DBoW2/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/bryce/Desktop/comps/slammers/orb/ros2_ws/src/orb_slam/Thirdparty/DBoW2/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
