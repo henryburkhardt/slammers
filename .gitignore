@@ -1,6 +1,10 @@
-orb/FAST/FAST
 *.vscode
 *.DS_Store
 *CMakeCache.txt
 */CMakeFiles/*
 orb/ros2_ws/src/orb_slam/Data/ORBvoc.txt
+*CMakeFiles*
+orb/ORB/rBRIEFImages/*
+orb/ORB/build
+orb/ORB/.venv
+orb/ORB/.vscode

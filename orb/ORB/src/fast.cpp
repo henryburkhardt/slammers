@@ -156,7 +156,7 @@ class FASTDetector {
         }
 };
 
-void learnedFast(std::vector<cv::Point2d>& keypoints, const cv::Mat& img, int threshold) {
+void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int threshold) {
     unsigned char* raw_data = img.data;
     int height = img.size().height;
     int width = img.size().width;
@@ -6635,7 +6635,7 @@ void train(int n, int threshold) {
     const auto itr = std::filesystem::directory_iterator("train_images");
     std::vector<cv::Mat> images;
     std::vector<std::vector<std::vector<bool>>> keypoints;
-    for (const auto file : itr) {
+    for (const auto& file : itr) {
         cv::Mat img = cv::imread(file.path(), cv::IMREAD_GRAYSCALE);
         images.push_back(img);
         FASTDetector detector = FASTDetector(n, threshold);
@@ -6670,54 +6670,54 @@ void train(int n, int threshold) {
     trainDecisionTree(images, pixelSet, keypoints, choices, threshold, 0);
 }
 
-int main(int argc, char* argv[]) {
-    if (argc == 2 && strcmp(argv[1], "train") == 0) {
-        train(9, 10);
-        return 0;
-    }
-    cv::Mat img = cv::imread("train_images/weitz.png", cv::IMREAD_GRAYSCALE);
+// int main(int argc, char* argv[]) {
+//     if (argc == 2 && strcmp(argv[1], "train") == 0) {
+//         train(9, 10);
+//         return 0;
+//     }
+//     cv::Mat img = cv::imread("train_images/weitz.png", cv::IMREAD_GRAYSCALE);
 
-    // Check if the image loaded successfully
-    if (img.empty()) {
-        std::cerr << "Error: Could not open or find the image." << std::endl;
-        return -1;
-    }
+//     // Check if the image loaded successfully
+//     if (img.empty()) {
+//         std::cerr << "Error: Could not open or find the image." << std::endl;
+//         return -1;
+//     }
 
-    FASTDetector detector = FASTDetector(9, 10);
-    auto start = std::chrono::high_resolution_clock::now();
-    std::vector<cv::Point> keypoints= detector.detect(img);
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-    std::cout << "nonML took " << duration.count() << " microseconds to execute." << std::endl;
-    std::cout << keypoints.size() << std::endl;
+//     FASTDetector detector = FASTDetector(9, 10);
+//     auto start = std::chrono::high_resolution_clock::now();
+//     std::vector<cv::Point> keypoints= detector.detect(img);
+//     auto end = std::chrono::high_resolution_clock::now();
+//     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+//     std::cout << "nonML took " << duration.count() << " microseconds to execute." << std::endl;
+//     std::cout << keypoints.size() << std::endl;
 
-    std::vector<cv::Point2d> fastKeypoints;
-    start = std::chrono::high_resolution_clock::now();
-    learnedFast(fastKeypoints, img, 10);
-    end = std::chrono::high_resolution_clock::now();
-    duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-    std::cout << "ML took " << duration.count() << " microseconds to execute." << std::endl;
-    std::cout << fastKeypoints.size() << std::endl;
+//     std::vector<cv::Point2d> fastKeypoints;
+//     start = std::chrono::high_resolution_clock::now();
+//     learnedFast(fastKeypoints, img, 10);
+//     end = std::chrono::high_resolution_clock::now();
+//     duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+//     std::cout << "ML took " << duration.count() << " microseconds to execute." << std::endl;
+//     std::cout << fastKeypoints.size() << std::endl;
 
-    std::vector<cv::KeyPoint> kps;
-    auto thing = cv::FastFeatureDetector::create(10, false);
+//     std::vector<cv::KeyPoint> kps;
+//     auto thing = cv::FastFeatureDetector::create(10, false);
     
-    start = std::chrono::high_resolution_clock::now();
-    thing->detect(img, kps);
-    end = std::chrono::high_resolution_clock::now();
-    duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-    std::cout << "OpenCV took " << duration.count() << " microseconds to execute." << std::endl;
-    std::cout << kps.size() << std::endl;
+//     start = std::chrono::high_resolution_clock::now();
+//     thing->detect(img, kps);
+//     end = std::chrono::high_resolution_clock::now();
+//     duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+//     std::cout << "OpenCV took " << duration.count() << " microseconds to execute." << std::endl;
+//     std::cout << kps.size() << std::endl;
 
-    cv::Mat colorImg;
-    cv::cvtColor(img, colorImg, cv::COLOR_GRAY2BGR);
+//     cv::Mat colorImg;
+//     cv::cvtColor(img, colorImg, cv::COLOR_GRAY2BGR);
 
-    for (cv::Point2d keypoint : fastKeypoints) {
-        colorImg.at<cv::Vec3b>(keypoint) = cv::Vec3b(0, 0, 255);
-    }
+//     for (cv::Point2d keypoint : fastKeypoints) {
+//         colorImg.at<cv::Vec3b>(keypoint) = cv::Vec3b(0, 0, 255);
+//     }
 
-    cv::imshow("Frame", colorImg);
-    cv::waitKey(0);
+//     cv::imshow("Frame", colorImg);
+//     cv::waitKey(0);
 
-    return 0;
-}
+//     return 0;
+// }

@@ -36,7 +36,7 @@ class TreeNode:
             if self.value == -1:
                 print('error')
             else:
-                print(indent_level + 'keypoints.push_back(cv::Point2d(col, row));')
+                print(indent_level + 'differences[row][col] = calculateDifference(img, row, col); std::cout << "value stored" << std::endl;')
             return
         one_two_equal = self.children[0] == self.children[1]
         two_three_equal = self.children[1] == self.children[2]
