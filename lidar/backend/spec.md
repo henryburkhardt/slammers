@@ -1,4 +1,6 @@
 # slam backend
+henry's notes as of 2/3
+
 input: pose (factor) graph in g2o format 
 output: gauss-newton optimized version of the input pose graph
 

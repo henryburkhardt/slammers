@@ -9,9 +9,8 @@
 #include <g2o/solvers/dense/linear_solver_dense.h>
 #include <g2o/types/slam2d/types_slam2d.h>
 
-// --------------------------
-// Optimizer setup
-// --------------------------
+
+// intialize the optimimzer
 std::unique_ptr<g2o::SparseOptimizer> setupOptimizer() {
     auto optimizer = std::make_unique<g2o::SparseOptimizer>();
     optimizer->setVerbose(true);
@@ -28,9 +27,8 @@ std::unique_ptr<g2o::SparseOptimizer> setupOptimizer() {
     return optimizer;
 }
 
-// --------------------------
-// HTTP Handler
-// --------------------------
+
+// http handler
 void handleOptimize(const httplib::Request& req, httplib::Response& res) {
     // req.body contains the g2o file content
     std::stringstream inputStream(req.body);
@@ -56,9 +54,8 @@ void handleOptimize(const httplib::Request& req, httplib::Response& res) {
     res.set_content(outputStream.str(), "text/plain");
 }
 
-// --------------------------
-// Main server
-// --------------------------
+
+// main server
 int main() {
     httplib::Server svr;
 
