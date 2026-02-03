@@ -1,2 +1,53 @@
-.venv
+# -----------------------------
+# Python
+# -----------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Packaging
+*.egg-info/
+dist/
+build/
+
+# -----------------------------
+# Testing / coverage
+# -----------------------------
+.pytest_cache/
+.coverage
+htmlcov/
+
+# -----------------------------
+# Editors / OS
+# -----------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
 .DS_Store
+Thumbs.db
+
+# -----------------------------
+# Logs
+# -----------------------------
+*.log
+
+# -----------------------------
+# Data / outputs (SLAM-friendly)
+# -----------------------------
+# -----------------------------
+# Matplotlib
+# -----------------------------
+.matplotlib/
+
+# -----------------------------
+# Jupyter
+# -----------------------------
+.ipynb_checkpoints/
