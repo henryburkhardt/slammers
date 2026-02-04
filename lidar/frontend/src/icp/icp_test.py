@@ -1,8 +1,8 @@
 from ndt_icp import * 
 
 
-pose1 = np.load("../data/scans/1.npz")
-pose2 = np.load("../data/scans/2.npz")
+pose1 = np.load("../data/lidar/1.npz")
+pose2 = np.load("../data/lidar/2.npz")
 
 ranges1 = pose1["ranges"]
 ranges2= pose2["ranges"]
@@ -23,9 +23,11 @@ points2 = np.column_stack((ranges2_filtered, angles2_filtered))
 
 # remove inf ranges
 
-
-
-result = ndt_icp(points1, points2)
+result = ndt_icp2(points1, points2)
+# ndt_icp doesn't return anything yet
+# ndt_icp2 returns transformaiton matrix (without bottom row)
+# --> [[rot, rot, tx],
+#      [rot, rot, ty]]
 
 print(result)
 
