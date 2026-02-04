@@ -160,7 +160,9 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
     unsigned char* raw_data = img.data;
     int height = img.size().height;
     int width = img.size().width;
+    #pragma omp parallel for
     for (int row = 3; row < height - 3; row++) {
+        std::vector<cv::Point2i> localPoints;
         for (int col = 3; col < width - 3; col++) {
             int comp_pixel, pixel;
             comp_pixel = raw_data[row * width + col];
@@ -182,7 +184,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                         if (pixel + threshold < comp_pixel) {
                                             pixel = raw_data[(row - 3) * width + col - 1];
                                             if (pixel + threshold < comp_pixel) {
-                                                keypoints.push_back(cv::Point2d(col, row));
+                                                localPoints.push_back(cv::Point2d(col, row));
                                             }
                                             else {
                                                 pixel = raw_data[(row + 3) * width + col];
@@ -191,7 +193,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col + 1];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -210,14 +212,14 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel + threshold < comp_pixel) {
                                                                 pixel = raw_data[(row) * width + col - 3];
                                                                 if (pixel + threshold < comp_pixel || pixel - threshold > comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                                 else {
                                                                     pixel = raw_data[(row + 2) * width + col + 2];
                                                                     if (pixel + threshold < comp_pixel) {
                                                                         pixel = raw_data[(row + 3) * width + col + 1];
                                                                         if (pixel + threshold < comp_pixel) {
-                                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                                            localPoints.push_back(cv::Point2d(col, row));
                                                                         }
                                                                     }
                                                                 }
@@ -225,7 +227,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             else if (pixel - threshold > comp_pixel) {
                                                                 pixel = raw_data[(row + 3) * width + col + 1];
                                                                 if (pixel + threshold < comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                             else {
@@ -233,7 +235,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                                 if (pixel + threshold < comp_pixel) {
                                                                     pixel = raw_data[(row + 2) * width + col + 2];
                                                                     if (pixel + threshold < comp_pixel) {
-                                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                                        localPoints.push_back(cv::Point2d(col, row));
                                                                     }
                                                                 }
                                                             }
@@ -243,7 +245,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel + threshold < comp_pixel) {
                                                                 pixel = raw_data[(row + 2) * width + col + 2];
                                                                 if (pixel + threshold < comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -252,7 +254,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel + threshold < comp_pixel) {
                                                                 pixel = raw_data[(row + 3) * width + col + 1];
                                                                 if (pixel + threshold < comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -273,14 +275,14 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel + threshold < comp_pixel) {
                                                                 pixel = raw_data[(row - 3) * width + col - 1];
                                                                 if (pixel + threshold < comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                                 else if (pixel - threshold > comp_pixel) {
                                                                     pixel = raw_data[(row + 2) * width + col + 2];
                                                                     if (pixel + threshold < comp_pixel) {
                                                                         pixel = raw_data[(row + 3) * width + col + 1];
                                                                         if (pixel + threshold < comp_pixel) {
-                                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                                            localPoints.push_back(cv::Point2d(col, row));
                                                                         }
                                                                     }
                                                                 }
@@ -289,7 +291,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                                     if (pixel + threshold < comp_pixel) {
                                                                         pixel = raw_data[(row + 2) * width + col + 2];
                                                                         if (pixel + threshold < comp_pixel) {
-                                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                                            localPoints.push_back(cv::Point2d(col, row));
                                                                         }
                                                                     }
                                                                 }
@@ -297,7 +299,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             else if (pixel - threshold > comp_pixel) {
                                                                 pixel = raw_data[(row + 2) * width + col + 2];
                                                                 if (pixel + threshold < comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                             else {
@@ -305,7 +307,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                                 if (pixel + threshold < comp_pixel) {
                                                                     pixel = raw_data[(row + 3) * width + col + 1];
                                                                     if (pixel + threshold < comp_pixel) {
-                                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                                        localPoints.push_back(cv::Point2d(col, row));
                                                                     }
                                                                 }
                                                             }
@@ -315,7 +317,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel + threshold < comp_pixel) {
                                                                 pixel = raw_data[(row + 3) * width + col + 1];
                                                                 if (pixel + threshold < comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -337,12 +339,12 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row) * width + col - 3];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                             else if (pixel - threshold > comp_pixel) {
                                                                 pixel = raw_data[(row + 2) * width + col + 2];
                                                                 if (pixel + threshold < comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                             else {
@@ -350,7 +352,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                                 if (pixel + threshold < comp_pixel) {
                                                                     pixel = raw_data[(row + 3) * width + col + 1];
                                                                     if (pixel + threshold < comp_pixel) {
-                                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                                        localPoints.push_back(cv::Point2d(col, row));
                                                                     }
                                                                 }
                                                             }
@@ -360,7 +362,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel + threshold < comp_pixel) {
                                                                 pixel = raw_data[(row + 2) * width + col + 2];
                                                                 if (pixel + threshold < comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -369,7 +371,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel + threshold < comp_pixel) {
                                                                 pixel = raw_data[(row + 3) * width + col + 1];
                                                                 if (pixel + threshold < comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -390,7 +392,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel + threshold < comp_pixel) {
                                                                 pixel = raw_data[(row - 3) * width + col - 1];
                                                                 if (pixel + threshold < comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -411,7 +413,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel + threshold < comp_pixel) {
                                                                 pixel = raw_data[(row) * width + col - 3];
                                                                 if (pixel + threshold < comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -433,14 +435,14 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row + 3) * width + col + 1];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                             else if (pixel - threshold > comp_pixel) {
                                                                 pixel = raw_data[(row - 3) * width + col - 1];
                                                                 if (pixel + threshold < comp_pixel) {
                                                                     pixel = raw_data[(row) * width + col - 3];
                                                                     if (pixel + threshold < comp_pixel) {
-                                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                                        localPoints.push_back(cv::Point2d(col, row));
                                                                     }
                                                                 }
                                                             }
@@ -449,7 +451,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                                 if (pixel + threshold < comp_pixel) {
                                                                     pixel = raw_data[(row - 3) * width + col - 1];
                                                                     if (pixel + threshold < comp_pixel) {
-                                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                                        localPoints.push_back(cv::Point2d(col, row));
                                                                     }
                                                                 }
                                                             }
@@ -459,7 +461,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel + threshold < comp_pixel) {
                                                                 pixel = raw_data[(row) * width + col - 3];
                                                                 if (pixel + threshold < comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -468,7 +470,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel + threshold < comp_pixel) {
                                                                 pixel = raw_data[(row - 3) * width + col - 1];
                                                                 if (pixel + threshold < comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -480,7 +482,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel + threshold < comp_pixel) {
                                                                 pixel = raw_data[(row) * width + col - 3];
                                                                 if (pixel + threshold < comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -492,7 +494,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel + threshold < comp_pixel) {
                                                                 pixel = raw_data[(row - 3) * width + col - 1];
                                                                 if (pixel + threshold < comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -513,14 +515,14 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel + threshold < comp_pixel) {
                                                     pixel = raw_data[(row - 3) * width + col - 1];
                                                     if (pixel + threshold < comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                     else if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col - 1];
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row + 3) * width + col];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -533,7 +535,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                                 if (pixel + threshold < comp_pixel) {
                                                                     pixel = raw_data[(row + 3) * width + col];
                                                                     if (pixel + threshold < comp_pixel) {
-                                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                                        localPoints.push_back(cv::Point2d(col, row));
                                                                     }
                                                                 }
                                                             }
@@ -547,7 +549,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row + 3) * width + col - 1];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -561,17 +563,17 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel + threshold < comp_pixel) {
                                                                 pixel = raw_data[(row + 2) * width + col - 2];
                                                                 if (pixel + threshold < comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                             else if (pixel - threshold > comp_pixel) {
                                                                 pixel = raw_data[(row + 3) * width + col + 1];
                                                                 if (pixel + threshold < comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                             else {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -584,7 +586,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row + 2) * width + col - 2];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -593,13 +595,13 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col - 1];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                     else if (pixel + threshold >= comp_pixel && pixel - threshold <= comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -611,18 +613,18 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                         else if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row - 3) * width + col + 1];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                         else {
                                                             pixel = raw_data[(row - 3) * width + col - 1];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -642,14 +644,14 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel + threshold < comp_pixel) {
                                                     pixel = raw_data[(row - 2) * width + col + 2];
                                                     if (pixel + threshold < comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                     else if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col - 1];
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row + 2) * width + col - 2];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -658,7 +660,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row + 3) * width + col - 1];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -674,7 +676,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                                 if (pixel + threshold < comp_pixel) {
                                                                     pixel = raw_data[(row + 3) * width + col];
                                                                     if (pixel + threshold < comp_pixel) {
-                                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                                        localPoints.push_back(cv::Point2d(col, row));
                                                                     }
                                                                 }
                                                             }
@@ -692,7 +694,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                                 if (pixel + threshold < comp_pixel) {
                                                                     pixel = raw_data[(row + 3) * width + col];
                                                                     if (pixel + threshold < comp_pixel) {
-                                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                                        localPoints.push_back(cv::Point2d(col, row));
                                                                     }
                                                                 }
                                                             }
@@ -709,12 +711,12 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row - 3) * width + col - 1];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                             else if (pixel + threshold >= comp_pixel && pixel - threshold <= comp_pixel) {
                                                                 pixel = raw_data[(row - 2) * width + col + 2];
                                                                 if (pixel - threshold > comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -730,14 +732,14 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row - 3) * width + col - 1];
                                                             if (pixel + threshold < comp_pixel || pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                             else {
                                                                 pixel = raw_data[(row + 3) * width + col + 1];
                                                                 if (pixel + threshold < comp_pixel) {
                                                                     pixel = raw_data[(row + 2) * width + col + 2];
                                                                     if (pixel + threshold < comp_pixel) {
-                                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                                        localPoints.push_back(cv::Point2d(col, row));
                                                                     }
                                                                 }
                                                             }
@@ -762,14 +764,14 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel + threshold < comp_pixel) {
                                                     pixel = raw_data[(row - 3) * width + col + 1];
                                                     if (pixel + threshold < comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                     else {
                                                         pixel = raw_data[(row + 2) * width + col - 2];
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row + 3) * width + col - 1];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -783,7 +785,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel + threshold < comp_pixel) {
                                                                 pixel = raw_data[(row + 3) * width + col - 1];
                                                                 if (pixel + threshold < comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -798,7 +800,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel + threshold < comp_pixel) {
                                                                 pixel = raw_data[(row + 3) * width + col - 1];
                                                                 if (pixel + threshold < comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -816,11 +818,11 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel - threshold > comp_pixel) {
                                                                 pixel = raw_data[(row) * width + col + 3];
                                                                 if (pixel + threshold < comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                             else {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -835,12 +837,12 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row) * width + col - 3];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                             else {
                                                                 pixel = raw_data[(row) * width + col + 3];
                                                                 if (pixel + threshold < comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -857,7 +859,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row) * width + col + 3];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -872,7 +874,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col + 1];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -894,14 +896,14 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel + threshold < comp_pixel) {
                                                     pixel = raw_data[(row - 3) * width + col + 1];
                                                     if (pixel + threshold < comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                     else {
                                                         pixel = raw_data[(row + 2) * width + col - 2];
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row + 3) * width + col - 1];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -913,7 +915,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row + 3) * width + col - 1];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -927,7 +929,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel + threshold < comp_pixel) {
                                                                 pixel = raw_data[(row + 3) * width + col - 1];
                                                                 if (pixel + threshold < comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -943,12 +945,12 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row) * width + col - 3];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                             else {
                                                                 pixel = raw_data[(row) * width + col + 3];
                                                                 if (pixel + threshold < comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -964,12 +966,12 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row) * width + col - 3];
                                                             if (pixel + threshold < comp_pixel || pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                             else {
                                                                 pixel = raw_data[(row) * width + col + 3];
                                                                 if (pixel + threshold < comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -986,7 +988,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row) * width + col + 3];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -1011,14 +1013,14 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel + threshold < comp_pixel) {
                                                     pixel = raw_data[(row + 3) * width + col];
                                                     if (pixel + threshold < comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                     else if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col + 1];
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row - 3) * width + col - 1];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -1029,7 +1031,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel + threshold < comp_pixel) {
                                                                 pixel = raw_data[(row - 3) * width + col - 1];
                                                                 if (pixel + threshold < comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -1042,12 +1044,12 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row + 3) * width + col];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                             else if (pixel + threshold >= comp_pixel && pixel - threshold <= comp_pixel) {
                                                                 pixel = raw_data[(row - 3) * width + col + 1];
                                                                 if (pixel + threshold < comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -1060,12 +1062,12 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row + 3) * width + col];
                                                             if (pixel + threshold < comp_pixel || pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                             else {
                                                                 pixel = raw_data[(row - 3) * width + col + 1];
                                                                 if (pixel + threshold < comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -1079,13 +1081,13 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col - 1];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                     else if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                     else {
@@ -1093,7 +1095,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row - 3) * width + col - 1];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -1106,12 +1108,12 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col + 1];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                         else {
                                                             pixel = raw_data[(row + 3) * width + col];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -1127,7 +1129,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col + 1];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -1152,7 +1154,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel + threshold < comp_pixel) {
                                                     pixel = raw_data[(row + 3) * width + col];
                                                     if (pixel + threshold < comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                     else {
                                                         pixel = raw_data[(row - 3) * width + col + 1];
@@ -1161,7 +1163,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel + threshold < comp_pixel) {
                                                                 pixel = raw_data[(row - 3) * width + col - 1];
                                                                 if (pixel + threshold < comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -1174,13 +1176,13 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row - 3) * width + col - 1];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                         else {
                                                             pixel = raw_data[(row + 3) * width + col];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -1192,12 +1194,12 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row - 3) * width + col + 1];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                             else {
                                                                 pixel = raw_data[(row + 3) * width + col];
                                                                 if (pixel + threshold < comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -1211,7 +1213,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col - 1];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                     else {
@@ -1219,7 +1221,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row - 3) * width + col - 1];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -1232,12 +1234,12 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col + 1];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                         else {
                                                             pixel = raw_data[(row + 3) * width + col];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -1253,7 +1255,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col + 1];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -1279,14 +1281,14 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                             if (pixel + threshold < comp_pixel) {
                                                 pixel = raw_data[(row - 3) * width + col + 1];
                                                 if (pixel + threshold < comp_pixel) {
-                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                    localPoints.push_back(cv::Point2d(col, row));
                                                 }
                                                 else {
                                                     pixel = raw_data[(row + 2) * width + col - 2];
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col - 1];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -1298,7 +1300,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col - 1];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -1314,7 +1316,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel + threshold < comp_pixel) {
                                                     pixel = raw_data[(row) * width + col + 3];
                                                     if (pixel + threshold < comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                 }
                                             }
@@ -1337,7 +1339,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row + 1) * width + col - 3];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -1361,7 +1363,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -1386,7 +1388,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel + threshold < comp_pixel) {
                                                     pixel = raw_data[(row - 3) * width + col - 1];
                                                     if (pixel + threshold < comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                 }
                                             }
@@ -1409,7 +1411,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row) * width + col - 3];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -1428,7 +1430,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel - threshold > comp_pixel) {
                                                     pixel = raw_data[(row + 3) * width + col];
                                                     if (pixel - threshold > comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                 }
                                             }
@@ -1448,7 +1450,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row) * width + col - 3];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -1473,7 +1475,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel + threshold < comp_pixel) {
                                                     pixel = raw_data[(row - 3) * width + col - 1];
                                                     if (pixel + threshold < comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                 }
                                             }
@@ -1498,14 +1500,14 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                             if (pixel + threshold < comp_pixel) {
                                                 pixel = raw_data[(row - 3) * width + col + 1];
                                                 if (pixel + threshold < comp_pixel) {
-                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                    localPoints.push_back(cv::Point2d(col, row));
                                                 }
                                                 else {
                                                     pixel = raw_data[(row + 2) * width + col - 2];
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col - 1];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -1515,7 +1517,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel + threshold < comp_pixel) {
                                                     pixel = raw_data[(row - 3) * width + col + 1];
                                                     if (pixel + threshold < comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                 }
                                             }
@@ -1529,7 +1531,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -1547,7 +1549,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row + 1) * width + col - 3];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -1565,7 +1567,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -1584,7 +1586,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel + threshold < comp_pixel) {
                                                     pixel = raw_data[(row - 3) * width + col - 1];
                                                     if (pixel + threshold < comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                 }
                                             }
@@ -1602,7 +1604,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel + threshold < comp_pixel) {
                                                     pixel = raw_data[(row - 3) * width + col - 1];
                                                     if (pixel + threshold < comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                 }
                                             }
@@ -1630,7 +1632,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                             if (pixel + threshold < comp_pixel) {
                                                 pixel = raw_data[(row + 1) * width + col - 3];
                                                 if (pixel + threshold < comp_pixel) {
-                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                    localPoints.push_back(cv::Point2d(col, row));
                                                 }
                                                 else if (pixel - threshold > comp_pixel) {
                                                     pixel = raw_data[(row - 2) * width + col + 2];
@@ -1639,7 +1641,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row - 1) * width + col + 3];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -1651,7 +1653,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row) * width + col + 3];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -1670,7 +1672,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col - 1];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -1688,7 +1690,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row + 1) * width + col - 3];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -1711,7 +1713,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row) * width + col + 3];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -1735,7 +1737,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row - 2) * width + col + 2];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -1758,13 +1760,13 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel + threshold < comp_pixel) {
                                                     pixel = raw_data[(row + 3) * width + col + 1];
                                                     if (pixel + threshold < comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                 }
                                                 else if (pixel - threshold > comp_pixel) {
                                                     pixel = raw_data[(row - 3) * width + col + 1];
                                                     if (pixel + threshold < comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                 }
                                                 else {
@@ -1774,7 +1776,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row + 3) * width + col + 1];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -1790,7 +1792,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col + 1];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -1807,7 +1809,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row + 3) * width + col + 1];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -1830,12 +1832,12 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel + threshold < comp_pixel) {
                                                     pixel = raw_data[(row + 1) * width + col - 3];
                                                     if (pixel + threshold < comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                     else if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row - 2) * width + col + 2];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                     else {
@@ -1843,7 +1845,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row - 1) * width + col + 3];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -1861,7 +1863,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row + 3) * width + col + 1];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -1879,7 +1881,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row - 2) * width + col + 2];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -1910,7 +1912,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row) * width + col + 3];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -1921,7 +1923,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row + 3) * width + col];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -1931,7 +1933,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row) * width + col + 3];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -1945,7 +1947,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row) * width + col + 3];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -1973,7 +1975,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -1990,7 +1992,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row + 2) * width + col + 2];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -2008,7 +2010,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row + 3) * width + col + 1];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -2027,7 +2029,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row - 2) * width + col + 2];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -2046,7 +2048,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel - threshold > comp_pixel) {
                                                     pixel = raw_data[(row - 3) * width + col - 1];
                                                     if (pixel - threshold > comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                 }
                                             }
@@ -2066,7 +2068,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col + 1];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -2092,7 +2094,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row) * width + col + 3];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -2108,7 +2110,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row + 1) * width + col - 3];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -2124,14 +2126,14 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel - threshold > comp_pixel) {
                                                     pixel = raw_data[(row + 1) * width + col - 3];
                                                     if (pixel - threshold > comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                     else {
                                                         pixel = raw_data[(row) * width + col + 3];
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row - 1) * width + col + 3];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -2150,7 +2152,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row + 1) * width + col - 3];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -2173,7 +2175,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row - 3) * width + col + 1];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -2185,14 +2187,14 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                             if (pixel - threshold > comp_pixel) {
                                                 pixel = raw_data[(row + 3) * width + col - 1];
                                                 if (pixel - threshold > comp_pixel) {
-                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                    localPoints.push_back(cv::Point2d(col, row));
                                                 }
                                                 else {
                                                     pixel = raw_data[(row - 2) * width + col + 2];
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col + 1];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -2204,7 +2206,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col + 1];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -2221,7 +2223,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row - 1) * width + col + 3];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -2243,18 +2245,18 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row) * width + col + 3];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                     else if (pixel - threshold > comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                     else {
                                                         pixel = raw_data[(row) * width + col + 3];
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row - 1) * width + col + 3];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -2264,7 +2266,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row + 1) * width + col - 3];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -2290,7 +2292,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row) * width + col + 3];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -2312,7 +2314,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col + 1];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -2328,7 +2330,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel - threshold > comp_pixel) {
                                                     pixel = raw_data[(row - 3) * width + col + 1];
                                                     if (pixel - threshold > comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                 }
                                             }
@@ -2345,7 +2347,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col + 1];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -2372,13 +2374,13 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                     else {
                                                         pixel = raw_data[(row - 3) * width + col + 1];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -2398,7 +2400,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row) * width + col + 3];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -2412,7 +2414,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel + threshold < comp_pixel) {
                                                                 pixel = raw_data[(row) * width + col + 3];
                                                                 if (pixel + threshold < comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -2425,7 +2427,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row + 2) * width + col + 2];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -2446,7 +2448,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row) * width + col + 3];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -2456,12 +2458,12 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row - 1) * width + col - 3];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                         else if (pixel + threshold >= comp_pixel && pixel - threshold <= comp_pixel) {
                                                             pixel = raw_data[(row - 3) * width + col - 1];
                                                             if (pixel + threshold >= comp_pixel && pixel - threshold <= comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -2475,7 +2477,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel + threshold < comp_pixel) {
                                                                 pixel = raw_data[(row + 2) * width + col + 2];
                                                                 if (pixel + threshold < comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -2505,7 +2507,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel + threshold < comp_pixel) {
                                                     pixel = raw_data[(row + 3) * width + col];
                                                     if (pixel + threshold < comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                 }
                                                 else {
@@ -2515,7 +2517,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row + 3) * width + col];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -2531,7 +2533,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -2542,7 +2544,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row + 3) * width + col];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -2558,7 +2560,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -2569,7 +2571,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row + 2) * width + col + 2];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -2599,7 +2601,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                             if (pixel + threshold < comp_pixel) {
                                                 pixel = raw_data[(row + 1) * width + col - 3];
                                                 if (pixel + threshold < comp_pixel) {
-                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                    localPoints.push_back(cv::Point2d(col, row));
                                                 }
                                                 else if (pixel - threshold > comp_pixel) {
                                                     pixel = raw_data[(row - 1) * width + col + 3];
@@ -2608,7 +2610,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row - 2) * width + col + 2];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -2620,7 +2622,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row) * width + col + 3];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -2633,7 +2635,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row + 1) * width + col - 3];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -2650,7 +2652,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row - 2) * width + col + 2];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -2667,12 +2669,12 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel + threshold < comp_pixel) {
                                                     pixel = raw_data[(row + 1) * width + col - 3];
                                                     if (pixel + threshold < comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                     else if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row - 2) * width + col + 2];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                     else {
@@ -2680,7 +2682,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row - 1) * width + col + 3];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -2692,7 +2694,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row - 1) * width + col + 3];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -2709,14 +2711,14 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel + threshold < comp_pixel) {
                                                     pixel = raw_data[(row + 1) * width + col - 3];
                                                     if (pixel + threshold < comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                     else {
                                                         pixel = raw_data[(row - 2) * width + col + 2];
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row - 1) * width + col + 3];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -2728,7 +2730,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row - 1) * width + col + 3];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -2754,7 +2756,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel + threshold < comp_pixel) {
                                                     pixel = raw_data[(row) * width + col + 3];
                                                     if (pixel + threshold < comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                 }
                                                 else if (pixel - threshold > comp_pixel) {
@@ -2764,11 +2766,11 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row) * width + col + 3];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                         else if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -2779,7 +2781,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row + 2) * width + col - 2];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -2798,7 +2800,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row + 2) * width + col - 2];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -2815,7 +2817,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row) * width + col + 3];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -2833,7 +2835,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row) * width + col + 3];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -2852,7 +2854,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row) * width + col + 3];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -2866,7 +2868,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row) * width + col + 3];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -2881,7 +2883,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row + 3) * width + col + 1];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -2907,7 +2909,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel + threshold < comp_pixel) {
                                                     pixel = raw_data[(row + 3) * width + col - 1];
                                                     if (pixel + threshold < comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                 }
                                             }
@@ -2918,7 +2920,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col - 1];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -2939,7 +2941,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row) * width + col + 3];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -2960,7 +2962,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row) * width + col + 3];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -2988,7 +2990,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel - threshold > comp_pixel) {
                                                     pixel = raw_data[(row) * width + col - 3];
                                                     if (pixel - threshold > comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                 }
                                             }
@@ -2999,7 +3001,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row) * width + col - 3];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -3031,14 +3033,14 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                             if (pixel + threshold < comp_pixel) {
                                                 pixel = raw_data[(row + 3) * width + col - 1];
                                                 if (pixel + threshold < comp_pixel) {
-                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                    localPoints.push_back(cv::Point2d(col, row));
                                                 }
                                                 else {
                                                     pixel = raw_data[(row - 2) * width + col + 2];
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col + 1];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -3050,7 +3052,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col + 1];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -3067,7 +3069,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row - 1) * width + col + 3];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -3085,7 +3087,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row - 3) * width + col - 1];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -3105,14 +3107,14 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel + threshold < comp_pixel) {
                                                     pixel = raw_data[(row + 1) * width + col - 3];
                                                     if (pixel + threshold < comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                     else {
                                                         pixel = raw_data[(row) * width + col + 3];
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row - 1) * width + col + 3];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -3131,7 +3133,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col - 1];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -3148,7 +3150,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row) * width + col + 3];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -3167,7 +3169,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row + 1) * width + col - 3];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -3186,14 +3188,14 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel + threshold < comp_pixel) {
                                                     pixel = raw_data[(row + 1) * width + col - 3];
                                                     if (pixel + threshold < comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                     else if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row) * width + col + 3];
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row - 2) * width + col + 2];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -3204,7 +3206,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel + threshold < comp_pixel) {
                                                                 pixel = raw_data[(row - 2) * width + col + 2];
                                                                 if (pixel + threshold < comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -3221,7 +3223,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row - 1) * width + col - 3];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                     else {
@@ -3229,7 +3231,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row - 1) * width + col + 3];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -3245,7 +3247,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row - 1) * width + col - 3];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                     else if (pixel - threshold > comp_pixel) {
@@ -3253,7 +3255,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row - 1) * width + col + 3];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -3264,7 +3266,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel + threshold < comp_pixel) {
                                                                 pixel = raw_data[(row - 1) * width + col - 3];
                                                                 if (pixel + threshold < comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -3292,7 +3294,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row) * width + col + 3];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -3319,7 +3321,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row) * width + col + 3];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -3345,7 +3347,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel + threshold < comp_pixel) {
                                                     pixel = raw_data[(row - 3) * width + col + 1];
                                                     if (pixel + threshold < comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                 }
                                             }
@@ -3368,7 +3370,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col + 1];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -3389,7 +3391,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col - 1];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -3405,7 +3407,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel - threshold > comp_pixel) {
                                                     pixel = raw_data[(row + 3) * width + col];
                                                     if (pixel - threshold > comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                 }
                                             }
@@ -3422,7 +3424,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -3446,7 +3448,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col + 1];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -3471,7 +3473,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel + threshold < comp_pixel) {
                                                     pixel = raw_data[(row - 3) * width + col + 1];
                                                     if (pixel + threshold < comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                 }
                                             }
@@ -3488,7 +3490,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col + 1];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -3506,7 +3508,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col + 1];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -3530,7 +3532,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row) * width + col + 3];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -3560,7 +3562,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col - 1];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -3573,7 +3575,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel - threshold > comp_pixel) {
                                                     pixel = raw_data[(row + 3) * width + col - 1];
                                                     if (pixel - threshold > comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                 }
                                                 else {
@@ -3581,7 +3583,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row - 1) * width + col + 3];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -3598,7 +3600,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row + 3) * width + col + 1];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -3625,7 +3627,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row) * width + col + 3];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -3647,7 +3649,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row - 2) * width + col - 2];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -3664,7 +3666,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row + 3) * width + col - 1];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -3673,7 +3675,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                             else if (pixel - threshold > comp_pixel) {
                                                 pixel = raw_data[(row + 3) * width + col - 1];
                                                 if (pixel - threshold > comp_pixel) {
-                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                    localPoints.push_back(cv::Point2d(col, row));
                                                 }
                                             }
                                             else {
@@ -3685,7 +3687,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row + 3) * width + col - 1];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -3701,7 +3703,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col - 1];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -3724,7 +3726,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row - 2) * width + col + 2];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -3749,7 +3751,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row - 2) * width + col + 2];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -3766,19 +3768,19 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row - 1) * width + col + 3];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
                                                     else if (pixel - threshold > comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                     else {
                                                         pixel = raw_data[(row - 2) * width + col + 2];
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row - 1) * width + col + 3];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -3796,7 +3798,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row - 1) * width + col + 3];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -3829,7 +3831,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row + 3) * width + col];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -3842,7 +3844,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row + 2) * width + col + 2];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -3856,7 +3858,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row + 2) * width + col + 2];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -3875,14 +3877,14 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
                                                 else if (pixel - threshold > comp_pixel) {
                                                     pixel = raw_data[(row + 3) * width + col];
                                                     if (pixel - threshold > comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                 }
                                                 else {
@@ -3892,7 +3894,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row - 2) * width + col + 2];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -3911,7 +3913,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -3925,7 +3927,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row) * width + col + 3];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -3957,7 +3959,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel + threshold < comp_pixel) {
                                                     pixel = raw_data[(row) * width + col - 3];
                                                     if (pixel + threshold < comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                 }
                                             }
@@ -3987,7 +3989,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel + threshold < comp_pixel) {
                                                                 pixel = raw_data[(row) * width + col - 3];
                                                                 if (pixel + threshold < comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -4012,7 +4014,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row + 1) * width + col - 3];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -4031,7 +4033,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row + 1) * width + col - 3];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -4056,7 +4058,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel + threshold < comp_pixel) {
                                                                 pixel = raw_data[(row - 2) * width + col - 2];
                                                                 if (pixel + threshold < comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -4084,7 +4086,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row) * width + col - 3];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -4100,7 +4102,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row) * width + col + 3];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -4116,7 +4118,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel - threshold > comp_pixel) {
                                                     pixel = raw_data[(row - 3) * width + col - 1];
                                                     if (pixel - threshold > comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                 }
                                             }
@@ -4133,7 +4135,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row) * width + col + 3];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -4150,14 +4152,14 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                             if (pixel - threshold > comp_pixel) {
                                                 pixel = raw_data[(row - 3) * width + col + 1];
                                                 if (pixel - threshold > comp_pixel) {
-                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                    localPoints.push_back(cv::Point2d(col, row));
                                                 }
                                                 else {
                                                     pixel = raw_data[(row + 2) * width + col - 2];
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col - 1];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -4169,7 +4171,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col - 1];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -4184,7 +4186,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col - 1];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -4203,7 +4205,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel - threshold > comp_pixel) {
                                                     pixel = raw_data[(row) * width + col + 3];
                                                     if (pixel - threshold > comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                 }
                                             }
@@ -4217,7 +4219,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row) * width + col + 3];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -4243,7 +4245,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row + 1) * width + col - 3];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -4265,7 +4267,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col - 1];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -4292,7 +4294,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row) * width + col - 3];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -4322,7 +4324,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col + 1];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -4339,20 +4341,20 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row - 3) * width + col - 1];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
                                                     else if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col - 1];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                     else {
                                                         pixel = raw_data[(row + 3) * width + col];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -4364,14 +4366,14 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col - 1];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
                                                 else if (pixel - threshold > comp_pixel) {
                                                     pixel = raw_data[(row + 3) * width + col];
                                                     if (pixel - threshold > comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                     else {
                                                         pixel = raw_data[(row - 3) * width + col + 1];
@@ -4380,7 +4382,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel - threshold > comp_pixel) {
                                                                 pixel = raw_data[(row - 3) * width + col - 1];
                                                                 if (pixel - threshold > comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -4393,12 +4395,12 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row + 3) * width + col];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                             else if (pixel + threshold >= comp_pixel && pixel - threshold <= comp_pixel) {
                                                                 pixel = raw_data[(row - 3) * width + col + 1];
                                                                 if (pixel - threshold > comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -4412,12 +4414,12 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col + 1];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                         else {
                                                             pixel = raw_data[(row + 3) * width + col];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -4433,7 +4435,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col + 1];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -4460,7 +4462,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row) * width + col + 3];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -4477,12 +4479,12 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row) * width + col - 3];
                                                             if (pixel + threshold < comp_pixel || pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                             else {
                                                                 pixel = raw_data[(row) * width + col + 3];
                                                                 if (pixel - threshold > comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -4498,19 +4500,19 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row + 2) * width + col - 2];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
                                                     else if (pixel - threshold > comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                     else {
                                                         pixel = raw_data[(row + 2) * width + col - 2];
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row + 3) * width + col - 1];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -4524,7 +4526,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel - threshold > comp_pixel) {
                                                                 pixel = raw_data[(row) * width + col - 3];
                                                                 if (pixel - threshold > comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -4540,12 +4542,12 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row) * width + col - 3];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                             else {
                                                                 pixel = raw_data[(row) * width + col + 3];
                                                                 if (pixel - threshold > comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -4562,7 +4564,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col + 1];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -4584,7 +4586,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel - threshold > comp_pixel) {
                                                     pixel = raw_data[(row + 3) * width + col - 1];
                                                     if (pixel - threshold > comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                 }
                                             }
@@ -4597,7 +4599,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row + 3) * width + col + 1];
                                                             if (pixel + threshold < comp_pixel || pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -4607,18 +4609,18 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col - 1];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                     else if (pixel - threshold > comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                     else {
                                                         pixel = raw_data[(row + 2) * width + col - 2];
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row + 3) * width + col - 1];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -4630,7 +4632,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row + 3) * width + col - 1];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -4645,7 +4647,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row + 2) * width + col + 2];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -4671,7 +4673,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel - threshold > comp_pixel) {
                                                                 pixel = raw_data[(row) * width + col - 3];
                                                                 if (pixel - threshold > comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -4687,14 +4689,14 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row - 3) * width + col - 1];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                             else {
                                                                 pixel = raw_data[(row + 2) * width + col + 2];
                                                                 if (pixel - threshold > comp_pixel) {
                                                                     pixel = raw_data[(row + 3) * width + col + 1];
                                                                     if (pixel - threshold > comp_pixel) {
-                                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                                        localPoints.push_back(cv::Point2d(col, row));
                                                                     }
                                                                 }
                                                             }
@@ -4704,7 +4706,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel - threshold > comp_pixel) {
                                                                 pixel = raw_data[(row + 3) * width + col + 1];
                                                                 if (pixel - threshold > comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -4722,7 +4724,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel - threshold > comp_pixel) {
                                                                 pixel = raw_data[(row + 2) * width + col - 2];
                                                                 if (pixel - threshold > comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -4742,14 +4744,14 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col + 1];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                         else {
                                                             pixel = raw_data[(row + 3) * width + col - 1];
                                                             if (pixel - threshold > comp_pixel) {
                                                                 pixel = raw_data[(row + 2) * width + col - 2];
                                                                 if (pixel - threshold > comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -4772,7 +4774,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                                 if (pixel - threshold > comp_pixel) {
                                                                     pixel = raw_data[(row + 3) * width + col + 1];
                                                                     if (pixel - threshold > comp_pixel) {
-                                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                                        localPoints.push_back(cv::Point2d(col, row));
                                                                     }
                                                                 }
                                                             }
@@ -4781,18 +4783,18 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                                 if (pixel + threshold < comp_pixel) {
                                                                     pixel = raw_data[(row + 2) * width + col + 2];
                                                                     if (pixel - threshold > comp_pixel) {
-                                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                                        localPoints.push_back(cv::Point2d(col, row));
                                                                     }
                                                                 }
                                                                 else if (pixel - threshold > comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                                 else {
                                                                     pixel = raw_data[(row + 2) * width + col + 2];
                                                                     if (pixel - threshold > comp_pixel) {
                                                                         pixel = raw_data[(row + 3) * width + col + 1];
                                                                         if (pixel - threshold > comp_pixel) {
-                                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                                            localPoints.push_back(cv::Point2d(col, row));
                                                                         }
                                                                     }
                                                                 }
@@ -4802,7 +4804,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                                 if (pixel - threshold > comp_pixel) {
                                                                     pixel = raw_data[(row + 2) * width + col + 2];
                                                                     if (pixel - threshold > comp_pixel) {
-                                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                                        localPoints.push_back(cv::Point2d(col, row));
                                                                     }
                                                                 }
                                                             }
@@ -4811,7 +4813,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 }
                                             }
                                             else if (pixel - threshold > comp_pixel) {
-                                                keypoints.push_back(cv::Point2d(col, row));
+                                                localPoints.push_back(cv::Point2d(col, row));
                                             }
                                             else {
                                                 pixel = raw_data[(row + 3) * width + col];
@@ -4824,14 +4826,14 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel - threshold > comp_pixel) {
                                                                 pixel = raw_data[(row + 1) * width + col - 3];
                                                                 if (pixel - threshold > comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                                 else {
                                                                     pixel = raw_data[(row + 3) * width + col + 1];
                                                                     if (pixel - threshold > comp_pixel) {
                                                                         pixel = raw_data[(row + 2) * width + col + 2];
                                                                         if (pixel - threshold > comp_pixel) {
-                                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                                            localPoints.push_back(cv::Point2d(col, row));
                                                                         }
                                                                     }
                                                                 }
@@ -4841,7 +4843,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                                 if (pixel - threshold > comp_pixel) {
                                                                     pixel = raw_data[(row + 3) * width + col + 1];
                                                                     if (pixel - threshold > comp_pixel) {
-                                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                                        localPoints.push_back(cv::Point2d(col, row));
                                                                     }
                                                                 }
                                                             }
@@ -4859,14 +4861,14 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col + 1];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                         else {
                                                             pixel = raw_data[(row + 2) * width + col - 2];
                                                             if (pixel - threshold > comp_pixel) {
                                                                 pixel = raw_data[(row + 3) * width + col - 1];
                                                                 if (pixel - threshold > comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -4890,7 +4892,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel - threshold > comp_pixel) {
                                                                 pixel = raw_data[(row) * width + col - 3];
                                                                 if (pixel - threshold > comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -4904,19 +4906,19 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                                 if (pixel - threshold > comp_pixel) {
                                                                     pixel = raw_data[(row) * width + col - 3];
                                                                     if (pixel - threshold > comp_pixel) {
-                                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                                        localPoints.push_back(cv::Point2d(col, row));
                                                                     }
                                                                 }
                                                             }
                                                             else if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                             else {
                                                                 pixel = raw_data[(row) * width + col - 3];
                                                                 if (pixel - threshold > comp_pixel) {
                                                                     pixel = raw_data[(row - 3) * width + col - 1];
                                                                     if (pixel - threshold > comp_pixel) {
-                                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                                        localPoints.push_back(cv::Point2d(col, row));
                                                                     }
                                                                 }
                                                             }
@@ -4926,7 +4928,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel - threshold > comp_pixel) {
                                                                 pixel = raw_data[(row - 3) * width + col - 1];
                                                                 if (pixel - threshold > comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -4938,7 +4940,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel - threshold > comp_pixel) {
                                                                 pixel = raw_data[(row - 3) * width + col - 1];
                                                                 if (pixel - threshold > comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -4963,7 +4965,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row + 2) * width + col + 2];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -4978,19 +4980,19 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row + 2) * width + col - 2];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
                                                     else if (pixel - threshold > comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                     else {
                                                         pixel = raw_data[(row + 2) * width + col - 2];
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row + 3) * width + col - 1];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -5002,7 +5004,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row + 3) * width + col - 1];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -5019,7 +5021,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel - threshold > comp_pixel) {
                                                                 pixel = raw_data[(row + 3) * width + col];
                                                                 if (pixel - threshold > comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -5047,12 +5049,12 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row) * width + col + 3];
                                                             if (pixel + threshold < comp_pixel || pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                             else {
                                                                 pixel = raw_data[(row) * width + col - 3];
                                                                 if (pixel - threshold > comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -5069,7 +5071,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row) * width + col + 3];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -5085,7 +5087,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel - threshold > comp_pixel) {
                                                                 pixel = raw_data[(row + 3) * width + col - 1];
                                                                 if (pixel - threshold > comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -5094,14 +5096,14 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 else if (pixel - threshold > comp_pixel) {
                                                     pixel = raw_data[(row - 3) * width + col + 1];
                                                     if (pixel - threshold > comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                     else {
                                                         pixel = raw_data[(row + 2) * width + col - 2];
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row + 3) * width + col - 1];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -5115,7 +5117,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel - threshold > comp_pixel) {
                                                                 pixel = raw_data[(row + 3) * width + col - 1];
                                                                 if (pixel - threshold > comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -5129,7 +5131,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col + 1];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -5146,7 +5148,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row + 3) * width + col];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                         else {
@@ -5154,7 +5156,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel - threshold > comp_pixel) {
                                                                 pixel = raw_data[(row + 3) * width + col];
                                                                 if (pixel - threshold > comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -5183,7 +5185,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col + 1];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -5197,7 +5199,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row - 3) * width + col - 1];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -5217,7 +5219,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel - threshold > comp_pixel) {
                                                                 pixel = raw_data[(row - 3) * width + col + 1];
                                                                 if (pixel - threshold > comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -5226,14 +5228,14 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 else if (pixel - threshold > comp_pixel) {
                                                     pixel = raw_data[(row + 3) * width + col + 1];
                                                     if (pixel - threshold > comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                     else {
                                                         pixel = raw_data[(row - 2) * width + col - 2];
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row - 3) * width + col - 1];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -5247,7 +5249,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                             if (pixel - threshold > comp_pixel) {
                                                                 pixel = raw_data[(row - 3) * width + col + 1];
                                                                 if (pixel - threshold > comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -5263,18 +5265,18 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row - 2) * width + col + 2];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                         else if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                         else {
                                                             pixel = raw_data[(row - 2) * width + col + 2];
                                                             if (pixel - threshold > comp_pixel) {
                                                                 pixel = raw_data[(row - 3) * width + col + 1];
                                                                 if (pixel - threshold > comp_pixel) {
-                                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                                    localPoints.push_back(cv::Point2d(col, row));
                                                                 }
                                                             }
                                                         }
@@ -5291,12 +5293,12 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row - 2) * width + col + 2];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                         else {
                                                             pixel = raw_data[(row + 3) * width + col - 1];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -5327,7 +5329,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -5348,7 +5350,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col - 1];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -5359,14 +5361,14 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                             if (pixel - threshold > comp_pixel) {
                                                 pixel = raw_data[(row - 3) * width + col + 1];
                                                 if (pixel - threshold > comp_pixel) {
-                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                    localPoints.push_back(cv::Point2d(col, row));
                                                 }
                                                 else {
                                                     pixel = raw_data[(row + 2) * width + col - 2];
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col - 1];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -5378,7 +5380,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col - 1];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -5393,7 +5395,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row + 2) * width + col - 2];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -5409,7 +5411,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel - threshold > comp_pixel) {
                                                     pixel = raw_data[(row - 3) * width + col - 1];
                                                     if (pixel - threshold > comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                 }
                                             }
@@ -5423,7 +5425,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col + 1];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -5444,7 +5446,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col - 1];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -5475,7 +5477,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel + threshold < comp_pixel) {
                                                     pixel = raw_data[(row) * width + col - 3];
                                                     if (pixel + threshold < comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                 }
                                             }
@@ -5492,7 +5494,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row - 1) * width + col - 3];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -5510,7 +5512,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row - 1) * width + col - 3];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -5538,7 +5540,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel - threshold > comp_pixel) {
                                                     pixel = raw_data[(row) * width + col + 3];
                                                     if (pixel - threshold > comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                 }
                                                 else {
@@ -5546,7 +5548,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row) * width + col + 3];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -5564,7 +5566,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row + 2) * width + col - 2];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -5589,14 +5591,14 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel - threshold > comp_pixel) {
                                                     pixel = raw_data[(row + 2) * width + col + 2];
                                                     if (pixel - threshold > comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                     else {
                                                         pixel = raw_data[(row - 3) * width + col - 1];
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row - 2) * width + col - 2];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -5617,7 +5619,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row + 1) * width + col - 3];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -5633,7 +5635,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row - 1) * width + col + 3];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -5641,14 +5643,14 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                             else if (pixel - threshold > comp_pixel) {
                                                 pixel = raw_data[(row + 1) * width + col - 3];
                                                 if (pixel - threshold > comp_pixel) {
-                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                    localPoints.push_back(cv::Point2d(col, row));
                                                 }
                                                 else {
                                                     pixel = raw_data[(row - 2) * width + col + 2];
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row - 1) * width + col + 3];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -5660,7 +5662,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row - 2) * width + col + 2];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -5677,7 +5679,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row + 1) * width + col - 3];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -5694,14 +5696,14 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel - threshold > comp_pixel) {
                                                     pixel = raw_data[(row + 2) * width + col + 2];
                                                     if (pixel - threshold > comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                     else {
                                                         pixel = raw_data[(row - 3) * width + col - 1];
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row - 2) * width + col - 2];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -5727,12 +5729,12 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel - threshold > comp_pixel) {
                                                     pixel = raw_data[(row + 2) * width + col - 2];
                                                     if (pixel - threshold > comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                     else {
                                                         pixel = raw_data[(row - 3) * width + col + 1];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -5747,7 +5749,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row + 2) * width + col - 2];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -5779,14 +5781,14 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                             if (pixel + threshold < comp_pixel) {
                                                 pixel = raw_data[(row + 3) * width + col - 1];
                                                 if (pixel + threshold < comp_pixel) {
-                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                    localPoints.push_back(cv::Point2d(col, row));
                                                 }
                                                 else {
                                                     pixel = raw_data[(row - 2) * width + col + 2];
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col + 1];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -5798,7 +5800,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col + 1];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -5815,7 +5817,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row - 3) * width + col + 1];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -5832,14 +5834,14 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel + threshold < comp_pixel) {
                                                     pixel = raw_data[(row + 1) * width + col - 3];
                                                     if (pixel + threshold < comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                     else {
                                                         pixel = raw_data[(row) * width + col + 3];
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row - 1) * width + col + 3];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -5855,7 +5857,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row + 1) * width + col - 3];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -5870,7 +5872,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row + 1) * width + col - 3];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -5886,14 +5888,14 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel + threshold < comp_pixel) {
                                                     pixel = raw_data[(row + 1) * width + col - 3];
                                                     if (pixel + threshold < comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                     else {
                                                         pixel = raw_data[(row) * width + col + 3];
                                                         if (pixel + threshold < comp_pixel) {
                                                             pixel = raw_data[(row - 1) * width + col + 3];
                                                             if (pixel + threshold < comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -5906,7 +5908,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row + 1) * width + col - 3];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -5928,7 +5930,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel + threshold < comp_pixel) {
                                                     pixel = raw_data[(row - 3) * width + col + 1];
                                                     if (pixel + threshold < comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                 }
                                             }
@@ -5945,7 +5947,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row - 2) * width + col + 2];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -5963,7 +5965,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col + 1];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -5985,7 +5987,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel + threshold < comp_pixel) {
                                                     pixel = raw_data[(row - 3) * width + col + 1];
                                                     if (pixel + threshold < comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                 }
                                             }
@@ -5999,7 +6001,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col - 1];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -6014,7 +6016,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col + 1];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -6039,7 +6041,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel + threshold < comp_pixel) {
                                                     pixel = raw_data[(row + 2) * width + col - 2];
                                                     if (pixel + threshold < comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                 }
                                             }
@@ -6053,7 +6055,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row + 1) * width + col - 3];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -6068,7 +6070,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row + 1) * width + col - 3];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -6093,7 +6095,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel + threshold < comp_pixel) {
                                                     pixel = raw_data[(row + 2) * width + col - 2];
                                                     if (pixel + threshold < comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                 }
                                             }
@@ -6110,7 +6112,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row + 1) * width + col - 3];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -6128,7 +6130,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel + threshold < comp_pixel) {
                                                         pixel = raw_data[(row + 1) * width + col - 3];
                                                         if (pixel + threshold < comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -6161,7 +6163,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row + 1) * width + col - 3];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -6177,7 +6179,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel - threshold > comp_pixel) {
                                                     pixel = raw_data[(row + 3) * width + col];
                                                     if (pixel - threshold > comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                 }
                                             }
@@ -6194,7 +6196,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row + 1) * width + col - 3];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -6221,7 +6223,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row - 2) * width + col + 2];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -6234,7 +6236,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel - threshold > comp_pixel) {
                                                     pixel = raw_data[(row - 3) * width + col + 1];
                                                     if (pixel - threshold > comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                 }
                                             }
@@ -6248,7 +6250,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col + 1];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -6269,7 +6271,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row + 1) * width + col - 3];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -6282,14 +6284,14 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel - threshold > comp_pixel) {
                                                     pixel = raw_data[(row + 1) * width + col - 3];
                                                     if (pixel - threshold > comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                     else {
                                                         pixel = raw_data[(row) * width + col + 3];
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row - 1) * width + col + 3];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -6305,7 +6307,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col - 1];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -6319,14 +6321,14 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                             if (pixel - threshold > comp_pixel) {
                                                 pixel = raw_data[(row + 3) * width + col - 1];
                                                 if (pixel - threshold > comp_pixel) {
-                                                    keypoints.push_back(cv::Point2d(col, row));
+                                                    localPoints.push_back(cv::Point2d(col, row));
                                                 }
                                                 else {
                                                     pixel = raw_data[(row - 2) * width + col + 2];
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col + 1];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -6338,7 +6340,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col + 1];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -6355,7 +6357,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row - 3) * width + col + 1];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -6372,14 +6374,14 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel - threshold > comp_pixel) {
                                                     pixel = raw_data[(row + 1) * width + col - 3];
                                                     if (pixel - threshold > comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                     else {
                                                         pixel = raw_data[(row) * width + col + 3];
                                                         if (pixel - threshold > comp_pixel) {
                                                             pixel = raw_data[(row - 1) * width + col + 3];
                                                             if (pixel - threshold > comp_pixel) {
-                                                                keypoints.push_back(cv::Point2d(col, row));
+                                                                localPoints.push_back(cv::Point2d(col, row));
                                                             }
                                                         }
                                                     }
@@ -6389,7 +6391,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row + 1) * width + col - 3];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -6410,7 +6412,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col - 1];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -6423,7 +6425,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel - threshold > comp_pixel) {
                                                     pixel = raw_data[(row - 3) * width + col + 1];
                                                     if (pixel - threshold > comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                 }
                                             }
@@ -6437,7 +6439,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row - 3) * width + col + 1];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -6464,7 +6466,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row + 3) * width + col - 1];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -6483,7 +6485,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                 if (pixel - threshold > comp_pixel) {
                                                     pixel = raw_data[(row + 3) * width + col + 1];
                                                     if (pixel - threshold > comp_pixel) {
-                                                        keypoints.push_back(cv::Point2d(col, row));
+                                                        localPoints.push_back(cv::Point2d(col, row));
                                                     }
                                                 }
                                             }
@@ -6503,7 +6505,7 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                                                     if (pixel - threshold > comp_pixel) {
                                                         pixel = raw_data[(row + 1) * width + col - 3];
                                                         if (pixel - threshold > comp_pixel) {
-                                                            keypoints.push_back(cv::Point2d(col, row));
+                                                            localPoints.push_back(cv::Point2d(col, row));
                                                         }
                                                     }
                                                 }
@@ -6517,6 +6519,8 @@ void learnedFast(std::vector<cv::Point2i>& keypoints, const cv::Mat& img, int th
                 }
             }
         }
+        #pragma omp critical
+        keypoints.insert(keypoints.end(), localPoints.begin(), localPoints.end());
     }
 }
 
@@ -6554,7 +6558,7 @@ double calculateEntropy(const std::vector<cv::Point3d>& set, std::vector<std::ve
 void trainDecisionTree(std::vector<cv::Mat>& trainImages, std::vector<cv::Point3d>& pixelSet, std::vector<std::vector<std::vector<bool>>>& imageCorners, std::vector<int> validChoices, int threshold, int depthTracker) {
     // keep track of best values to prevent expensive recomputation.
     double bestInfoGain = -1;
-    int currentDecision;
+    int currentDecision = -1;
     std::vector<cv::Point3d> bestSimilar;
     std::vector<cv::Point3d> bestDarker;
     std::vector<cv::Point3d> bestLighter;
@@ -6656,7 +6660,7 @@ void train(int n, int threshold) {
 
     // generate initial set of pixels, which starts as all pixels the slow implementation looks at.
     std::vector<cv::Point3d> pixelSet;
-    for (int i = 0; i < images.size(); i++) {
+    for (size_t i = 0; i < images.size(); i++) {
         const auto& img = images[i];
         int height = img.size().height;
         int width = img.size().width;
