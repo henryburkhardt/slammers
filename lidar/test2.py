@@ -9,15 +9,17 @@ a = np.array([ang, np.sin(ang)])
 th = np.pi/2
 rot = np.array([[np.cos(th), -np.sin(th)],[np.sin(th), np.cos(th)]])
 b = np.dot(rot, a) + np.array([[0.2], [0.3]])
+a = a.T
+b = b.T
 
 #Run the icp
 M2 = ndt_icp2(b, a, tx_est=0.1, ty_est=0.33, phi_est=np.pi/2.2, max_it=30)
 
 #Plot the result
-src = np.array([a.T]).astype(np.float32)
+src = np.array([a]).astype(np.float32)
 res = cv2.transform(src, M2)
 plt.figure()
-plt.plot(b[0],b[1])
+plt.plot((b.T)[0], (b.T)[1])
 plt.plot(res[0].T[0], res[0].T[1], 'r.')
-plt.plot(a[0], a[1])
+plt.plot((a.T)[0], (a.T)[1])
 plt.show()

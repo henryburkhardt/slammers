@@ -6,9 +6,6 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 
-
-
-
 LaserScan = np.ndarray  # [(p1, p2), ...] OR [(r, theta), ...]
 
 
@@ -386,8 +383,10 @@ def ndt_icp2(
         max_it: int = IT_MAX,
     ):
 
-    source = np.array([points2.T], copy=True).astype(np.float32)
-    dest = np.array([points1.T], copy=True).astype(np.float32)
+    # source = np.array([points2.T], copy=True).astype(np.float32)
+    # dest = np.array([points1.T], copy=True).astype(np.float32)
+    source = np.array([points2], copy=True).astype(np.float32)
+    dest = np.array([points1], copy=True).astype(np.float32)
 
     #Initialise with the initial pose estimation
     transform_matrix = np.array([
@@ -411,7 +410,7 @@ def ndt_icp2(
         # print("indices:", indices)
         # print("dest input:", dest[0, indices.T])
         T = cv2.estimateAffinePartial2D(source, dest[0, indices.T])
-        print("estimated:", T)
+        print("estimated:", T[0])
         source = cv2.transform(source, T[0])
         print("source shape:", source.shape)
         transform_matrix = np.dot(transform_matrix, np.vstack((T[0],[0,0,1])))
