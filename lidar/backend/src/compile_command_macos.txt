@@ -1,0 +1,8 @@
+clang++ main.cpp -std=c++17 \
+  -I/opt/homebrew/include \
+  -I/opt/homebrew/include/eigen3 \
+  -L/opt/homebrew/lib \
+  -lg2o_core \
+  -lg2o_stuff \
+  -lg2o_types_slam2d \
+  -o main

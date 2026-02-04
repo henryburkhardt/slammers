@@ -14,19 +14,31 @@ from pathlib import Path
 from graph import PoseGraph, Vertex, Pose2D, Edge
 from env import *
 import requests 
+from utils import *
+from message_filters import Subscriber, ApproximateTimeSynchronizer
+
+
 
 class SlamFrontEnd(Node):
     def __init__(self):
         super().__init__('slam_frontend')
 
-        # ROS subscriptions - subscribes to the lidar scan and odometry topics
-        self.create_subscription(LaserScan, '/mikey/scan', self.lidar_cb, 10)
-        self.create_subscription(Odometry, '/mikey/odom', self.odom_cb, 10)
+        # --- Message filters subscribers ---
+        self.lidar_sub = Subscriber(self, LaserScan, '/mikey/scan')
+        self.odom_sub = Subscriber(self, Odometry, '/mikey/odom')
+
+        # Synchronizer: allows 50ms tolerance
+        self.ts = ApproximateTimeSynchronizer([self.odom_sub, self.lidar_sub], queue_size=10, slop=0.05)
+        self.ts.registerCallback(self.synced_callback)
 
         # store the latest information from the subscriptions
         self.latest_ranges = None
         self.latest_angles = None
         self.latest_odom = None
+
+        self.last_added_pose = None  # (x, y, theta) of last vertex
+        self.min_translation = 0.05  # meters (5 cm)
+        self.min_rotation = 0.01  
 
         # initialize the pose graph
         self.pose_graph = PoseGraph()
@@ -40,6 +52,25 @@ class SlamFrontEnd(Node):
         self.kb_thread.start()
 
         self.get_logger().info("SLAM Frontend running. Press SPACE to create a new pose vertex.")
+    
+    def synced_callback(self, odom: Odometry, scan: LaserScan):
+        """Callback receives synchronized odometry + lidar scan"""
+        # Convert odometry quaternion -> yaw (2D pose)
+        pos = odom.pose.pose.position
+        q = odom.pose.pose.orientation
+        
+        siny_cosp = 2 * (q.w * q.z + q.x * q.y)
+        cosy_cosp = 1 - 2 * (q.y**2 + q.z**2)
+        theta = math.atan2(siny_cosp, cosy_cosp)
+
+        self.latest_odom = (pos.x, pos.y, theta)
+
+        # Convert lidar to numpy arrays
+        self.latest_ranges = np.array(scan.ranges, dtype=np.float32)
+        self.latest_angles = (
+            scan.angle_min
+            + np.arange(len(scan.ranges)) * scan.angle_increment
+        )
     
     def reset_slam_data(
         self,
@@ -58,26 +89,26 @@ class SlamFrontEnd(Node):
                     p.unlink()
 
     
-    def odom_cb(self, msg: Odometry):
-        """Callback to unpack/store odom data -- called everytime there is fresh odom data"""
-        x = msg.pose.pose.position.x
-        y = msg.pose.pose.position.y
-        q = msg.pose.pose.orientation
+    # def odom_cb(self, msg: Odometry):
+    #     """Callback to unpack/store odom data -- called everytime there is fresh odom data"""
+    #     x = msg.pose.pose.position.x
+    #     y = msg.pose.pose.position.y
+    #     q = msg.pose.pose.orientation
 
-        siny_cosp = 2 * (q.w * q.z + q.x * q.y)
-        cosy_cosp = 1 - 2 * (q.y**2 + q.z**2)
-        theta = math.atan2(siny_cosp, cosy_cosp)
+    #     siny_cosp = 2 * (q.w * q.z + q.x * q.y)
+    #     cosy_cosp = 1 - 2 * (q.y**2 + q.z**2)
+    #     theta = math.atan2(siny_cosp, cosy_cosp)
 
-        self.latest_odom = (x, y, theta)
+    #     self.latest_odom = (x, y, theta)
 
 
-    def lidar_cb(self, msg: LaserScan):
-        """Callback to unpack/store lidar data -- called everytime there is fresh lidar data"""
-        self.latest_ranges = np.array(msg.ranges, dtype=np.float32)
-        self.latest_angles = (
-            msg.angle_min
-            + np.arange(len(msg.ranges)) * msg.angle_increment
-        )
+    # def lidar_cb(self, msg: LaserScan):
+    #     """Callback to unpack/store lidar data -- called everytime there is fresh lidar data"""
+    #     self.latest_ranges = np.array(msg.ranges, dtype=np.float32)
+    #     self.latest_angles = (
+    #         msg.angle_min
+    #         + np.arange(len(msg.ranges)) * msg.angle_increment
+    #     )
 
 
     def add_pose_vertex(self):
@@ -101,14 +132,11 @@ class SlamFrontEnd(Node):
             return 
         
         # OPTIONAL: we could run icp here between the two new scans to improve the odometry calculation even more - this isn't a virtual edge though - just like an imporved odom update.
-        
-        # add edge between current pose and previous pose
-        # TODO: set edge metadata correctly
-        new_edge = Edge(dx=0, dy=0, dtheta=0, information=(1,1,1))
-        self.pose_graph.add_edge(from_key=self.last_vertex_key, to_key=new_vertex_key, edge=new_edge)
+
+        self.pose_graph.add_edge(v1_key=self.last_vertex_key, v2_key=new_vertex_key, information=DEFAULT_CONFIDENT_INFORMATION_MATRIX)
         
         # save graph to g2o output file
-        self.pose_graph.save_g2o(filepath="./data/graph.txt")
+        self.pose_graph.save_graph_to_file(filepath="./data/graph.g2o")
 
         self.last_vertex_key = new_vertex_key
 
@@ -117,7 +145,6 @@ class SlamFrontEnd(Node):
 
     def save_scan_to_disk(self, vertex_id: int, ranges, angles):
         """save lidar scan to disk as npz"""
-        print(ranges)
         filepath = f"./data/lidar/{vertex_id}.npz"
         np.savez(filepath, ranges=ranges, angles=angles)
         return
@@ -138,6 +165,7 @@ class SlamFrontEnd(Node):
             return 
     
     async def optimize_graph(self):
+        """send graph to backend to be optimized, then update graph to be the optimized version"""
         with open(POSE_GRAPH_PATH, "r") as f:
             g2o_content = f.read()
             # POST to backend
@@ -150,6 +178,9 @@ class SlamFrontEnd(Node):
             # Save the optimized graph
             with open(POSE_GRAPH_PATH, "w") as f:
                 f.write(optimized_content)
+            
+            # update pose graph to reflect optimized version 
+            self.pose_graph.update_from_g2o(POSE_GRAPH_PATH)
         else:
             print(f"Optimization failed! Status: {response.status_code}")
             print(response.text)

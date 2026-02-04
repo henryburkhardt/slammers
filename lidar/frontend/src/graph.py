@@ -1,21 +1,9 @@
 from dataclasses import dataclass
 import numpy as np
 import math
-
-
-def se2_relative_transformation(m1:np.ndarray, m2:np.ndarray):
-    """relative transformation FROM m1 TO m2"""
-    return np.linalg.inv(m1) @ m2
+from utils import t2v, se2_relative_transformation
     
-def t2v(t_matrix: np.ndarray):
-    x = t_matrix[0, 2]
-    x = t_matrix[1, 2]
-    x = np.arctan2(t_matrix[1, 0], t_matrix[0, 0])
-    
-    """translation to vector"""
-# -----------------------------
-# Pose
-# -----------------------------
+
 @dataclass
 class Pose2D:
     """Represents a 2D robot pose (x, y, theta)."""
@@ -40,6 +28,7 @@ class Edge:
         dx_rel = self.t_matrix[0, 2]
         dy_rel = self.t_matrix[1, 2]
         dtheta_rel = np.arctan2(self.t_matrix[1, 0], self.t_matrix[0, 0])
+        return (dx_rel, dy_rel, dtheta_rel)
     
     def inverse(self):
         return Edge(self.v1_key. self.v2_key, np.linalg.inv(self.t_matrix), self.information)
@@ -60,7 +49,7 @@ class Vertex:
         return self.neighbors.keys()
     
     def to_matrix(self):
-        """homogenous matrix rep. of the point"""
+        """homogenous matrix representation of the point"""
         return np.array([
             [np.cos(self.pose.theta), -np.sin(self.pose.theta), self.pose.x],
             [np.sin(self.pose.theta),  np.cos(self.pose.theta), self.pose.y],
@@ -94,7 +83,7 @@ class PoseGraph:
     def get_vertex(self, key: int) -> Vertex:
         return self.vert_list.get(key)
 
-    def add_edge(self, v1_key: int, v2_key: int, information: np.ndarray, bidirectional=True):
+    def add_edge(self, v1_key: int, v2_key: int, information: np.ndarray):
         # QUESTION: Edges should be bi-directional ??
         
         # check that vertex exists
@@ -105,31 +94,13 @@ class PoseGraph:
         v1_matrix: np.ndarray = self.get_vertex(v1_key).to_matrix()
         v2_matrix: np.ndarray = self.get_vertex(v2_key).to_matrix()
         
-        # QUESTION: should these be absolute value ?? what direction is this implying ?? 
-        # dx = v1.pose.x - v2.pose.x
-        # dy = v1.pose.y - v2.pose.y
-        # dtheta = v1.pose.theta - v2.pose.theta
-        
         t_matrix = se2_relative_transformation(v1_matrix, v2_matrix)
         
-        new_edge = Edge(v1_key, v2_key, t_matrix)
+        new_edge = Edge(v1_key, v2_key, t_matrix, information)
 
         self.vert_list[v1_key].add_neighbor(v2_key, new_edge)
 
-        if bidirectional:
-            self.vert_list[v2_key].add_neighbor(v1_key, new_edge.inverse())
-
-
-    def __iter__(self):
-        return iter(self.vert_list.values())
-
-    def __str__(self):
-        return f"Graph(vertices={self.num_vertices}, keys={list(self.vert_list.keys())})"
-    
-    def save_lidar_scan(self, filepath: str = "lidar.txt"):
-        return
-
-    def save_g2o(self, filepath: str):
+    def save_graph_to_file(self, filepath: str):
         """
         Save the pose graph to a g2o-like file (2D SE2).
         """
@@ -145,17 +116,27 @@ class PoseGraph:
 
         with open(filepath, "w") as f:
             # --- Write vertices ---
+            first_node = True
+
             for key, vertex in self.vert_list.items():
                 p = vertex.pose
                 f.write(
                     f"VERTEX_SE2 {key} {p.x:.6f} {p.y:.6f} {p.theta:.6f}\n"
                 )
 
+                if(first_node):
+                    f.write(f"FIX 0\n")
+                    first_node = False
+
             # --- Write edges ---
             for from_key, vertex in self.vert_list.items():
                 for to_key, edge in vertex.neighbors.items():
-                    dx, dy, dtheta = edge.dx, edge.dy, edge.dtheta
-                    info_xx, info_yy, info_tt = edge.information
+                    dx, dy, dtheta = edge.as_vector()
+
+                    # Extract diagonal entries from 3x3 information matrix
+                    info_xx = float(edge.information[0, 0])
+                    info_yy = float(edge.information[1, 1])
+                    info_tt = float(edge.information[2, 2])
 
                     # g2o expects upper-triangular information matrix
                     f.write(
@@ -168,4 +149,50 @@ class PoseGraph:
                             info_yy,
                             info_tt
                         )
+                    )
+    def update_from_g2o(self, filepath: str):
+        """
+        update an existing pose graph from a g2o file.
+
+        Assumptions:
+        - All vertices already exist in self.vert_list
+        - All edges already exist in vertex.neighbors
+        - topology is identical; only values change
+        """
+
+        with open(filepath, "r") as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith("#"):
+                    continue
+
+                tokens = line.split()
+                tag = tokens[0]
+
+                
+                # Update vertex poses
+                if tag == "VERTEX_SE2":
+                    key = int(tokens[1])
+
+                    vertex = self.vert_list[key]  # must exist
+                    vertex.pose.x = float(tokens[2])
+                    vertex.pose.y = float(tokens[3])
+                    vertex.pose.theta = float(tokens[4])
+
+                # Update edge measurements
+                elif tag == "EDGE_SE2":
+                    from_key = int(tokens[1])
+                    to_key = int(tokens[2])
+
+                    edge = self.vert_list[from_key].neighbors[to_key]  # must exist
+
+                    edge.dx = float(tokens[3])
+                    edge.dy = float(tokens[4])
+                    edge.dtheta = float(tokens[5])
+
+                    # Upper-triangular information matrix
+                    edge.information = (
+                        float(tokens[6]),   # I_xx
+                        float(tokens[9]),   # I_yy
+                        float(tokens[11]),  # I_tt
                     )

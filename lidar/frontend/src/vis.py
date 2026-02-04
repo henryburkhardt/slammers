@@ -3,16 +3,17 @@ import numpy as np
 from pathlib import Path
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
+from env import LIDAR_YAW_OFFSET
 
 N_BEAMS = 360
-angles = np.linspace(-np.pi, np.pi, N_BEAMS, endpoint=False)
+angles = np.linspace(-np.pi, np.pi, N_BEAMS, endpoint=True)
 
 
 
-G2O_PATH = Path("/Users/henryburkhardt/slammers-1/lidar/backend/src/optimized.g2o")
-SCAN_DIR = None
-# SCAN_DIR = Path("./data/lidar")
-DRAW_SCANS = False  # set True to draw lidar scans
+G2O_PATH = Path("./data/graph.g2o")
+# SCAN_DIR = None
+SCAN_DIR = Path("./data/lidar")
+DRAW_SCANS = True  # set True to draw lidar scans
 UPDATE_MS = 200
 
 # -----------------------------
@@ -99,21 +100,24 @@ def update(frame):
         for vid, (px, py, theta) in vertices.items():
             scan_file = SCAN_DIR / f"{vid}.npz"
             if not scan_file.exists():
+                print("cant find file")
                 continue
 
             try:
                 data = np.load(scan_file)
                 ranges = data["ranges"]
                 angles = data["angles"]
-            except Exception:
+            except Exception as e:
+                print(e)
                 continue  # skip partial writes
 
             mask = np.isfinite(ranges)
             ranges = ranges[mask]
             angles = angles[mask]
 
-            xs = px + ranges * np.cos(angles + theta)
-            ys = py + ranges * np.sin(angles + theta)
+            xs = px + ranges * np.cos(angles + theta + LIDAR_YAW_OFFSET)
+            ys = py + ranges * np.sin(angles + theta + LIDAR_YAW_OFFSET)
+
 
             scan_x.extend(xs)
             scan_y.extend(ys)
@@ -122,6 +126,7 @@ def update(frame):
             scan_scat.set_offsets(np.column_stack([scan_x, scan_y]))
         scan_scat.set_visible(True)
     else:
+        print("no doing scans")
         scan_scat.set_visible(False)
 
     ax.relim()
