@@ -3,7 +3,7 @@
 const int CENTROID_RADIUS = 3;
 
 void blurImage(const cv::Mat& src, cv::Mat& dest, int kernelRadius, double stdDev) {
-// check that input values are valid
+    // check that input values are valid
     CV_Assert(kernelRadius >= 0);
     CV_Assert(stdDev > 0);
 
@@ -26,45 +26,44 @@ void blurImage(const cv::Mat& src, cv::Mat& dest, int kernelRadius, double stdDe
 
     // initialize other used values
     dest.create(src.size(), src.type());
-    cv::Mat temp(height, width, CV_64F, cv::Scalar(0.0));
+    cv::Mat temp(height, width, CV_64F);
 
-    uchar *src_data = src.data;
-    uchar *temp_data = temp.data;
-    uchar *dest_data = dest.data;
-
-    int src_step = src.step;
-    int temp_step = temp.step;
-    int dest_step = dest.step;
+    const uchar *src_data = src.ptr<uchar>();
+    double *temp_data = temp.ptr<double>();
+    uchar *dest_data = dest.ptr<uchar>();
 
     // perform horizontal filter application over image to temp.
-    for (int i = 0; i < height; i++) {
-        double *temp_pointer = reinterpret_cast<double*>(temp_data + i * temp_step); // because this is double instead of uchar, it is handled specially.
-        for (int j = 0; j < width; j++) {
-            double pixelValue = 0;
-            int startIdx = j >= kernelRadius ? -kernelRadius : -j;
-            int endIdx = j < width - kernelRadius ? kernelRadius : width - j - 1;
-            for (int k = startIdx; k <= endIdx; k++) {
-                pixelValue += src_data[i * src_step + j + k] * kernel[k + kernelRadius];
+    #pragma omp parallel
+    {
+        #pragma omp for
+        for (int i = kernelRadius; i < height - kernelRadius; i++) {
+            for (int j = kernelRadius; j < width - kernelRadius; j++) {
+                double pixelValue = 0.0;
+                int pixel_index = i * width + j;
+                const uchar *kernel_ptr = &src_data[pixel_index - kernelRadius];
+                for (int k = 0; k <= 2 * kernelRadius; k++) {
+                    pixelValue += kernel_ptr[k] * kernel[k];
+                }
+                // set temp image to computed value and increment index for next pixel
+                temp_data[pixel_index] = pixelValue;
             }
-            // set temp image to computed value and increment index for next pixel
-            temp_pointer[j] = pixelValue;
         }
-    }
 
-    // perform vertical pass kernel application from temp to dest.
-    for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
-            double pixelValue = 0;
-            int startIdx = i >= kernelRadius ? -kernelRadius : -i;
-            int endIdx = i < height - kernelRadius ? kernelRadius : height - i - 1;
-            for (int k = startIdx; k <= endIdx; k++) {
-                double *temp_pointer = reinterpret_cast<double*>(temp_data + (i + k) * temp_step);
-                pixelValue += temp_pointer[j] * kernel[k + kernelRadius];
+        // perform vertical pass kernel application from temp to dest.
+        #pragma omp for
+        for (int i = kernelRadius; i < height - kernelRadius; i++) {
+            for (int j = kernelRadius; j < width - kernelRadius; j++) {
+                double pixelValue = 0.0;
+                int pixel_index = i * width + j;
+                for (int k = -kernelRadius; k <= kernelRadius; k++) {
+                    pixelValue += temp_data[pixel_index + k * width] * kernel[k + kernelRadius];
+                }
+                // set temp image to computed value and increment index for next pixel
+                dest_data[pixel_index] = cvRound(pixelValue);
             }
-            // set temp image to computed value and increment index for next pixel
-            dest_data[i * dest_step + j] = cvRound(pixelValue);
         }
     }
+    return true;
 }
 
 double calculateOrientation(const cv::Mat& img, cv::Point2i point) {
