@@ -12,7 +12,7 @@ def t2v(t_matrix: np.ndarray):
     return(x, y, theta)
 
 def load_scans_and_filter_scan_and_also_make_them_into_points_lol(vertex_id):
-    data = np.load(f"../data/lidar/{vertex_id}.npz")
+    data = np.load(f"./data/lidar/{vertex_id}.npz")
     ranges = data["ranges"]
     angles = data["angles"]
     

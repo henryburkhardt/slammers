@@ -39,7 +39,7 @@ class SlamFrontEnd(Node):
         self.latest_odom = None
 
         # store most recent pose and indeitifer
-        self.last_vertex_key = None
+        self.last_added_vertex_key = None
         self.last_added_pose = None  # (x, y, theta) of last vertex
         
         # cutoff values for adding new poses
@@ -68,7 +68,8 @@ class SlamFrontEnd(Node):
         theta = math.atan2(siny_cosp, cosy_cosp)
 
         # update odom 
-        self.latest_odom = (pos.x, pos.y, theta)
+        current_pose = (pos.x, pos.y, theta)
+        self.latest_odom = current_pose
 
         # convert lidar to numpy arrays and update
         self.latest_ranges = np.array(scan.ranges, dtype=np.float32)
@@ -76,6 +77,26 @@ class SlamFrontEnd(Node):
             scan.angle_min
             + np.arange(len(scan.ranges)) * scan.angle_increment
         )
+
+        if self.last_added_pose == None and self.last_added_vertex_key == None: 
+            # we are at the first post 
+            self.add_pose_vertex()
+            self.last_added_vertex_key = 1
+            self.last_added_pose = current_pose
+            return 
+        
+        dx = current_pose[0] - self.last_added_pose[0]
+        dy = current_pose[1] - self.last_added_pose[1]
+        dtrans = math.hypot(dx, dy)
+
+        dtheta = math.atan2(
+            math.sin(current_pose[2] - self.last_added_pose[2]),
+            math.cos(current_pose[2] - self.last_added_pose[2])
+        )
+
+        if dtrans > self.min_translation or abs(dtheta) >= self.min_rotation:
+            self.add_pose_vertex()
+            self.last_added_pose = current_pose
     
     def reset_slam_data(
         self,
@@ -93,60 +114,43 @@ class SlamFrontEnd(Node):
                 if p.is_file():
                     p.unlink()
 
-    
-    # def odom_cb(self, msg: Odometry):
-    #     """Callback to unpack/store odom data -- called everytime there is fresh odom data"""
-    #     x = msg.pose.pose.position.x
-    #     y = msg.pose.pose.position.y
-    #     q = msg.pose.pose.orientation
-
-    #     siny_cosp = 2 * (q.w * q.z + q.x * q.y)
-    #     cosy_cosp = 1 - 2 * (q.y**2 + q.z**2)
-    #     theta = math.atan2(siny_cosp, cosy_cosp)
-
-    #     self.latest_odom = (x, y, theta)
-
-
-    # def lidar_cb(self, msg: LaserScan):
-    #     """Callback to unpack/store lidar data -- called everytime there is fresh lidar data"""
-    #     self.latest_ranges = np.array(msg.ranges, dtype=np.float32)
-    #     self.latest_angles = (
-    #         msg.angle_min
-    #         + np.arange(len(msg.ranges)) * msg.angle_increment
-    #     )
-
-
-    def add_pose_vertex(self, use_icp_odom=False):
+    def add_pose_vertex(self, use_icp_odom=True):
         """Add a pose vertex to the pose graph"""
+        print("adding a new pose!")
         if self.latest_ranges is None or self.latest_odom is None:
             self.get_logger().warn("No data yet")
             return  
 
         # create new verttex id
         new_vertex_key = self.pose_graph.num_vertices + 1
+
+        new_pose = Pose2D(self.latest_odom[0], self.latest_odom[1], self.latest_odom[2])
+
         
         if use_icp_odom:
-            last_vertex_points = load_scans_and_filter_scan_and_also_make_them_into_points_lol(vertex_id=self.last_vertex_key)
+            # if using this, drive reallll slow !
+            last_vertex_points = load_scans_and_filter_scan_and_also_make_them_into_points_lol(vertex_id=self.last_added_vertex_key)
             new_vertex_points = load_scans_and_filter_scan_and_also_make_them_into_points_lol(vertex_id=new_pose)
             M2 = ndt_icp2(last_vertex_points, new_vertex_points)
+            v = t2v(M2)
+            new_pose = Pose2D(self.last_added_pose[0] + v[0], self.last_added_pose[1] + v[1], self.last_added_pose[2] + v[2])
 
         # create the pose object (x, y, theta) and add to graph
-        new_pose = Pose2D(self.latest_odom[0], self.latest_odom[1], self.latest_odom[2])
         self.pose_graph.add_vertex(key=new_vertex_key, pose=new_pose, scan=self.latest_ranges.copy(), angles=self.latest_angles.copy()) 
         
         # save the point cloud to disk as npz (in ./data/scans)
         self.save_scan_to_disk(new_vertex_key, ranges=self.latest_ranges.copy(), angles=self.latest_angles.copy())
 
-        if self.last_vertex_key == None: 
-            self.last_vertex_key = new_vertex_key
+        if self.last_added_vertex_key == None: 
+            self.last_added_vertex_key = new_vertex_key
             return 
         
-        self.pose_graph.add_edge(v1_key=self.last_vertex_key, v2_key=new_vertex_key, information=DEFAULT_CONFIDENT_INFORMATION_MATRIX)
+        self.pose_graph.add_edge(v1_key=self.last_added_vertex_key, v2_key=new_vertex_key, information=DEFAULT_CONFIDENT_INFORMATION_MATRIX)
         
         # save graph to g2o output file
         self.pose_graph.save_graph_to_file(filepath="./data/graph.g2o")
 
-        self.last_vertex_key = new_vertex_key
+        self.last_added_vertex_key = new_vertex_key
 
         self.add_virtual_edges(new_vertex_key)
 

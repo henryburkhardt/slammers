@@ -1,7 +1,8 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-from lidar.frontend.icp import ndt_icp2
+from icp import ndt_icp2
+from utils import load_scans_and_filter_scan_and_also_make_them_into_points_lol
 
 #Create the datasets
 ang = np.linspace(-np.pi/2, np.pi/2, 320)
@@ -23,8 +24,8 @@ print(a)
 
 # print(a)
 
-pose1 = np.load("../data/lidar/4.npz")
-pose2 = np.load("../data/lidar/5.npz")
+pose1 = np.load("./data/lidar/1.npz")
+pose2 = np.load("./data/lidar/2.npz")
 
 ranges1 = pose1["ranges"]
 ranges2= pose2["ranges"]
@@ -49,8 +50,9 @@ points2 = np.column_stack((ranges2_filtered, angles2_filtered))
 #Run the icp
 # M2 = ndt_icp2(b, a, tx_est=0.1, ty_est=0.33, phi_est=np.pi/2.2, max_it=30)
 
-
-M2 = ndt_icp2(points2, points1, tx_est=-0.299178, ty_est=0.011051, phi_est=-0.008428, max_it=30)
+points1 = load_scans_and_filter_scan_and_also_make_them_into_points_lol(1)
+points2 = load_scans_and_filter_scan_and_also_make_them_into_points_lol(2)
+M2 = ndt_icp2(points2, points1, max_it=30)
 
 print("RESULT:")
 print(M2)
