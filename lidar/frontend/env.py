@@ -10,4 +10,5 @@ DEFAULT_CONFIDENT_INFORMATION_MATRIX = np.array([
     [0, 0, 1_000_000]
 ])
 
-LIDAR_YAW_OFFSET = -np.pi/2  # adjust until scans align with robot forward
+ # adjusting to account for position of lidar scanner on robot, without setting this the scans will appear off by 90 deg.
+LIDAR_YAW_OFFSET = -np.pi/2 

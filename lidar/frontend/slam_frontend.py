@@ -16,6 +16,8 @@ from env import *
 import requests 
 from utils import *
 from message_filters import Subscriber, ApproximateTimeSynchronizer
+from utils import load_scans_and_filter_scan_and_also_make_them_into_points_lol
+from icp import ndt_icp2
 
 
 
@@ -23,11 +25,11 @@ class SlamFrontEnd(Node):
     def __init__(self):
         super().__init__('slam_frontend')
 
-        # --- Message filters subscribers ---
+        # subscribers to ros topic for lidar and odom
         self.lidar_sub = Subscriber(self, LaserScan, '/mikey/scan')
         self.odom_sub = Subscriber(self, Odometry, '/mikey/odom')
 
-        # Synchronizer: allows 50ms tolerance
+        # synchronizer: allows 50ms tolerance (so that odom and lidar data are synced)
         self.ts = ApproximateTimeSynchronizer([self.odom_sub, self.lidar_sub], queue_size=10, slop=0.05)
         self.ts.registerCallback(self.synced_callback)
 
@@ -36,26 +38,28 @@ class SlamFrontEnd(Node):
         self.latest_angles = None
         self.latest_odom = None
 
+        # store most recent pose and indeitifer
+        self.last_vertex_key = None
         self.last_added_pose = None  # (x, y, theta) of last vertex
+        
+        # cutoff values for adding new poses
         self.min_translation = 0.05  # meters (5 cm)
         self.min_rotation = 0.01  
+               
 
         # initialize the pose graph
         self.pose_graph = PoseGraph()
-
-        # store the most recently created vertex id
-        self.last_vertex_key = None
 
         # Keyboard thread - to handle keypresses to trigger pose generation
         self.running = True
         self.kb_thread = threading.Thread(target=self.keyboard_listener, daemon=True)
         self.kb_thread.start()
 
-        self.get_logger().info("SLAM Frontend running. Press SPACE to create a new pose vertex.")
+        self.get_logger().info("SLAM Frontend running.")
     
     def synced_callback(self, odom: Odometry, scan: LaserScan):
         """Callback receives synchronized odometry + lidar scan"""
-        # Convert odometry quaternion -> yaw (2D pose)
+        # convert odometry quaternion -> yaw (2D pose)
         pos = odom.pose.pose.position
         q = odom.pose.pose.orientation
         
@@ -63,9 +67,10 @@ class SlamFrontEnd(Node):
         cosy_cosp = 1 - 2 * (q.y**2 + q.z**2)
         theta = math.atan2(siny_cosp, cosy_cosp)
 
+        # update odom 
         self.latest_odom = (pos.x, pos.y, theta)
 
-        # Convert lidar to numpy arrays
+        # convert lidar to numpy arrays and update
         self.latest_ranges = np.array(scan.ranges, dtype=np.float32)
         self.latest_angles = (
             scan.angle_min
@@ -111,14 +116,19 @@ class SlamFrontEnd(Node):
     #     )
 
 
-    def add_pose_vertex(self):
-        """Add a pose vertext to the pose graph"""
+    def add_pose_vertex(self, use_icp_odom=False):
+        """Add a pose vertex to the pose graph"""
         if self.latest_ranges is None or self.latest_odom is None:
             self.get_logger().warn("No data yet")
             return  
 
-        # create new vertext id
+        # create new verttex id
         new_vertex_key = self.pose_graph.num_vertices + 1
+        
+        if use_icp_odom:
+            last_vertex_points = load_scans_and_filter_scan_and_also_make_them_into_points_lol(vertex_id=self.last_vertex_key)
+            new_vertex_points = load_scans_and_filter_scan_and_also_make_them_into_points_lol(vertex_id=new_pose)
+            M2 = ndt_icp2(last_vertex_points, new_vertex_points)
 
         # create the pose object (x, y, theta) and add to graph
         new_pose = Pose2D(self.latest_odom[0], self.latest_odom[1], self.latest_odom[2])
@@ -131,8 +141,6 @@ class SlamFrontEnd(Node):
             self.last_vertex_key = new_vertex_key
             return 
         
-        # OPTIONAL: we could run icp here between the two new scans to improve the odometry calculation even more - this isn't a virtual edge though - just like an imporved odom update.
-
         self.pose_graph.add_edge(v1_key=self.last_vertex_key, v2_key=new_vertex_key, information=DEFAULT_CONFIDENT_INFORMATION_MATRIX)
         
         # save graph to g2o output file
@@ -140,7 +148,6 @@ class SlamFrontEnd(Node):
 
         self.last_vertex_key = new_vertex_key
 
-        # TODO: finish implimenting looop closure detection
         self.add_virtual_edges(new_vertex_key)
 
     def save_scan_to_disk(self, vertex_id: int, ranges, angles):
@@ -150,7 +157,7 @@ class SlamFrontEnd(Node):
         return
  
 
-    def is_pose_near_previsouly_explored_area(self, vertext_key) -> bool:
+    def is_pose_near_previsouly_explored_area(self, vertex_key) -> bool:
         """check if given pose is an a previsouly explored area that is being revisited"""
         # TODO: finish function
         return True

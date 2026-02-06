@@ -2,6 +2,8 @@ from dataclasses import dataclass
 import numpy as np
 import math
 from utils import t2v, se2_relative_transformation
+from icp import ndt_icp2
+
     
 
 @dataclass

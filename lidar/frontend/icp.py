@@ -2,11 +2,12 @@ import typing
 import numpy as np
 import scipy
 import math
+# import seaborn as sns
 import matplotlib.pyplot as plt
+
 
 LaserScan = np.ndarray  # [(p1, p2), ...] OR [(r, theta), ...]
 
-# COPY OF ICP ALG from RAYMONDS BRANCH (just copied over). Current as of 12:05pm 1/27
 
 MIN_PT_CNT = 3
 CELL_SIZE = 50.0   # cm
@@ -25,6 +26,9 @@ DO_PRINT = True
 def cart2idx(point: np.ndarray):
     """Converts cartesian coordinates into row, col indices for grid indexing"""
     return int(-1 * point[1] / CELL_SIZE + (GRID_CNT / 2)), int(point[0] / CELL_SIZE + (GRID_CNT / 2))
+
+
+################## NDT ##################
 
 
 def regularize_cov(cov_matrix: np.ndarray):
@@ -384,20 +388,21 @@ def ndt_icp2(
     source = np.array([points2], copy=True).astype(np.float32)
     dest = np.array([points1], copy=True).astype(np.float32)
 
+    #Initialise with the initial pose estimation
     transform_matrix = np.array([
         [np.cos(phi_est), -np.sin(phi_est), tx_est],
         [np.sin(phi_est), np.cos(phi_est), ty_est],
         [0, 0, 1]]
     )
 
-    # print("starting source:", source)
+    print("starting source:", source)
     # source = cv2.transform(source, transform_matrix[0:2])
     # source = cv2.warpAffine(source, transform_matrix[0:2], (source.shape[1], source.shape[0]))
     source = cv2.transform(source, transform_matrix[0:2])
 
     for i in range(max_it):
-        # print("source shape:", source.shape)
-        # print("current source:", source)
+        print("source shape:", source.shape)
+        print("current source:", source)
         # print("dest:", dest[0])
         neighbors = NearestNeighbors(n_neighbors=1, algorithm='auto',).fit(dest[0])
         # print("neighbors:", neighbors)
@@ -405,12 +410,12 @@ def ndt_icp2(
         # print("indices:", indices)
         # print("dest input:", dest[0, indices.T])
         T = cv2.estimateAffinePartial2D(source, dest[0, indices.T])
-        # print("estimated:", T[0])
+        print("estimated:", T[0])
         source = cv2.transform(source, T[0])
-        # print("source shape:", source.shape)
+        print("source shape:", source.shape)
         transform_matrix = np.dot(transform_matrix, np.vstack((T[0],[0,0,1])))
-        # print("trans_matrix:", transform_matrix)
-    return transform_matrix[0:2]
+        print("trans_matrix:", transform_matrix)
+    return transform_matrix # it's okay i can actually take the whole thing
 
 
 if __name__ == "__main__":

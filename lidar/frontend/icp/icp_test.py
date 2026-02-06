@@ -1,4 +1,4 @@
-from ndt_icp import * 
+from lidar.frontend.icp import * 
 
 
 pose1 = np.load("../data/lidar/1.npz")

@@ -131,7 +131,27 @@ def update(frame):
 
     ax.relim()
     ax.autoscale_view()
-    ax.margins(x=1.8, y=1.8)
+
+    # minimum visible size
+    MIN_X_RANGE = 10.0
+    MIN_Y_RANGE = 10.0
+
+    # --- X axis ---
+    xmin, xmax = ax.get_xlim()
+    if xmax - xmin < MIN_X_RANGE:
+        cx = 0.5 * (xmin + xmax)
+        ax.set_xlim(cx - MIN_X_RANGE / 2,
+                    cx + MIN_X_RANGE / 2)
+
+    # --- Y axis ---
+    ymin, ymax = ax.get_ylim()
+    if ymax - ymin < MIN_Y_RANGE:
+        cy = 0.5 * (ymin + ymax)
+        ax.set_ylim(cy - MIN_Y_RANGE / 2,
+                    cy + MIN_Y_RANGE / 2)
+
+    ax.margins(x=0.1, y=0.1)
+
 
     return pose_scat, scan_scat, *lines
 
