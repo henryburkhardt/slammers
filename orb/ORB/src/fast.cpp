@@ -9,6 +9,7 @@
  * An array of points representing the points of the circle with radius 3 relative to a given center pixel.
  */
 const int CIRCLE_POINTS[16][2] = {
+    {-1, -3},
     {0, -3},
     {1, -3},
     {2, -2},
@@ -23,9 +24,61 @@ const int CIRCLE_POINTS[16][2] = {
     {-3, 1},
     {-3, 0},
     {-3, -1},
-    {-2, -2},
-    {-1, -3}
+    {-2, -2}
 };
+
+std::vector<uchar> getSurroundingPoints(const cv::Mat& img, int row, int col) {
+    uchar* raw_data = img.data;
+    
+    int width = img.step;
+    int center_point = row * width + col;
+
+    std::vector<uchar> vals = {
+        raw_data[center_point - 3 * width - 1],
+        raw_data[center_point - 3 * width],
+        raw_data[center_point - 3 * width + 1],
+        raw_data[center_point - 2 * width + 2],
+        raw_data[center_point - width + 3],
+        raw_data[center_point + 3],
+        raw_data[center_point + width + 3],
+        raw_data[center_point + 2 * width + 2],
+        raw_data[center_point + 3 * width + 1],
+        raw_data[center_point + 3 * width],
+        raw_data[center_point + 3 * width - 1],
+        raw_data[center_point + 2 * width - 2],
+        raw_data[center_point + width - 3],
+        raw_data[center_point - 3],
+        raw_data[center_point - width - 3],
+        raw_data[center_point - 2 * width - 2],
+        raw_data[center_point]
+    };
+
+    return vals;
+}
+
+int get_corner_score(const cv::Mat& img, int row, int col) {
+    auto pointVector = getSurroundingPoints(img, row, col);
+
+    for (auto point : pointVector) {
+        std::cout << (int) point << " ";
+    }
+    std::cout << std::endl;
+
+    uchar center = pointVector[16];
+    int best = 0;
+    for (int i = 0; i < 16; i++) {
+        int max_diff = INT_MIN;
+        int min_diff = INT_MAX;
+        for (int j = 0; j < 9; j++) {
+            int diff = pointVector[(i + j) % 16] - center;
+            max_diff = std::min(0, std::max(max_diff, diff));
+            min_diff = std::max(0, std::min(min_diff, diff));
+        }
+        best = std::max(best, -max_diff);
+        best = std::max(best, min_diff);
+    }
+    return best - 1;
+}
 
 /**
  * A detector that utilizes the FAST algorithm without machine learning (so it's not really FAST). Checks whether
@@ -6674,54 +6727,60 @@ void train(int n, int threshold) {
     trainDecisionTree(images, pixelSet, keypoints, choices, threshold, 0);
 }
 
-// int main(int argc, char* argv[]) {
-//     if (argc == 2 && strcmp(argv[1], "train") == 0) {
-//         train(9, 10);
-//         return 0;
-//     }
-//     cv::Mat img = cv::imread("train_images/weitz.png", cv::IMREAD_GRAYSCALE);
+int main(int argc, char* argv[]) {
+    if (argc == 2 && strcmp(argv[1], "train") == 0) {
+        train(9, 10);
+        return 0;
+    }
+    cv::Mat img = cv::imread("train_images/libe.png", cv::IMREAD_GRAYSCALE);
 
-//     // Check if the image loaded successfully
-//     if (img.empty()) {
-//         std::cerr << "Error: Could not open or find the image." << std::endl;
-//         return -1;
-//     }
+    // Check if the image loaded successfully
+    if (img.empty()) {
+        std::cerr << "Error: Could not open or find the image." << std::endl;
+        return -1;
+    }
 
-//     FASTDetector detector = FASTDetector(9, 10);
-//     auto start = std::chrono::high_resolution_clock::now();
-//     std::vector<cv::Point> keypoints= detector.detect(img);
-//     auto end = std::chrono::high_resolution_clock::now();
-//     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-//     std::cout << "nonML took " << duration.count() << " microseconds to execute." << std::endl;
-//     std::cout << keypoints.size() << std::endl;
+    std::vector<cv::Point2i> kp;
+    learnedFast(kp, img, 10);
+    std::cout << kp.size() << std::endl;
 
-//     std::vector<cv::Point2d> fastKeypoints;
-//     start = std::chrono::high_resolution_clock::now();
-//     learnedFast(fastKeypoints, img, 10);
-//     end = std::chrono::high_resolution_clock::now();
-//     duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-//     std::cout << "ML took " << duration.count() << " microseconds to execute." << std::endl;
-//     std::cout << fastKeypoints.size() << std::endl;
+    FASTDetector detector = FASTDetector(9, 10);
+    auto start = std::chrono::high_resolution_clock::now();
+    std::vector<cv::Point> keypoints= detector.detect(img);
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    std::cout << "nonML took " << duration.count() << " microseconds to execute." << std::endl;
+    std::cout << keypoints.size() << std::endl;
 
-//     std::vector<cv::KeyPoint> kps;
-//     auto thing = cv::FastFeatureDetector::create(10, false);
+    // std::vector<cv::Point2d> fastKeypoints;
+    // start = std::chrono::high_resolution_clock::now();
+    // learnedFast(fastKeypoints, img, 10);
+    // end = std::chrono::high_resolution_clock::now();
+    // duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    // std::cout << "ML took " << duration.count() << " microseconds to execute." << std::endl;
+    // std::cout << fastKeypoints.size() << std::endl;
+
+    std::vector<cv::KeyPoint> kps;
+    auto thing = cv::FastFeatureDetector::create(43, true);
     
-//     start = std::chrono::high_resolution_clock::now();
-//     thing->detect(img, kps);
-//     end = std::chrono::high_resolution_clock::now();
-//     duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-//     std::cout << "OpenCV took " << duration.count() << " microseconds to execute." << std::endl;
-//     std::cout << kps.size() << std::endl;
+    start = std::chrono::high_resolution_clock::now();
+    thing->detect(img, kps);
+    end = std::chrono::high_resolution_clock::now();
+    duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    std::cout << "OpenCV took " << duration.count() << " microseconds to execute." << std::endl;
+    std::cout << kps.size() << std::endl;
+    std::cout << kps[0].response << std::endl;
+    std::cout << get_corner_score(img, kps[0].pt.y, kps[0].pt.x) << std::endl;
 
-//     cv::Mat colorImg;
-//     cv::cvtColor(img, colorImg, cv::COLOR_GRAY2BGR);
+    // cv::Mat colorImg;
+    // cv::cvtColor(img, colorImg, cv::COLOR_GRAY2BGR);
 
-//     for (cv::Point2d keypoint : fastKeypoints) {
-//         colorImg.at<cv::Vec3b>(keypoint) = cv::Vec3b(0, 0, 255);
-//     }
+    // for (cv::Point2d keypoint : fastKeypoints) {
+    //     colorImg.at<cv::Vec3b>(keypoint) = cv::Vec3b(0, 0, 255);
+    // }
 
-//     cv::imshow("Frame", colorImg);
-//     cv::waitKey(0);
+    // cv::imshow("Frame", colorImg);
+    // cv::waitKey(0);
 
-//     return 0;
-// }
+    // return 0;
+}

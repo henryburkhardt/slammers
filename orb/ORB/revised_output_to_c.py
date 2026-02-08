@@ -1,26 +1,15 @@
 import io
 import sys
 
-CIRCLE_POINTS = [
-    [-1, -3],
-    [0, -3],
-    [1, -3],
-    [2, -2],
-    [3, -1],
-    [3, 0],
-    [3, 1],
-    [2, 2],
-    [1, 3],
-    [0, 3],
-    [-1, 3],
-    [-2, 2],
-    [-3, 1],
-    [-3, 0],
-    [-3, -1],
-    [-2, -2]
-]
 
 class TreeNode:
+    """
+    Represents a node in the decision tree that has three corresponding children:
+    The first child is the trees decision if the pixels are similar in color.
+    The second child is the trees decision if the comparison pixel was darker than the center pixel.
+    The third child is the trees decision if the comparison pixel was lighter than the center pixel.
+    The value variable holds what the trees next decision negative values represent final decisions while positive values are next index.
+    """
     def __init__(self):
         self.children = []
         self.value = -3
@@ -28,10 +17,7 @@ class TreeNode:
     def __eq__(self, value):
         return self.value == value.value and self.children == value.children
 
-    def generate_tree_text(self, indent_level='', first_call = True):
-        if first_call:
-            print('int comp_pixel, pixel;')
-            print('comp_pixel = raw_data[row * width + col];')
+    def generate_tree_text(self, indent_level=''):
         if self.value < 0:
             if self.value == -1:
                 print('error')
@@ -43,39 +29,35 @@ class TreeNode:
         one_three_equal = self.children[0] == self.children[2]
 
         print_else = False
-
-        y = CIRCLE_POINTS[self.value][1]
-        x = CIRCLE_POINTS[self.value][0]
-        print(indent_level + f'pixel = raw_data[(row{((' + ' if y >= 0 else ' - ') + str(abs(y))) if y != 0 else ''}) * width + col{((' + ' if x >= 0 else ' - ') + str(abs(x))) if x != 0 else ''}];')
         
         if two_three_equal:
             if self.children[1].value != -1:
-                print(indent_level + 'if (pixel + threshold < comp_pixel || pixel - threshold > comp_pixel) {')
-                self.children[1].generate_tree_text(indent_level + '    ', first_call=False)
+                print(indent_level + f'if (pixel + threshold < surrPoints[{self.value}] || pixel - threshold > surrPoints[{self.value}]) {{')
+                self.children[1].generate_tree_text(indent_level + '    ')
                 print(indent_level + '}')
                 print_else = True
         else:
             if not one_two_equal:
                 if self.children[1].value != -1:
-                    print(indent_level + 'if (pixel + threshold < comp_pixel) {')
-                    self.children[1].generate_tree_text(indent_level + '    ', first_call=False)
+                    print(indent_level + f'if (pixel - threshold > surrPoints[{self.value}]) {{')
+                    self.children[1].generate_tree_text(indent_level + '    ')
                     print(indent_level + '}')
                     print_else = True
             if not one_three_equal:
                 if self.children[2].value != -1:
-                    print(indent_level + ('else ' if print_else else '') + 'if (pixel - threshold > comp_pixel) {')
-                    self.children[2].generate_tree_text(indent_level + '    ', first_call=False)
+                    print(indent_level + ('else ' if print_else else '') + f'if (pixel + threshold < surrPoints[{self.value}]) {{')
+                    self.children[2].generate_tree_text(indent_level + '    ')
                     print(indent_level + '}')
                     print_else = True
         if self.children[0].value != -1:
             if self.children[1].value == -1 or self.children[2].value == -1:
-                print(indent_level + ('else ' if print_else else '') + 'if (pixel + threshold >= comp_pixel && pixel - threshold <= comp_pixel) {')
-                self.children[0].generate_tree_text(indent_level + '    ', first_call=False)
+                print(indent_level + ('else ' if print_else else '') + f'if (pixel + threshold >= surrPoints[{self.value}] && pixel - threshold <= surrPoints[{self.value}]) {{')
+                self.children[0].generate_tree_text(indent_level + '    ')
                 print(indent_level + '}')
             else:
                 if print_else:
                     print(indent_level + 'else {')
-                self.children[0].generate_tree_text(indent_level=indent_level + ('    ' if print_else else ''), first_call=False)
+                self.children[0].generate_tree_text(indent_level=indent_level + ('    ' if print_else else ''))
                 if print_else:
                     print(indent_level + '}')
 
@@ -95,12 +77,15 @@ def load_tree(output:io.TextIOWrapper):
     stack = []
     for line in tree:
         value = parse_line(line)
+        # adapt depth to correct value
         while not line.startswith(' ' * depth):
             depth -= 1
             stack.pop()
+        # if the stack exists, make a new node for this line
         if stack:
             stack[-1].children.append(TreeNode())
             stack.append(stack[-1].children[-1])
+        # start the stack
         else:
             stack.append(TreeNode())
         stack[-1].value = value

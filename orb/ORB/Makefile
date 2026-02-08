@@ -117,6 +117,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named FAST
+
+# Build rule for target.
+FAST: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 FAST
+.PHONY : FAST
+
+# fast build rule for target.
+FAST/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FAST.dir/build.make CMakeFiles/FAST.dir/build
+.PHONY : FAST/fast
+
+#=============================================================================
 # Target rules for targets named optim
 
 # Build rule for target.
@@ -158,7 +171,7 @@ src/fast.o: src/fast.cpp.o
 
 # target to build an object file
 src/fast.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/optim.dir/build.make CMakeFiles/optim.dir/src/fast.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FAST.dir/build.make CMakeFiles/FAST.dir/src/fast.cpp.o
 .PHONY : src/fast.cpp.o
 
 src/fast.i: src/fast.cpp.i
@@ -166,7 +179,7 @@ src/fast.i: src/fast.cpp.i
 
 # target to preprocess a source file
 src/fast.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/optim.dir/build.make CMakeFiles/optim.dir/src/fast.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FAST.dir/build.make CMakeFiles/FAST.dir/src/fast.cpp.i
 .PHONY : src/fast.cpp.i
 
 src/fast.s: src/fast.cpp.s
@@ -174,7 +187,7 @@ src/fast.s: src/fast.cpp.s
 
 # target to generate assembly for a file
 src/fast.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/optim.dir/build.make CMakeFiles/optim.dir/src/fast.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FAST.dir/build.make CMakeFiles/FAST.dir/src/fast.cpp.s
 .PHONY : src/fast.cpp.s
 
 # Help Target
@@ -185,6 +198,7 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... FAST"
 	@echo "... optim"
 	@echo "... optimization_playground.o"
 	@echo "... optimization_playground.i"
