@@ -11,7 +11,7 @@ def t2v(t_matrix: np.ndarray):
     theta = np.arctan2(t_matrix[1, 0], t_matrix[0, 0])
     return(x, y, theta)
 
-def load_scans_and_filter_scan_and_also_make_them_into_points_lol(vertex_id):
+def load_and_filter_scan(vertex_id):
     data = np.load(f"./data/lidar/{vertex_id}.npz")
     ranges = data["ranges"]
     angles = data["angles"]
@@ -22,7 +22,14 @@ def load_scans_and_filter_scan_and_also_make_them_into_points_lol(vertex_id):
     
     points = np.column_stack((ranges_filtered, angles_filtered))
     return points
+
+def filter_scan(ranges: np.ndarray, angles: np.ndarray):
+    mask = np.isfinite(ranges)  # True for finite values
+    ranges_filtered = ranges[mask]
+    angles_filtered = angles[mask]
     
+    points = np.column_stack((ranges_filtered, angles_filtered))
+    return points
     
 
     

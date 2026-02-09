@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 from icp import ndt_icp2
-from utils import load_scans_and_filter_scan_and_also_make_them_into_points_lol
+from utils import load_and_filter_scan
 
 #Create the datasets
 ang = np.linspace(-np.pi/2, np.pi/2, 320)
@@ -50,8 +50,8 @@ points2 = np.column_stack((ranges2_filtered, angles2_filtered))
 #Run the icp
 # M2 = ndt_icp2(b, a, tx_est=0.1, ty_est=0.33, phi_est=np.pi/2.2, max_it=30)
 
-points1 = load_scans_and_filter_scan_and_also_make_them_into_points_lol(1)
-points2 = load_scans_and_filter_scan_and_also_make_them_into_points_lol(2)
+points1 = load_and_filter_scan(1)
+points2 = load_and_filter_scan(2)
 M2 = ndt_icp2(points2, points1, max_it=30)
 
 print("RESULT:")

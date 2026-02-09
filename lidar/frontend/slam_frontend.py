@@ -16,7 +16,7 @@ from env import *
 import requests 
 from utils import *
 from message_filters import Subscriber, ApproximateTimeSynchronizer
-from utils import load_scans_and_filter_scan_and_also_make_them_into_points_lol
+from utils import load_and_filter_scan
 from icp import ndt_icp2
 
 
@@ -24,6 +24,8 @@ from icp import ndt_icp2
 class SlamFrontEnd(Node):
     def __init__(self):
         super().__init__('slam_frontend')
+        
+        self.logger = self.get_logger()
 
         # subscribers to ros topic for lidar and odom
         self.lidar_sub = Subscriber(self, LaserScan, f'/{ROBOT_NAME}/scan')
@@ -36,7 +38,7 @@ class SlamFrontEnd(Node):
         # store the latest information from the subscriptions
         self.latest_ranges = None
         self.latest_angles = None
-        self.latest_odom = None
+        self.latest_odom: Pose2D = None
 
         # store most recent pose and indeitifer
         self.last_added_vertex_key = None
@@ -49,9 +51,11 @@ class SlamFrontEnd(Node):
 
         # initialize the pose graph
         self.pose_graph = PoseGraph()
+
     
     def synced_callback(self, odom: Odometry, scan: LaserScan):
-        """Callback receives synchronized odometry + lidar scan"""
+        """Store latest odometry and lidar data, synchronized"""
+        
         # get x,y position
         pos = odom.pose.pose.position
         
@@ -74,14 +78,14 @@ class SlamFrontEnd(Node):
 
         # init first pose  
         if self.last_added_pose == None and self.last_added_vertex_key == None: 
-            self.add_pose_vertex()
+            self.add_pose_vertex(pose=current_pose)
             self.last_added_vertex_key = 1
             self.last_added_pose = current_pose
             return 
         
         # add new pose if robot has traveled far enought
         if(self.check_add_new_pose()):
-            self.add_pose_vertex()
+            self.add_pose_vertex(pose=current_pose)
             self.last_added_pose = current_pose
             return 
         
@@ -121,35 +125,36 @@ class SlamFrontEnd(Node):
             for p in scans_dir.iterdir():
                 if p.is_file():
                     p.unlink()
+        return 
 
 
-    def add_pose_vertex(self, use_icp_odom=True):
-        """Add a pose vertex to the pose graph"""
-        print("adding a new pose!")
+    def add_pose_vertex(self, pose: Pose2D, scan, use_icp_odom=True):
+        """Add a pose vertex to the pose graph"""        
         if self.latest_ranges is None or self.latest_odom is None:
-            self.get_logger().warn("No data yet")
+            self.logger.warn("add_pose_vertex: No data yet")
             return  
 
         # create new verttex id
         new_vertex_key = self.pose_graph.num_vertices + 1
-
-        new_pose = Pose2D(self.latest_odom[0], self.latest_odom[1], self.latest_odom[2])
-
         
-        if use_icp_odom:
+        self.logger.info(f"init adding new pose ({new_vertex_key})")
+        
+        if use_icp_odom and new_vertex_key != 1:
             # if using this, drive reallll slow !
-            last_vertex_points = load_scans_and_filter_scan_and_also_make_them_into_points_lol(vertex_id=self.last_added_vertex_key)
-            new_vertex_points = load_scans_and_filter_scan_and_also_make_them_into_points_lol(vertex_id=new_pose)
-            M2 = ndt_icp2(last_vertex_points, new_vertex_points)
-            v = t2v(M2)
-            new_pose = Pose2D(self.last_added_pose[0] + v[0], self.last_added_pose[1] + v[1], self.last_added_pose[2] + v[2])
+            # should skip if first pose...
+            last_vertex_points = load_and_filter_scan(vertex_id=self.last_added_vertex_key)
+            new_vertex_points = filter_scan(ranges=self.latest_ranges, angles=self.latest_angles)
+            t_matrix = ndt_icp2(new_vertex_points, last_vertex_points)
+            t_vector = t2v(t_matrix)
+            pose = Pose2D(self.last_added_pose[0] + t_vector[0], self.last_added_pose[1] + t_vector[1], self.last_added_pose[2] + t_vector[2])
 
         # create the pose object (x, y, theta) and add to graph
-        self.pose_graph.add_vertex(key=new_vertex_key, pose=new_pose, scan=self.latest_ranges.copy(), angles=self.latest_angles.copy()) 
+        self.pose_graph.add_vertex(key=new_vertex_key, pose=pose, scan=self.latest_ranges.copy(), angles=self.latest_angles.copy()) 
         
         # save the point cloud to disk as npz (in ./data/scans)
         self.save_scan_to_disk(new_vertex_key, ranges=self.latest_ranges.copy(), angles=self.latest_angles.copy())
 
+        # TODO: do we need this part below?
         if self.last_added_vertex_key == None: 
             self.last_added_vertex_key = new_vertex_key
             return 
@@ -157,11 +162,17 @@ class SlamFrontEnd(Node):
         self.pose_graph.add_edge(v1_key=self.last_added_vertex_key, v2_key=new_vertex_key, information=DEFAULT_CONFIDENT_INFORMATION_MATRIX)
         
         # save graph to g2o output file
-        self.pose_graph.save_graph_to_file(filepath="./data/graph.g2o")
+        # TODO: make this add line by line instead of whole graph? idk
+        self.pose_graph.save_graph_to_file(filepath=POSE_GRAPH_FILE_PATH)
 
         self.last_added_vertex_key = new_vertex_key
 
         self.add_virtual_edges(new_vertex_key)
+        
+        self.logger.info(f"finish adding new pose ({new_vertex_key})")
+        
+        return
+
 
 
     def save_scan_to_disk(self, vertex_id: int, ranges, angles):

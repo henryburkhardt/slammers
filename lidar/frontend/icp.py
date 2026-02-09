@@ -20,7 +20,7 @@ COORD_LIMIT = math.ceil(RANGE_MAX)
 GRID_CNT = math.ceil(COORD_LIMIT / CELL_SIZE) * 2
 
 CHECK = True
-DO_PRINT = True
+DO_PRINT = False
 
 
 def cart2idx(point: np.ndarray):
@@ -386,7 +386,7 @@ def ndt_icp2(
     # source = np.array([points2.T], copy=True).astype(np.float32)
     # dest = np.array([points1.T], copy=True).astype(np.float32)
     source = np.array([source], copy=True).astype(np.float32)
-    dest = np.array([points1], copy=True).astype(np.float32)
+    dest = np.array([dest], copy=True).astype(np.float32)
 
     #Initialise with the initial pose estimation
     transform_matrix = np.array([
