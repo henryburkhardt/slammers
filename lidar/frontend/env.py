@@ -1,8 +1,10 @@
-# TODO: finish env. var setup
 import numpy as np
 
 GRAPH_OPTIMIZATION_EDNPOINT="http://localhost:8080"
-POSE_GRAPH_PATH = "./data/graph.g2o"
+
+POSE_GRAPH_FILE_PATH = "./data/graph.g2o"
+
+ROBOT_NAME = "mikey"
 
 DEFAULT_CONFIDENT_INFORMATION_MATRIX = np.array([
     [1_000_000, 0, 0],

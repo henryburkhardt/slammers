@@ -26,8 +26,8 @@ class SlamFrontEnd(Node):
         super().__init__('slam_frontend')
 
         # subscribers to ros topic for lidar and odom
-        self.lidar_sub = Subscriber(self, LaserScan, '/mikey/scan')
-        self.odom_sub = Subscriber(self, Odometry, '/mikey/odom')
+        self.lidar_sub = Subscriber(self, LaserScan, f'/{ROBOT_NAME}/scan')
+        self.odom_sub = Subscriber(self, Odometry, f'/{ROBOT_NAME}/odom')
 
         # synchronizer: allows 50ms tolerance (so that odom and lidar data are synced)
         self.ts = ApproximateTimeSynchronizer([self.odom_sub, self.lidar_sub], queue_size=10, slop=0.05)
@@ -52,15 +52,16 @@ class SlamFrontEnd(Node):
     
     def synced_callback(self, odom: Odometry, scan: LaserScan):
         """Callback receives synchronized odometry + lidar scan"""
-        # convert odometry quaternion -> yaw (2D pose)
+        # get x,y position
         pos = odom.pose.pose.position
-        q = odom.pose.pose.orientation
         
+        # get rotation angle
+        q = odom.pose.pose.orientation
         siny_cosp = 2 * (q.w * q.z + q.x * q.y)
         cosy_cosp = 1 - 2 * (q.y**2 + q.z**2)
         theta = math.atan2(siny_cosp, cosy_cosp)
 
-        # update odom 
+        # update latest odom 
         current_pose = (pos.x, pos.y, theta)
         self.latest_odom = current_pose
 
@@ -71,32 +72,46 @@ class SlamFrontEnd(Node):
             + np.arange(len(scan.ranges)) * scan.angle_increment
         )
 
+        # init first pose  
         if self.last_added_pose == None and self.last_added_vertex_key == None: 
-            # we are at the first post 
             self.add_pose_vertex()
             self.last_added_vertex_key = 1
             self.last_added_pose = current_pose
             return 
         
-        dx = current_pose[0] - self.last_added_pose[0]
-        dy = current_pose[1] - self.last_added_pose[1]
+        # add new pose if robot has traveled far enought
+        if(self.check_add_new_pose()):
+            self.add_pose_vertex()
+            self.last_added_pose = current_pose
+            return 
+        
+        return 
+    
+    def check_add_new_pose(self) -> bool:
+        """Check if robot has traveled threshold distance"""
+        
+        dx = self.latest_odom[0] - self.last_added_pose[0]
+        dy = self.latest_odom[1] - self.last_added_pose[1]
         dtrans = math.hypot(dx, dy)
 
         dtheta = math.atan2(
-            math.sin(current_pose[2] - self.last_added_pose[2]),
-            math.cos(current_pose[2] - self.last_added_pose[2])
+            math.sin(self.latest_odom[2] - self.last_added_pose[2]),
+            math.cos(self.latest_odom[2] - self.last_added_pose[2])
         )
 
         if dtrans > self.min_translation or abs(dtheta) >= self.min_rotation:
-            self.add_pose_vertex()
-            self.last_added_pose = current_pose
+            return True 
+        
+        return False
+        
     
     def reset_slam_data(
         self,
         graph_path: Path = Path("./data/graph.txt"),
         scans_dir: Path = Path("./data/lidar"),
     ):
-        """clears all data (in the ./data folder)"""
+        """Clear all data (in the ./data folder)"""
+        
         # Delete graph file
         if graph_path.exists():
             graph_path.unlink()
@@ -106,6 +121,7 @@ class SlamFrontEnd(Node):
             for p in scans_dir.iterdir():
                 if p.is_file():
                     p.unlink()
+
 
     def add_pose_vertex(self, use_icp_odom=True):
         """Add a pose vertex to the pose graph"""
@@ -147,8 +163,9 @@ class SlamFrontEnd(Node):
 
         self.add_virtual_edges(new_vertex_key)
 
+
     def save_scan_to_disk(self, vertex_id: int, ranges, angles):
-        """save lidar scan to disk as npz"""
+        """Save lidar scan to disk as npz"""
         filepath = f"./data/lidar/{vertex_id}.npz"
         np.savez(filepath, ranges=ranges, angles=angles)
         return
@@ -169,10 +186,11 @@ class SlamFrontEnd(Node):
             return 
     
     async def optimize_graph(self):
-        """send graph to backend to be optimized, then update graph to be the optimized version"""
-        with open(POSE_GRAPH_PATH, "r") as f:
+        """Senf graph to backend to be optimized, then update graph to be the optimized version"""
+        with open(POSE_GRAPH_FILE_PATH, "r") as f:
             g2o_content = f.read()
-            # POST to backend
+        
+        # POST to backend
         response = requests.post(GRAPH_OPTIMIZATION_EDNPOINT, data=g2o_content, headers={"Content-Type": "text/plain"})
 
         # Check response
@@ -180,11 +198,11 @@ class SlamFrontEnd(Node):
             print("Optimization successful!")
             optimized_content = response.text
             # Save the optimized graph
-            with open(POSE_GRAPH_PATH, "w") as f:
+            with open(POSE_GRAPH_FILE_PATH, "w") as f:
                 f.write(optimized_content)
             
             # update pose graph to reflect optimized version 
-            self.pose_graph.update_from_g2o(POSE_GRAPH_PATH)
+            self.pose_graph.update_from_g2o(POSE_GRAPH_FILE_PATH)
         else:
             print(f"Optimization failed! Status: {response.status_code}")
             print(response.text)
