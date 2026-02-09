@@ -78,14 +78,14 @@ class SlamFrontEnd(Node):
 
         # init first pose  
         if self.last_added_pose == None and self.last_added_vertex_key == None: 
-            self.add_pose_vertex(pose=current_pose)
+            self.add_pose_vertex(pose=Pose2D(current_pose[0], current_pose[1], current_pose[2]))
             self.last_added_vertex_key = 1
             self.last_added_pose = current_pose
             return 
         
         # add new pose if robot has traveled far enought
         if(self.check_add_new_pose()):
-            self.add_pose_vertex(pose=current_pose)
+            self.add_pose_vertex(pose=Pose2D(current_pose[0], current_pose[1], current_pose[2]))
             self.last_added_pose = current_pose
             return 
         
@@ -103,7 +103,8 @@ class SlamFrontEnd(Node):
             math.cos(self.latest_odom[2] - self.last_added_pose[2])
         )
 
-        if dtrans > self.min_translation or abs(dtheta) >= self.min_rotation:
+        # RIGHT now does not consider theta
+        if dtrans > self.min_translation:
             return True 
         
         return False
@@ -128,7 +129,7 @@ class SlamFrontEnd(Node):
         return 
 
 
-    def add_pose_vertex(self, pose: Pose2D, scan, use_icp_odom=True):
+    def add_pose_vertex(self, pose: Pose2D, use_icp_odom=True):
         """Add a pose vertex to the pose graph"""        
         if self.latest_ranges is None or self.latest_odom is None:
             self.logger.warn("add_pose_vertex: No data yet")
@@ -145,8 +146,12 @@ class SlamFrontEnd(Node):
             last_vertex_points = load_and_filter_scan(vertex_id=self.last_added_vertex_key)
             new_vertex_points = filter_scan(ranges=self.latest_ranges, angles=self.latest_angles)
             t_matrix = ndt_icp2(new_vertex_points, last_vertex_points)
-            t_vector = t2v(t_matrix)
-            pose = Pose2D(self.last_added_pose[0] + t_vector[0], self.last_added_pose[1] + t_vector[1], self.last_added_pose[2] + t_vector[2])
+            t_matrix = np.linalg.inv(t_matrix)
+            last_pose_matrix = self.pose_graph.get_vertex(self.last_added_vertex_key).to_matrix()
+            M2 = last_pose_matrix @ t_matrix
+            vector = t2v(M2)
+            pose = Pose2D(vector[0], vector[1], vector[2])
+            self.logger.info(f"ICP diff between {new_vertex_key} and {self.last_added_vertex_key}: x:{vector[0]}")
 
         # create the pose object (x, y, theta) and add to graph
         self.pose_graph.add_vertex(key=new_vertex_key, pose=pose, scan=self.latest_ranges.copy(), angles=self.latest_angles.copy()) 

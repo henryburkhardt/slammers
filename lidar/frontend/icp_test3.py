@@ -6,7 +6,7 @@ import time
 start = time.time()
 
 pose1 = load_and_filter_scan(4)
-pose2 = load_and_filter_scan(6)
+pose2 = load_and_filter_scan(3)
 t_matrix = ndt_icp2(pose1, pose2)
 
 end = time.time()

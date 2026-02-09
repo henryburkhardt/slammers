@@ -395,14 +395,14 @@ def ndt_icp2(
         [0, 0, 1]]
     )
 
-    print("starting source:", source)
+    # print("starting source:", source)
     # source = cv2.transform(source, transform_matrix[0:2])
     # source = cv2.warpAffine(source, transform_matrix[0:2], (source.shape[1], source.shape[0]))
     source = cv2.transform(source, transform_matrix[0:2])
 
     for i in range(max_it):
-        print("source shape:", source.shape)
-        print("current source:", source)
+        # print("source shape:", source.shape)
+        # print("current source:", source)
         # print("dest:", dest[0])
         neighbors = NearestNeighbors(n_neighbors=1, algorithm='auto',).fit(dest[0])
         # print("neighbors:", neighbors)
@@ -410,11 +410,11 @@ def ndt_icp2(
         # print("indices:", indices)
         # print("dest input:", dest[0, indices.T])
         T = cv2.estimateAffinePartial2D(source, dest[0, indices.T])
-        print("estimated:", T[0])
+        # print("estimated:", T[0])
         source = cv2.transform(source, T[0])
-        print("source shape:", source.shape)
+        # print("source shape:", source.shape)
         transform_matrix = np.dot(transform_matrix, np.vstack((T[0],[0,0,1])))
-        print("trans_matrix:", transform_matrix)
+        # print("trans_matrix:", transform_matrix)
     return transform_matrix # it's okay i can actually take the whole thing
 
 
