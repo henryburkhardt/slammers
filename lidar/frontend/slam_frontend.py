@@ -49,13 +49,6 @@ class SlamFrontEnd(Node):
 
         # initialize the pose graph
         self.pose_graph = PoseGraph()
-
-        # Keyboard thread - to handle keypresses to trigger pose generation
-        self.running = True
-        self.kb_thread = threading.Thread(target=self.keyboard_listener, daemon=True)
-        self.kb_thread.start()
-
-        self.get_logger().info("SLAM Frontend running.")
     
     def synced_callback(self, odom: Odometry, scan: LaserScan):
         """Callback receives synchronized odometry + lidar scan"""
@@ -196,24 +189,6 @@ class SlamFrontEnd(Node):
             print(f"Optimization failed! Status: {response.status_code}")
             print(response.text)
         return
-
-
-
-    def keyboard_listener(self):
-        """Keyboard listener - to create new pose on each space bar press"""
-        self.reset_slam_data()
-
-        fd = sys.stdin.fileno()
-        old = termios.tcgetattr(fd)
-        tty.setcbreak(fd)
-
-        try:
-            while self.running:
-                if select.select([sys.stdin], [], [], 0.1)[0]:
-                    if sys.stdin.read(1) == ' ':
-                        self.add_pose_vertex()
-        finally:
-            termios.tcsetattr(fd, termios.TCSADRAIN, old)
 
     def destroy_node(self):
         self.running = False

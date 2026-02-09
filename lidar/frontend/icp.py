@@ -375,8 +375,8 @@ from sklearn.neighbors import NearestNeighbors
 
 
 def ndt_icp2(
-        points1: LaserScan, 
-        points2: LaserScan, 
+        dest: LaserScan, 
+        source: LaserScan, 
         tx_est: float = 0.0,
         ty_est: float = 0.0,
         phi_est: float = 0.0,     # counter-clockwise
@@ -385,7 +385,7 @@ def ndt_icp2(
 
     # source = np.array([points2.T], copy=True).astype(np.float32)
     # dest = np.array([points1.T], copy=True).astype(np.float32)
-    source = np.array([points2], copy=True).astype(np.float32)
+    source = np.array([source], copy=True).astype(np.float32)
     dest = np.array([points1], copy=True).astype(np.float32)
 
     #Initialise with the initial pose estimation
