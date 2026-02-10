@@ -53,9 +53,9 @@ class Vertex:
     def to_matrix(self):
         """homogenous matrix representation of the point"""
         return np.array([
-            [np.cos(self.pose.theta), -np.sin(self.pose.theta), self.pose.x],
-            [np.sin(self.pose.theta),  np.cos(self.pose.theta), self.pose.y],
-            [0,              0,             1]
+            self.pose.x,
+            self.pose.y,
+            1
         ])
 
     def __str__(self):

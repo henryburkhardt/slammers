@@ -144,14 +144,23 @@ class SlamFrontEnd(Node):
             # if using this, drive reallll slow !
             # should skip if first pose...
             last_vertex_points = load_and_filter_scan(vertex_id=self.last_added_vertex_key)
+
             new_vertex_points = filter_scan(ranges=self.latest_ranges, angles=self.latest_angles)
+
             t_matrix = ndt_icp2(new_vertex_points, last_vertex_points)
-            t_matrix = np.linalg.inv(t_matrix)
+
+            # t_matrix = np.linalg.inv(t_matrix)
+
             last_pose_matrix = self.pose_graph.get_vertex(self.last_added_vertex_key).to_matrix()
-            M2 = last_pose_matrix @ t_matrix
-            vector = t2v(M2)
-            pose = Pose2D(vector[0], vector[1], vector[2])
-            self.logger.info(f"ICP diff between {new_vertex_key} and {self.last_added_vertex_key}: x:{vector[0]}")
+            
+            M2 = t_matrix @ last_pose_matrix
+
+            last_pose_theta = self.pose_graph.get_vertex(self.last_added_vertex_key).pose.theta
+
+            t_theta = t2v(t_matrix)[2]
+
+            pose = Pose2D(M2[0], M2[1], last_pose_theta + t_theta)
+            # self.logger.info(f"ICP diff between {new_vertex_key} and {self.last_added_vertex_key}: x:{vector[0]}")
 
         # create the pose object (x, y, theta) and add to graph
         self.pose_graph.add_vertex(key=new_vertex_key, pose=pose, scan=self.latest_ranges.copy(), angles=self.latest_angles.copy()) 
@@ -164,7 +173,7 @@ class SlamFrontEnd(Node):
             self.last_added_vertex_key = new_vertex_key
             return 
         
-        self.pose_graph.add_edge(v1_key=self.last_added_vertex_key, v2_key=new_vertex_key, information=DEFAULT_CONFIDENT_INFORMATION_MATRIX)
+        # self.pose_graph.add_edge(v1_key=self.last_added_vertex_key, v2_key=new_vertex_key, information=DEFAULT_CONFIDENT_INFORMATION_MATRIX)
         
         # save graph to g2o output file
         # TODO: make this add line by line instead of whole graph? idk

@@ -133,8 +133,8 @@ def update(frame):
     ax.autoscale_view()
 
     # minimum visible size
-    MIN_X_RANGE = 10.0
-    MIN_Y_RANGE = 10.0
+    MIN_X_RANGE = 20.0
+    MIN_Y_RANGE = 20.0
 
     # --- X axis ---
     xmin, xmax = ax.get_xlim()
