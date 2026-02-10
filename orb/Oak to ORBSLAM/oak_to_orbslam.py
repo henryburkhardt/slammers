@@ -9,11 +9,11 @@ class OakToOrbslam(Node):
     def __init__(self):
         super().__init__('oak_to_orbslam')
 
-        # 1) Subscribe to rectified mono images from OAK
+        # Subscribe to rectified mono images from OAK
         self.left_sub  = Subscriber(self, Image, '/oak/left/image_rect')
         self.right_sub = Subscriber(self, Image, '/oak/right/image_rect')
 
-        # 2) Synchronize left/right frames
+        # Synchronize left/right frames
         self.ts = ApproximateTimeSynchronizer(
             [self.left_sub, self.right_sub],
             queue_size=10,
@@ -21,7 +21,6 @@ class OakToOrbslam(Node):
         )
         self.ts.registerCallback(self.stereo_callback)
 
-        # 3) Publisher(s) to “ORB-SLAM2-facing” topics
         self.left_pub  = self.create_publisher(Image, '/orbslam/left/image_rect', 10)
         self.right_pub = self.create_publisher(Image, '/orbslam/right/image_rect', 10)
 
