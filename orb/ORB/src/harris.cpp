@@ -1,11 +1,12 @@
 #include <opencv2/opencv.hpp>
 #include "harris.hpp"
 
-const double RESPONSE_CONSTANT = 0.04;
+const float RESPONSE_CONSTANT = 0.04f;
 
 void applyKernel(int *xGrad, int *yGrad, const cv::Mat& img) {
     int height = img.size().height;
     int width = img.size().width;
+    size_t step = img.step;
 
     uchar* raw_data = img.data;
 
@@ -13,39 +14,40 @@ void applyKernel(int *xGrad, int *yGrad, const cv::Mat& img) {
         for (int j = 0; j < width; j++) {
             int xSum = 0;
             int ySum = 0;
+            int centerPixel = i * step + j;
             if (i > 0 && j > 0) {
-                int pixelVal = raw_data[(i - 1) * width + j - 1];
+                int pixelVal = raw_data[centerPixel - step - 1];
                 xSum -= pixelVal;
                 ySum -= pixelVal;
             }
             if (i > 0) {
-                int pixelVal = raw_data[(i - 1) * width + j];
+                int pixelVal = raw_data[centerPixel - step];
                 ySum -= 2 * pixelVal;
             }
             if (i > 0 && j < width - 1) {
-                int pixelVal = raw_data[(i - 1) * width + j + 1];
+                int pixelVal = raw_data[centerPixel - step + 1];
                 xSum += pixelVal;
                 ySum -= pixelVal;
             }
             if (j > 0) {
-                int pixelVal = raw_data[i * width + j - 1];
+                int pixelVal = raw_data[centerPixel - 1];
                 xSum -= 2 * pixelVal;
             }
             if (j < width - 1) {
-                int pixelVal = raw_data[i * width + j + 1];
+                int pixelVal = raw_data[centerPixel + 1];
                 xSum += 2 * pixelVal;
             }
             if (i < height - 1 && j > 0) {
-                int pixelVal = raw_data[i * width + j];
+                int pixelVal = raw_data[centerPixel + step - 1];
                 xSum -= pixelVal;
                 ySum += pixelVal;
             }
             if (i < height - 1) {
-                int pixelVal = raw_data[i * width + j];
+                int pixelVal = raw_data[centerPixel + step];
                 ySum += 2 * pixelVal;
             }
             if (i < height - 1 && j < width - 1) {
-                int pixelVal = raw_data[(i + 1) * width + j + 1];
+                int pixelVal = raw_data[centerPixel + step + 1];
                 xSum += pixelVal;
                 ySum += pixelVal;
             }
@@ -55,70 +57,40 @@ void applyKernel(int *xGrad, int *yGrad, const cv::Mat& img) {
     }
 }
 
-double getCornerScore(int *xGrad, int *yGrad, int row, int col, int width) {
+void getHarrisResponse(const cv::Mat& img, std::vector<cv::KeyPoint>& keypoints, int windowSize) {
     /* Assigns corner score based on Harris Corner Metric. This assumes that all corners are at least 1 from the edge. 
     Outside of ORB, this is NOT a safe assumption, but in ORB all corners must not be on the end because FAST does not
     consider these points */
-    long A = 0;
-    long B = 0;
-    long C = 0;
-    int idx, x, y;
-    idx = (row - 1) * width + (col - 1);
-    x = xGrad[idx];
-    y = yGrad[idx];
-    A += x * x;
-    B += y * y;
-    C += x * y;
-    idx = (row - 1) * width + (col);
-    x = xGrad[idx];
-    y = yGrad[idx];
-    A += x * x;
-    B += y * y;
-    C += x * y;
-    idx = (row - 1) * width + (col + 1);
-    x = xGrad[idx];
-    y = yGrad[idx];
-    A += x * x;
-    B += y * y;
-    C += x * y;
-    idx = (row) * width + (col - 1);
-    x = xGrad[idx];
-    y = yGrad[idx];
-    A += x * x;
-    B += y * y;
-    C += x * y;
-    idx = (row) * width + (col);
-    x = xGrad[idx];
-    y = yGrad[idx];
-    A += x * x;
-    B += y * y;
-    C += x * y;
-    idx = (row) * width + (col + 1);
-    x = xGrad[idx];
-    y = yGrad[idx];
-    A += x * x;
-    B += y * y;
-    C += x * y;
-    idx = (row + 1) * width + (col - 1);
-    x = xGrad[idx];
-    y = yGrad[idx];
-    A += x * x;
-    B += y * y;
-    C += x * y;
-    idx = (row + 1) * width + (col);
-    x = xGrad[idx];
-    y = yGrad[idx];
-    A += x * x;
-    B += y * y;
-    C += x * y;
-    idx = (row + 1) * width + (col + 1);
-    x = xGrad[idx];
-    y = yGrad[idx];
-    A += x * x;
-    B += y * y;
-    C += x * y;
-    // return the Corner Response, which is Det - k Tr^2. Det is A * B - C^2, and Tr is A + B
-    return (((A * B) - (C * C)) - (RESPONSE_CONSTANT * (A + B) * (A + B)));
+    int width = img.cols; int height = img.rows;
+    int prod = width * height;
+    int *xGrad = (int*) malloc(sizeof(int) * prod);
+    int *yGrad = (int*) malloc(sizeof(int) * prod);
+    int radius = windowSize / 2;
+
+    float scale = 1.f/((1 << 2) * windowSize * 255.f);
+    float scale_sq_sq = scale * scale * scale * scale;
+
+    applyKernel(xGrad, yGrad, img);
+    for (auto& keypoint : keypoints) {
+        long A = 0;
+        long B = 0;
+        long C = 0;
+        for (int i = -radius; i <= radius; i++) {
+            for (int j = -radius; j <= radius; j++) {
+                int idx, x, y;
+                idx = (keypoint.pt.y + i) * width + (keypoint.pt.x + j);
+                x = xGrad[idx];
+                y = yGrad[idx];
+                A += x * x;
+                B += y * y;
+                C += x * y;
+            }
+        }
+        // return the Corner Response, which is Det - k Tr^2. Det is A * B - C^2, and Tr is A + B
+        keypoint.response = (((A * B) - (C * C)) - (RESPONSE_CONSTANT * (A + B) * (A + B))) * scale_sq_sq;
+    }
+    free(xGrad);
+    free(yGrad);
 }
 
 
