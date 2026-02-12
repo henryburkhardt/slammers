@@ -150,12 +150,13 @@ class SlamFrontEnd(Node):
             t_matrix = ndt_icp2(new_vertex_points, last_vertex_points)
 
             # t_matrix = np.linalg.inv(t_matrix)
+            last_pose_theta = self.pose_graph.get_vertex(self.last_added_vertex_key).pose.theta
 
             last_pose_matrix = self.pose_graph.get_vertex(self.last_added_vertex_key).to_matrix()
-            
+
             M2 = t_matrix @ last_pose_matrix
 
-            last_pose_theta = self.pose_graph.get_vertex(self.last_added_vertex_key).pose.theta
+            
 
             t_theta = t2v(t_matrix)[2]
 

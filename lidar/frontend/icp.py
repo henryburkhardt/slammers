@@ -2,7 +2,7 @@ import typing
 import numpy as np
 import scipy
 import math
-# import seaborn as sns
+import seaborn as sns
 import matplotlib.pyplot as plt
 
 
@@ -20,7 +20,7 @@ COORD_LIMIT = math.ceil(RANGE_MAX)
 GRID_CNT = math.ceil(COORD_LIMIT / CELL_SIZE) * 2
 
 CHECK = True
-DO_PRINT = False
+DO_PRINT = True
 
 
 def cart2idx(point: np.ndarray):
@@ -375,18 +375,34 @@ from sklearn.neighbors import NearestNeighbors
 
 
 def ndt_icp2(
-        dest: LaserScan, 
-        source: LaserScan, 
+        points1: LaserScan, 
+        points2: LaserScan, 
         tx_est: float = 0.0,
         ty_est: float = 0.0,
         phi_est: float = 0.0,     # counter-clockwise
         max_it: int = IT_MAX,
     ):
 
-    # source = np.array([points2.T], copy=True).astype(np.float32)
-    # dest = np.array([points1.T], copy=True).astype(np.float32)
-    source = np.array([source], copy=True).astype(np.float32)
-    dest = np.array([dest], copy=True).astype(np.float32)
+    # convert polar coordinates to cartesian coordinates (vectorized)
+    p1 = np.asarray(points1)
+    p2 = np.asarray(points2)
+
+    r1, t1 = p1[:, 0], p1[:, 1]
+    r2, t2 = p2[:, 0], p2[:, 1]
+
+    x1 = r1 * np.cos(t1)
+    y1 = r1 * np.sin(t1)
+    points1_cart = np.column_stack((x1, y1))
+
+    x2 = r2 * np.cos(t2)
+    y2 = r2 * np.sin(t2)
+    points2_cart = np.column_stack((x2, y2))
+
+    source = np.array([points2_cart], copy=True).astype(np.float32)
+    dest = np.array([points1_cart], copy=True).astype(np.float32)
+
+    # source = np.array([points2], copy=True).astype(np.float32)
+    # dest = np.array([points1], copy=True).astype(np.float32)
 
     #Initialise with the initial pose estimation
     transform_matrix = np.array([
@@ -399,6 +415,7 @@ def ndt_icp2(
     # source = cv2.transform(source, transform_matrix[0:2])
     # source = cv2.warpAffine(source, transform_matrix[0:2], (source.shape[1], source.shape[0]))
     source = cv2.transform(source, transform_matrix[0:2])
+    print(dest)
 
     for i in range(max_it):
         # print("source shape:", source.shape)
@@ -414,8 +431,9 @@ def ndt_icp2(
         source = cv2.transform(source, T[0])
         # print("source shape:", source.shape)
         transform_matrix = np.dot(transform_matrix, np.vstack((T[0],[0,0,1])))
+        print(i, f"\n{transform_matrix}")
         # print("trans_matrix:", transform_matrix)
-    return transform_matrix # it's okay i can actually take the whole thing
+    return transform_matrix[0:2]
 
 
 if __name__ == "__main__":
