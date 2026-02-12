@@ -1,10 +1,67 @@
-#include <iostream>
-#include <chrono>
-#include <opencv2/opencv.hpp>
-#include "src/harris.hpp"
-// #include "src/processing.hpp"
+#include "CV.h"
 
-using namespace std;
+void blur(const cv::Mat& src, cv::Mat& dest, int kernelRadius, double stdDev) {
+    // check that input values are valid
+    CV_Assert(kernelRadius >= 0);
+    CV_Assert(stdDev > 0);
+
+    int width = src.size().width; int height = src.size().height;
+
+    std::vector<double> kernel(2 * kernelRadius + 1);
+    double stdDevSquared = stdDev * stdDev;
+
+    // caluclate normalized gaussian kernel
+    double sum = 0;
+    for (int i = -kernelRadius; i <= kernelRadius; i++) {
+        double val = 1.0 / sqrt(2 * M_PI * stdDevSquared) * exp(- i * i / (2 * stdDevSquared));
+        kernel[i + kernelRadius] =  val;
+        sum += val;
+    }
+
+    for (double& val : kernel) {
+        val /= sum;
+    }
+
+    // initialize other used values
+    dest.create(src.size(), src.type());
+    cv::Mat temp(height, width, CV_64F);
+
+    const uchar *src_data = src.ptr<uchar>();
+    double *temp_data = temp.ptr<double>();
+    uchar *dest_data = dest.ptr<uchar>();
+
+    // perform horizontal filter application over image to temp.
+    #pragma omp parallel
+    {
+        #pragma omp for
+        for (int i = kernelRadius; i < height - kernelRadius; i++) {
+            for (int j = kernelRadius; j < width - kernelRadius; j++) {
+                double pixelValue = 0.0;
+                int pixel_index = i * width + j;
+                const uchar *kernel_ptr = &src_data[pixel_index - kernelRadius];
+                for (int k = 0; k <= 2 * kernelRadius; k++) {
+                    pixelValue += kernel_ptr[k] * kernel[k];
+                }
+                // set temp image to computed value and increment index for next pixel
+                temp_data[pixel_index] = pixelValue;
+            }
+        }
+
+        // perform vertical pass kernel application from temp to dest.
+        #pragma omp for
+        for (int i = kernelRadius; i < height - kernelRadius; i++) {
+            for (int j = kernelRadius; j < width - kernelRadius; j++) {
+                double pixelValue = 0.0;
+                int pixel_index = i * width + j;
+                for (int k = -kernelRadius; k <= kernelRadius; k++) {
+                    pixelValue += temp_data[pixel_index + k * width] * kernel[k + kernelRadius];
+                }
+                // set temp image to computed value and increment index for next pixel
+                dest_data[pixel_index] = cvRound(pixelValue);
+            }
+        }
+    }
+}
 
 struct CompareKeyPoint {
     bool operator()(const cv::KeyPoint& kp1, const cv::KeyPoint& kp2) {
@@ -62,7 +119,7 @@ int get_corner_score(const std::array<int, 17>& pointVector) {
     return best - 1;
 }
 
-void learnedFast(const cv::Mat& img, std::vector<cv::KeyPoint>& keypoints, int threshold, bool nonMaxSuppression = true) {
+void learnedFast(const cv::Mat& img, std::vector<cv::KeyPoint>& keypoints, int threshold, bool nonMaxSuppression) {
     int height = img.size().height;
     int width = img.size().width;
     int prod = height * width;
@@ -4749,7 +4806,7 @@ void learnedFast(const cv::Mat& img, std::vector<cv::KeyPoint>& keypoints, int t
         }
     }
 
-    keypoints.reserve(prod / 9 / 1000); // kinda random guess about how many keypoints there will be
+    // keypoints.reserve(prod / 9 / 1000); // kinda random guess about how many keypoints there will be
 
     for (int i = 0; i < prod; i++) {
         if (nmsVals[i] != 0 && (!nonMaxSuppression || (nmsVals[i] > nmsVals[i - width] && nmsVals[i] > nmsVals[i + width] && nmsVals[i] > nmsVals[i - 1] && nmsVals[i] > nmsVals[i + 1] &&
@@ -4757,90 +4814,32 @@ void learnedFast(const cv::Mat& img, std::vector<cv::KeyPoint>& keypoints, int t
             keypoints.push_back(cv::KeyPoint(i % width, i / width, 7, nmsVals[i]));
         }
     }
+    free(nmsVals);
 }
 
 
 const int CENTROID_RADIUS = 15;
 
-static float calculateOrientation(const cv::Mat& image, cv::Point2f pt,  const vector<int> & u_max)
-{
-    int step = image.step;
-    unsigned char* raw_data = image.data;
-    int row = pt.y;
-    int col = pt.x;
-    unsigned char* center = &raw_data[row * step + col];
+void calculateOrientation(const cv::Mat& img, cv::KeyPoint& point) {
+    int height = img.size().height;
+    int width = img.size().width;
+    int step = img.step;
+    unsigned char* raw_data = img.data;
+    int row = point.pt.y;
+    int col = point.pt.x;
     int moment10 = 0;
     int moment01 = 0;
-    for (int i = 0; i <= CENTROID_RADIUS; i++) {
-        for (int j = -u_max[i]; j <= u_max[i]; j++) {
-            uchar top_intensity = i != 0 ? center[-step * i + j] : 0;
-            uchar bottom_intensity = center[step * i + j];
-            moment10 += j * (bottom_intensity + top_intensity);
-            moment01 += i * (bottom_intensity - top_intensity);
+    for (int i = -CENTROID_RADIUS; i <= CENTROID_RADIUS; i++) {
+        for (int j = -CENTROID_RADIUS; j <= CENTROID_RADIUS; j++) {
+            int y = row + i;
+            int x = col + j;
+            if (i * i + j * j > CENTROID_RADIUS * CENTROID_RADIUS || x < 0 || x >= width || y < 0 || y >= height) continue;
+            uchar intensity = raw_data[y * step + x];
+            moment10 += j * intensity;
+            moment01 += i * intensity;
         }
     }
-
-    return cv::fastAtan2((float)moment01, (float)moment10);
-}
-
-
-int main() {
-    std::vector<int> umax;
-    umax.resize(CENTROID_RADIUS + 1);
-
-    for (int i = 0; i <= CENTROID_RADIUS; i++) {
-        double start = sqrt(CENTROID_RADIUS * CENTROID_RADIUS - i * i); // finds the y value that would make it smaller than a circle
-        umax[i] = floor(start);
-    }
-
-    cv::Mat src = cv::imread("train_images/weitz.png", cv::IMREAD_GRAYSCALE);
-    // cv::Mat src;
-    // cv::resize(read, src, cv::Size(640, 480));
-    std::vector<cv::KeyPoint> points;
-    auto start_time = std::chrono::system_clock::now();
-    learnedFast(src, points, 20, true);
-    auto end_time = std::chrono::system_clock::now();
-    cout << "Homemade FAST took " << std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count() << " milliseconds." << endl;
-
-    cv::KeyPointsFilter::retainBest(points, 1000);
-
-    cv::KeyPointsFilter::runByImageBorder(points, src.size(), 16);
-
-    getHarrisResponse(src, points, 7);
-
-    cv::KeyPointsFilter::retainBest(points, 500);
-
-    // std::priority_queue<cv::KeyPoint, std::vector<cv::KeyPoint>, CompareKeyPoint> pq(points.begin(), points.end());
-    // while (pq.size() > 500) {
-    //     pq.pop();
-    // }
-
-    // points.erase(points.begin(), points.end());
-    // while (!pq.empty()) {
-    //     points.push_back(pq.top());
-    //     pq.pop();
-    // }
-
-    std::vector<cv::KeyPoint> cvPoints;
-    // start_time = std::chrono::system_clock::now();
-    // cv::FAST(src, cvPoints, 20, true);
-    // end_time = std::chrono::system_clock::now();
-    // cout << "OpenCV FAST took " << std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count() << " milliseconds." << endl;
-
-    auto orbDet = cv::ORB::create(500, 1, 1);
-    cv::Mat descriptors;
-    orbDet->detectAndCompute(src, cv::noArray(), cvPoints, descriptors, false);
-
-
-    cout << points.size() << " " << cvPoints.size() << endl;
-    for (size_t i = 0; i < cvPoints.size(); i++) {
-        for (size_t j = 0; j < points.size(); j++) {
-            if (points[j].pt == cvPoints[i].pt) {
-                points[j].angle = calculateOrientation(src, points[j].pt, umax);
-                cout <<  points[j].angle << " " << cvPoints[i].angle << endl;
-            }
-        }
-    }
-
-    return 0;
+    double angle = atan2(moment01, moment10) * 180 / M_PI;
+    if (angle < 0) angle += 360;
+    point.angle = angle;
 }

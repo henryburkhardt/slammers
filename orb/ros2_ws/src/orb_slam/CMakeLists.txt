@@ -31,6 +31,7 @@ find_package(image_transport REQUIRED)
 find_package(visualization_msgs REQUIRED)
 find_package(ament_index_cpp REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
+find_package(OpenMP REQUIRED)
 
 add_compile_definitions(EIGEN_DEFAULT_DENSE_INDEX_TYPE=int)
 add_compile_definitions(EIGEN_DEFAULT_INDEX_TYPE=int)
@@ -62,14 +63,16 @@ src/Frame.cc
 src/KeyFrameDatabase.cc
 src/Sim3Solver.cc
 src/Initializer.cc
+src/CV.cc
 )
 ament_target_dependencies(${PROJECT_NAME} rclcpp OpenCV Eigen3 std_msgs sensor_msgs cv_bridge tf2 image_transport visualization_msgs tf2_ros ament_index_cpp tf2_geometry_msgs)
-target_link_libraries(${PROJECT_NAME} Boost::thread Boost::system)
 target_link_libraries(${PROJECT_NAME}
 ${OpenCV_LIBS}
 ${EIGEN3_LIBS}
 ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib/libDBoW2.so
 ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/lib/libg2o.so
+Boost::thread Boost::system
+OpenMP::OpenMP_CXX
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
