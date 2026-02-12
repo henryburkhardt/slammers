@@ -2,7 +2,7 @@ import typing
 import numpy as np
 import scipy
 import math
-import seaborn as sns
+# import seaborn as sns
 import matplotlib.pyplot as plt
 
 
@@ -20,7 +20,7 @@ COORD_LIMIT = math.ceil(RANGE_MAX)
 GRID_CNT = math.ceil(COORD_LIMIT / CELL_SIZE) * 2
 
 CHECK = True
-DO_PRINT = True
+DO_PRINT = False
 
 
 def cart2idx(point: np.ndarray):
@@ -431,7 +431,7 @@ def ndt_icp2(
         source = cv2.transform(source, T[0])
         # print("source shape:", source.shape)
         transform_matrix = np.dot(transform_matrix, np.vstack((T[0],[0,0,1])))
-        print(i, f"\n{transform_matrix}")
+        # print(i, f"\n{transform_matrix}")
         # print("trans_matrix:", transform_matrix)
     return transform_matrix[0:2]
 

@@ -55,9 +55,19 @@ ax.grid(True)
 
 pose_scat = ax.scatter([], [], s=20, c="blue", label="poses")
 scan_scat = ax.scatter([], [], s=2, c="red", alpha=0.4, label="lidar")
+first_pose_scat = ax.scatter([], [], s=40, c="green", label="first pose", zorder=6)
+
 lines = []
 
 ax.legend(loc="upper right")
+
+# Set fixed limits once
+ax.set_xlim(-10, 10)
+ax.set_ylim(-10, 10)
+
+# (optional) keep equal scaling so SLAM map isn’t distorted
+ax.set_aspect('equal', adjustable='box')
+
 
 
 # -----------------------------
@@ -69,16 +79,23 @@ def update(frame):
     vertices, edges = parse_g2o(G2O_PATH)
 
     if not vertices:
-        return pose_scat, scan_scat
+        return pose_scat, first_pose_scat, scan_scat
 
-    # --- poses ---
+    # get first vertex (in file order)
+    first_vid = next(iter(vertices))
+    fx, fy, _ = vertices[first_vid]
+
+    # --- poses (excluding first) ---
     xs = []
     ys = []
     for vid, (x, y, _) in vertices.items():
+        if vid == first_vid:
+            continue
         xs.append(x)
         ys.append(y)
 
-    pose_scat.set_offsets(np.column_stack([xs, ys]))
+    pose_scat.set_offsets(np.column_stack([xs, ys]) if xs else np.empty((0, 2)))
+    first_pose_scat.set_offsets([[fx, fy]])
 
     # --- edges ---
     for ln in lines:
@@ -91,6 +108,7 @@ def update(frame):
             x2, y2, _ = vertices[v2]
             ln, = ax.plot([x1, x2], [y1, y2], "k-", linewidth=1)
             lines.append(ln)
+
 
     # --- lidar scans (optional) ---
     if DRAW_SCANS and SCAN_DIR is not None:
@@ -129,28 +147,8 @@ def update(frame):
         print("no doing scans")
         scan_scat.set_visible(False)
 
-    ax.relim()
-    ax.autoscale_view()
 
-    # minimum visible size
-    MIN_X_RANGE = 20.0
-    MIN_Y_RANGE = 20.0
 
-    # --- X axis ---
-    xmin, xmax = ax.get_xlim()
-    if xmax - xmin < MIN_X_RANGE:
-        cx = 0.5 * (xmin + xmax)
-        ax.set_xlim(cx - MIN_X_RANGE / 2,
-                    cx + MIN_X_RANGE / 2)
-
-    # --- Y axis ---
-    ymin, ymax = ax.get_ylim()
-    if ymax - ymin < MIN_Y_RANGE:
-        cy = 0.5 * (ymin + ymax)
-        ax.set_ylim(cy - MIN_Y_RANGE / 2,
-                    cy + MIN_Y_RANGE / 2)
-
-    ax.margins(x=0.1, y=0.1)
 
 
     return pose_scat, scan_scat, *lines

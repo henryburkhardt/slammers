@@ -45,8 +45,8 @@ class SlamFrontEnd(Node):
         self.last_added_pose = None  # (x, y, theta) of last vertex
         
         # cutoff values for adding new poses
-        self.min_translation = 0.05  # meters (5 cm)
-        self.min_rotation = 0.01  
+        self.min_translation = 0.03  # meters (5 cm)
+        self.min_rotation = 0.1
                
 
         # initialize the pose graph
@@ -98,13 +98,12 @@ class SlamFrontEnd(Node):
         dy = self.latest_odom[1] - self.last_added_pose[1]
         dtrans = math.hypot(dx, dy)
 
-        dtheta = math.atan2(
-            math.sin(self.latest_odom[2] - self.last_added_pose[2]),
-            math.cos(self.latest_odom[2] - self.last_added_pose[2])
-        )
+        dtheta = abs(self.latest_odom[2] - self.last_added_pose[2])
+
+        print(dtheta)
 
         # RIGHT now does not consider theta
-        if dtrans > self.min_translation:
+        if dtrans > self.min_translation or dtheta > self.min_rotation:
             return True 
         
         return False
@@ -144,23 +143,37 @@ class SlamFrontEnd(Node):
             # if using this, drive reallll slow !
             # should skip if first pose...
             last_vertex_points = load_and_filter_scan(vertex_id=self.last_added_vertex_key)
-
             new_vertex_points = filter_scan(ranges=self.latest_ranges, angles=self.latest_angles)
 
             t_matrix = ndt_icp2(new_vertex_points, last_vertex_points)
+            t_vector = t2v(t_matrix) # (x y theta)
 
             # t_matrix = np.linalg.inv(t_matrix)
             last_pose_theta = self.pose_graph.get_vertex(self.last_added_vertex_key).pose.theta
-
-            last_pose_matrix = self.pose_graph.get_vertex(self.last_added_vertex_key).to_matrix()
-
-            M2 = t_matrix @ last_pose_matrix
-
             
+            # compute global translation vector by rotating it by -pose_theta
+            cos_val = np.cos(-1 * last_pose_theta)
+            sin_val = np.sin(-1 * last_pose_theta)
+            # cos_val = np.cos(last_pose_theta)
+            # sin_val = np.sin(last_pose_theta)
+            rot_matrix = np.array([[cos_val, -1 * sin_val], [sin_val, cos_val]])
 
+            local_t_vec = np.array(t_vector[0:2])[:, np.newaxis]  # col vector
+            global_t_vec = ((rot_matrix @ local_t_vec).T)[0]  # row vector
+
+            # compute new pose from previous pose (global translation, then theta)
+
+            last_pose_vector = self.pose_graph.get_vertex(self.last_added_vertex_key).to_matrix()[0:2]
+            cur_pose_vector = last_pose_vector + global_t_vec  # translation by global tx, ty
+
+            print(last_pose_vector)
+            print(global_t_vec)
+            
             t_theta = t2v(t_matrix)[2]
 
-            pose = Pose2D(M2[0], M2[1], last_pose_theta + t_theta)
+            print("T THETA:", t_theta)
+
+            pose = Pose2D(cur_pose_vector[0], cur_pose_vector[1], last_pose_theta - t_theta)
             # self.logger.info(f"ICP diff between {new_vertex_key} and {self.last_added_vertex_key}: x:{vector[0]}")
 
         # create the pose object (x, y, theta) and add to graph
