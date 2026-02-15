@@ -16,7 +16,7 @@ def load_and_filter_scan(vertex_id):
     ranges = data["ranges"]
     angles = data["angles"]
     
-    mask = np.isfinite(ranges)  # True for finite values
+    mask = np.isfinite(ranges) & (ranges >= 0.2)  # True for finite values
     ranges_filtered = ranges[mask]
     angles_filtered = angles[mask]
     
@@ -24,7 +24,7 @@ def load_and_filter_scan(vertex_id):
     return points
 
 def filter_scan(ranges: np.ndarray, angles: np.ndarray):
-    mask = np.isfinite(ranges)  # True for finite values
+    mask = np.isfinite(ranges) & (ranges >= 0.2) # True for finite values
     ranges_filtered = ranges[mask]
     angles_filtered = angles[mask]
     

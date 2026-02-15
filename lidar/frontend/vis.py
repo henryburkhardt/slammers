@@ -53,9 +53,10 @@ ax.set_title("Live g2o Graph + LiDAR")
 ax.set_aspect("equal")
 ax.grid(True)
 
-pose_scat = ax.scatter([], [], s=20, c="blue", label="poses")
-scan_scat = ax.scatter([], [], s=2, c="red", alpha=0.4, label="lidar")
-first_pose_scat = ax.scatter([], [], s=40, c="green", label="first pose", zorder=6)
+pose_scat = ax.scatter([], [], s=10, c="blue", label="poses")
+scan_scat = ax.scatter([], [], s=0.5, c="red", alpha=0.4, label="lidar")
+first_pose_scat = ax.scatter([], [], s=10, c="green", label="first pose", zorder=6)
+first_scan_scat = ax.scatter([], [], s=0.5, c="green", alpha=0.7, label="first scan", zorder=5)
 
 lines = []
 
@@ -115,43 +116,58 @@ def update(frame):
         scan_x = []
         scan_y = []
 
+        first_scan_x = []
+        first_scan_y = []
+
         for vid, (px, py, theta) in vertices.items():
             scan_file = SCAN_DIR / f"{vid}.npz"
             if not scan_file.exists():
-                print("cant find file")
                 continue
 
             try:
                 data = np.load(scan_file)
                 ranges = data["ranges"]
-                angles = data["angles"]
-            except Exception as e:
-                print(e)
-                continue  # skip partial writes
+                angs = data["angles"]
+            except Exception:
+                continue
 
             mask = np.isfinite(ranges)
             ranges = ranges[mask]
-            angles = angles[mask]
+            angs = angs[mask]
 
-            xs = px + ranges * np.cos(angles + theta + LIDAR_YAW_OFFSET)
-            ys = py + ranges * np.sin(angles + theta + LIDAR_YAW_OFFSET)
+            xs = px + ranges * np.cos(angs + theta + LIDAR_YAW_OFFSET)
+            ys = py + ranges * np.sin(angs + theta + LIDAR_YAW_OFFSET)
 
+            if vid == first_vid:
+                first_scan_x.extend(xs)
+                first_scan_y.extend(ys)
+            else:
+                scan_x.extend(xs)
+                scan_y.extend(ys)
 
-            scan_x.extend(xs)
-            scan_y.extend(ys)
-
+        # update regular scans (red)
         if scan_x:
             scan_scat.set_offsets(np.column_stack([scan_x, scan_y]))
         scan_scat.set_visible(True)
+
+        # update first scan (green)
+        if first_scan_x:
+            first_scan_scat.set_offsets(np.column_stack([first_scan_x, first_scan_y]))
+            first_scan_scat.set_visible(True)
+        else:
+            first_scan_scat.set_visible(False)
+
     else:
-        print("no doing scans")
         scan_scat.set_visible(False)
+        first_scan_scat.set_visible(False)
 
 
 
 
 
-    return pose_scat, scan_scat, *lines
+
+    return pose_scat, first_pose_scat, scan_scat, first_scan_scat, *lines
+
 
 
 ani = FuncAnimation(fig, update, interval=UPDATE_MS, blit=False)

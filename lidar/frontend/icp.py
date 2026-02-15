@@ -519,14 +519,29 @@ def icp(A, B, init_pose=None, max_iterations=20, tolerance=0.001):
 
     assert A.shape == B.shape
 
+    # convert polar coordinates to cartesian coordinates (vectorized)
+    p1 = np.asarray(A)
+    p2 = np.asarray(B)
+
+    r1, t1 = p1[:, 0], p1[:, 1]
+    r2, t2 = p2[:, 0], p2[:, 1]
+
+    x1 = r1 * np.cos(t1)
+    y1 = r1 * np.sin(t1)
+    points1_cart = np.column_stack((x1, y1))
+
+    x2 = r2 * np.cos(t2)
+    y2 = r2 * np.sin(t2)
+    points2_cart = np.column_stack((x2, y2))
+
     # get number of dimensions
     m = A.shape[1]
 
     # make points homogeneous, copy them to maintain the originals
-    src = np.ones((m+1,A.shape[0]))
-    dst = np.ones((m+1,B.shape[0]))
-    src[:m,:] = np.copy(A.T)
-    dst[:m,:] = np.copy(B.T)
+    src = np.ones((m+1,points1_cart.shape[0]))
+    dst = np.ones((m+1,points2_cart.shape[0]))
+    src[:m,:] = np.copy(points1_cart.T)
+    dst[:m,:] = np.copy(points2_cart.T)
 
     # apply the initial pose estimation
     if init_pose is not None:
@@ -551,7 +566,7 @@ def icp(A, B, init_pose=None, max_iterations=20, tolerance=0.001):
         prev_error = mean_error
 
     # calculate final transformation
-    T,_,_ = best_fit_transform(A, src[:m,:].T)
+    T,_,_ = best_fit_transform(points1_cart, src[:m,:].T)
 
     return T, distances, i
 

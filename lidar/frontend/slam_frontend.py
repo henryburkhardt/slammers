@@ -46,7 +46,7 @@ class SlamFrontEnd(Node):
         self.last_added_pose = None  # (x, y, theta) of last vertex
         
         # cutoff values for adding new poses
-        self.min_translation = 0.03  # meters (5 cm)
+        self.min_translation = 0.1  # meters (5 cm)
         self.min_rotation = 0.1
                
 
@@ -146,39 +146,39 @@ class SlamFrontEnd(Node):
             last_vertex_points = load_and_filter_scan(vertex_id=self.last_added_vertex_key)
             new_vertex_points = filter_scan(ranges=self.latest_ranges, angles=self.latest_angles)
 
-            # larger = last_vertex_points.shape[0] < new_vertex_points.shape[0]
-            # shape_diff = abs(new_vertex_points.shape[0] - last_vertex_points.shape[0])
+            larger = last_vertex_points.shape[0] < new_vertex_points.shape[0]
+            shape_diff = abs(new_vertex_points.shape[0] - last_vertex_points.shape[0])
 
-            # print(last_vertex_points.shape)
-            # print(new_vertex_points.shape)
+            print(last_vertex_points.shape)
+            print(new_vertex_points.shape)
 
-            # print(f"Larger: {larger}")
-            # print(f"Shape Diff: {shape_diff}")
+            print(f"Larger: {larger}")
+            print(f"Shape Diff: {shape_diff}")
 
-            # if larger:
-            #     indices_remove = sample(range(0, new_vertex_points.shape[0] + 1), shape_diff)
-            #     new_vertex_points = np.delete(new_vertex_points, indices_remove, axis=0)
-            # else:
-            #     indices_remove = sample(range(0, last_vertex_points.shape[0] + 1), shape_diff)
-            #     last_vertex_points = np.delete(last_vertex_points, indices_remove, axis=0)
+            if larger:
+                indices_remove = sample(range(0, new_vertex_points.shape[0] + 1), shape_diff)
+                new_vertex_points = np.delete(new_vertex_points, indices_remove, axis=0)
+            else:
+                indices_remove = sample(range(0, last_vertex_points.shape[0] + 1), shape_diff)
+                last_vertex_points = np.delete(last_vertex_points, indices_remove, axis=0)
 
-            # print(last_vertex_points.shape)
-            # print(new_vertex_points.shape)
+            print(last_vertex_points.shape)
+            print(new_vertex_points.shape)
 
-            # assert last_vertex_points.shape == new_vertex_points.shape
+            assert last_vertex_points.shape == new_vertex_points.shape
 
-            t_matrix = ndt_icp2(new_vertex_points, last_vertex_points)
-            # t_matrix, _, _ = icp(last_vertex_points, new_vertex_points)
+            # t_matrix = ndt_icp2(new_vertex_points, last_vertex_points)
+            t_matrix, _, _ = icp(last_vertex_points, new_vertex_points, max_iterations=20)
             t_vector = t2v(t_matrix) # (x y theta)
 
             # t_matrix = np.linalg.inv(t_matrix)
             last_pose_theta = self.pose_graph.get_vertex(self.last_added_vertex_key).pose.theta
             
             # compute global translation vector by rotating it by -pose_theta
-            cos_val = np.cos(-1 * last_pose_theta)
-            sin_val = np.sin(-1 * last_pose_theta)
-            # cos_val = np.cos(last_pose_theta)
-            # sin_val = np.sin(last_pose_theta)
+            # cos_val = np.cos(-1 * last_pose_theta)
+            # sin_val = np.sin(-1 * last_pose_theta)
+            cos_val = np.cos(last_pose_theta)
+            sin_val = np.sin(last_pose_theta)
             rot_matrix = np.array([[cos_val, -1 * sin_val], [sin_val, cos_val]])
 
             local_t_vec = np.array(t_vector[0:2])[:, np.newaxis]  # col vector
@@ -187,7 +187,7 @@ class SlamFrontEnd(Node):
             # compute new pose from previous pose (global translation, then theta)
 
             last_pose_vector = self.pose_graph.get_vertex(self.last_added_vertex_key).to_matrix()[0:2]
-            cur_pose_vector = last_pose_vector + global_t_vec  # translation by global tx, ty
+            cur_pose_vector = last_pose_vector - global_t_vec  # translation by global tx, ty
 
             print(last_pose_vector)
             print(global_t_vec)
@@ -197,7 +197,7 @@ class SlamFrontEnd(Node):
             print("T THETA:", t_theta)
 
             pose = Pose2D(cur_pose_vector[0], cur_pose_vector[1], last_pose_theta - t_theta)
-            # self.logger.info(f"ICP diff between {new_vertex_key} and {self.last_added_vertex_key}: x:{vector[0]}")
+            self.logger.info(f"ICP diff between {new_vertex_key} and {self.last_added_vertex_key}: x:{cur_pose_vector[0]}, y:{cur_pose_vector[1]}, theta:{t_theta}")
 
         # create the pose object (x, y, theta) and add to graph
         self.pose_graph.add_vertex(key=new_vertex_key, pose=pose, scan=self.latest_ranges.copy(), angles=self.latest_angles.copy()) 
