@@ -4,6 +4,7 @@ from sensor_msgs.msg import LaserScan
 from nav_msgs.msg import Odometry
 import numpy as np
 import math
+from random import sample
 import threading
 import sys
 import termios
@@ -17,7 +18,7 @@ import requests
 from utils import *
 from message_filters import Subscriber, ApproximateTimeSynchronizer
 from utils import load_and_filter_scan
-from icp import ndt_icp2
+from icp import ndt_icp2, icp
 
 
 
@@ -100,7 +101,7 @@ class SlamFrontEnd(Node):
 
         dtheta = abs(self.latest_odom[2] - self.last_added_pose[2])
 
-        print(dtheta)
+        # print(dtheta)
 
         # RIGHT now does not consider theta
         if dtrans > self.min_translation or dtheta > self.min_rotation:
@@ -145,7 +146,29 @@ class SlamFrontEnd(Node):
             last_vertex_points = load_and_filter_scan(vertex_id=self.last_added_vertex_key)
             new_vertex_points = filter_scan(ranges=self.latest_ranges, angles=self.latest_angles)
 
+            # larger = last_vertex_points.shape[0] < new_vertex_points.shape[0]
+            # shape_diff = abs(new_vertex_points.shape[0] - last_vertex_points.shape[0])
+
+            # print(last_vertex_points.shape)
+            # print(new_vertex_points.shape)
+
+            # print(f"Larger: {larger}")
+            # print(f"Shape Diff: {shape_diff}")
+
+            # if larger:
+            #     indices_remove = sample(range(0, new_vertex_points.shape[0] + 1), shape_diff)
+            #     new_vertex_points = np.delete(new_vertex_points, indices_remove, axis=0)
+            # else:
+            #     indices_remove = sample(range(0, last_vertex_points.shape[0] + 1), shape_diff)
+            #     last_vertex_points = np.delete(last_vertex_points, indices_remove, axis=0)
+
+            # print(last_vertex_points.shape)
+            # print(new_vertex_points.shape)
+
+            # assert last_vertex_points.shape == new_vertex_points.shape
+
             t_matrix = ndt_icp2(new_vertex_points, last_vertex_points)
+            # t_matrix, _, _ = icp(last_vertex_points, new_vertex_points)
             t_vector = t2v(t_matrix) # (x y theta)
 
             # t_matrix = np.linalg.inv(t_matrix)
