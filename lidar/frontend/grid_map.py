@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 
 
-fig, ax = plt.subplots()
+
 
 G2O_PATH = Path("./data/graph.g2o")
 NUM_SCANS = 30
@@ -171,24 +171,24 @@ class OccupancyGrid:
     def show(self):
         # define custom colormap: free / unknown / occupied
         cmap = ListedColormap(['lightblue', 'gray', 'darkblue'])
-
+        fig, ax = plt.subplots()
         plt.figure(figsize=(8,8))
         plt.imshow(self.get_binary_grid())
         plt.title("Discrete Occupancy Grid")
         plt.axis('off')
         plt.show()
         
-graph, x_max, x_min, y_max, y_min = parse_g2o(G2O_PATH)
-num_vertices = len(graph)
+# graph, x_max, x_min, y_max, y_min = parse_g2o(G2O_PATH)
+# num_vertices = len(graph)
 
-g = OccupancyGrid(x_min, x_max, y_min, y_max, .05)
+# g = OccupancyGrid(x_min, x_max, y_min, y_max, .05)
 
-for i in range(1, NUM_SCANS):
-    pointcloud = load_scan(i)
-    pose = graph[i]
-    g.update_from_scan(pointcloud, pose)
+# for i in range(1, NUM_SCANS):
+#     pointcloud = load_scan(i)
+#     pose = graph[i]
+#     g.update_from_scan(pointcloud, pose)
 
-g.show()
+# g.show()
 
 
         
