@@ -20,6 +20,9 @@ from message_filters import Subscriber, ApproximateTimeSynchronizer
 from utils import load_and_filter_scan
 from icp import ndt_icp2, icp
 from grid_map import OccupancyGrid
+from nav_msgs.msg import OccupancyGrid
+from std_msgs.msg import Header
+from nav_msgs.msg import MapMetaData
 
 
 
@@ -132,6 +135,28 @@ class SlamFrontEnd(Node):
                 if p.is_file():
                     p.unlink()
         return 
+    
+    def publish_occupancy_grid(self):
+        binary_grid = self.occupancy_grid.get_binary_grid()
+            msg = OccupancyGrid()
+            
+        msg.header.stamp = self.get_clock().now().to_msg()
+        msg.header.frame_id = 'map'
+        
+        msg.info = MapMetaData()
+        msg.info.resolution = self.gridmap.resolution
+        msg.info.width = self.gridmap.width
+        msg.info.height = self.gridmap.height
+        msg.info.origin.position.x = self.gridmap.x_min
+        msg.info.origin.position.y = self.gridmap.y_min
+        msg.info.origin.position.z = 0.0
+        msg.info.origin.orientation.w = 1.0
+        
+        # flatten the grid (row-major, bottom-left = row 0)
+        msg.data = occupancy[::-1, :].flatten().tolist()
+        
+        self.occ_pub.publish(msg)
+        self.get_logger().debug('Published occupancy grid')
 
     def add_pose_vertex(self, pose: Pose2D, use_icp_odom=True):
         """Add a pose vertex to the pose graph"""     
