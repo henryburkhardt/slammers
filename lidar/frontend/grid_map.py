@@ -17,38 +17,38 @@ L_MAX  =  5.0
 MIN_RANGE = 0.2
 MAX_RANGE = 5
 
-def parse_g2o(path: Path):
-    vertices = {}
+# def parse_g2o(path: Path):
+#     vertices = {}
     
-    x_max = -10e6
-    x_min = 10e6
-    y_max = -10e6
-    y_min = 10e6
+#     x_max = -10e6
+#     x_min = 10e6
+#     y_max = -10e6
+#     y_min = 10e6
 
-    if not path.exists():
-        return vertices
+#     if not path.exists():
+#         return vertices
 
-    with path.open() as f:
-        for line in f:
-            parts = line.strip().split()
-            if not parts:
-                continue
+#     with path.open() as f:
+#         for line in f:
+#             parts = line.strip().split()
+#             if not parts:
+#                 continue
 
-            if parts[0] == "VERTEX_SE2":
-                vid = int(parts[1])
-                x, y, theta = map(float, parts[2:5])
-                vertices[vid] = (x, y, theta)
+#             if parts[0] == "VERTEX_SE2":
+#                 vid = int(parts[1])
+#                 x, y, theta = map(float, parts[2:5])
+#                 vertices[vid] = (x, y, theta)
                 
-                if x > x_max:
-                    x_max = x
-                if x < x_min: 
-                    x_min = x
-                if y > y_max: 
-                    y_max = y 
-                if y < y_min: 
-                    y_min = y
+#                 if x > x_max:
+#                     x_max = x
+#                 if x < x_min: 
+#                     x_min = x
+#                 if y > y_max: 
+#                     y_max = y 
+#                 if y < y_min: 
+#                     y_min = y
 
-    return vertices, x_max, x_min, y_max, y_min
+#     return vertices, x_max, x_min, y_max, y_min
 
 def bresenham_line(x0, y0, x1, y1):
     """Return list of grid cells from (x0, y0) to (x1, y1) using Bresenham."""
@@ -84,7 +84,7 @@ def bresenham_line(x0, y0, x1, y1):
     cells.append((x1, y1))  # include endpoint
     return cells
 
-class OccupancyGrid:
+class GridMap:
     def __init__(self, x_min, x_max, y_min, y_max, resolution):
         margin = 6
 
@@ -183,10 +183,10 @@ class OccupancyGrid:
 
 # g = OccupancyGrid(x_min, x_max, y_min, y_max, .05)
 
-# for i in range(1, NUM_SCANS):
-#     pointcloud = load_scan(i)
-#     pose = graph[i]
-#     g.update_from_scan(pointcloud, pose)
+# # for i in range(1, NUM_SCANS):
+# #     pointcloud = load_scan(i)
+# #     pose = graph[i]
+# #     g.update_from_scan(pointcloud, pose)
 
 # g.show()
 

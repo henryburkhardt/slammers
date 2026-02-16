@@ -19,7 +19,7 @@ from utils import *
 from message_filters import Subscriber, ApproximateTimeSynchronizer
 from utils import load_and_filter_scan
 from icp import ndt_icp2, icp
-from grid_map import OccupancyGrid
+from grid_map import GridMap
 from nav_msgs.msg import OccupancyGrid
 from std_msgs.msg import Header
 from nav_msgs.msg import MapMetaData
@@ -58,7 +58,9 @@ class SlamFrontEnd(Node):
         self.pose_graph = PoseGraph()
         
         # intialize occupancy grid
-        self.occupancy_grid = OccupancyGrid(-3, 3, -10, 3, resolution=0.04)
+        self.occ_pub = self.create_publisher(OccupancyGrid, '/occupancy_grid', 1)
+        self.occupancy_grid = GridMap(-3, 3, -10, 3, resolution=0.04)
+        self.create_timer(1.0, self.publish_occupancy_grid)
         
         # store the initial theta, so we can get new theta measurements relaitve
         self.initial_theta = 0
@@ -139,23 +141,26 @@ class SlamFrontEnd(Node):
     def publish_occupancy_grid(self):
         binary_grid = self.occupancy_grid.get_binary_grid()
         msg = OccupancyGrid()
-            
+        
         msg.header.stamp = self.get_clock().now().to_msg()
         msg.header.frame_id = 'map'
         
         msg.info = MapMetaData()
-        msg.info.resolution = self.gridmap.resolution
-        msg.info.width = self.gridmap.width
-        msg.info.height = self.gridmap.height
-        msg.info.origin.position.x = self.gridmap.x_min
-        msg.info.origin.position.y = self.gridmap.y_min
-        msg.info.origin.position.z = 0.0
-        msg.info.origin.orientation.w = 1.0
-        
+        msg.info.resolution = float(self.occupancy_grid.resolution)
+        msg.info.width = int(self.occupancy_grid.width)
+        msg.info.height = int(self.occupancy_grid.height)
+        msg.info.origin.position.x = float(self.occupancy_grid.x_min)
+        msg.info.origin.position.y = float(self.occupancy_grid.y_min)
+        msg.info.origin.position.z = float(0.0)
+        msg.info.origin.orientation.w = float(1.0)
+      
         # flatten the grid (row-major, bottom-left = row 0)
         msg.data = binary_grid[::-1, :].flatten().tolist()
         
+
         self.occ_pub.publish(msg)
+        print("pub")
+
         self.get_logger().debug('Published binary occupancy grid')
 
     def add_pose_vertex(self, pose: Pose2D, use_icp_odom=True):
