@@ -52,6 +52,8 @@ class SlamFrontEnd(Node):
 
         # initialize the pose graph
         self.pose_graph = PoseGraph()
+        
+        self.initial_theta = 0
 
     
     def synced_callback(self, odom: Odometry, scan: LaserScan):
@@ -79,6 +81,7 @@ class SlamFrontEnd(Node):
 
         # init first pose  
         if self.last_added_pose == None and self.last_added_vertex_key == None: 
+            self.initial_theta = current_pose[2]
             self.add_pose_vertex(pose=Pose2D(current_pose[0], current_pose[1], current_pose[2]))
             self.last_added_vertex_key = 1
             self.last_added_pose = current_pose

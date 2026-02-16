@@ -30,7 +30,3 @@ def filter_scan(ranges: np.ndarray, angles: np.ndarray):
     
     points = np.column_stack((ranges_filtered, angles_filtered))
     return points
-    
-
-    
-

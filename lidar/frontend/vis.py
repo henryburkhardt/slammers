@@ -3,8 +3,10 @@ import numpy as np
 from pathlib import Path
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
-from env import LIDAR_YAW_OFFSET
 
+ROT_OFFSET = -0.4 #TODO: make this alwasy be the first pose
+c = np.cos(ROT_OFFSET)
+s = np.sin(ROT_OFFSET)
 N_BEAMS = 360
 angles = np.linspace(-np.pi, np.pi, N_BEAMS, endpoint=True)
 
@@ -20,6 +22,12 @@ UPDATE_MS = 200
 # G2O parsing
 # -----------------------------
 def parse_g2o(path: Path):
+    x_min = 0
+    x_max = 0
+    
+    y_min = 0 
+    y_max = 0
+    
     vertices = {}
     edges = []
 
@@ -89,11 +97,18 @@ def update(frame):
     # --- poses (excluding first) ---
     xs = []
     ys = []
-    for vid, (x, y, _) in vertices.items():
+    
+    for vid, (x, y, theta) in vertices.items():
+        # rotate pose position into normalized frame
+        x_r = c * x - s * y
+        y_r = s * x + c * y
+
         if vid == first_vid:
+            fx, fy = x_r, y_r
             continue
-        xs.append(x)
-        ys.append(y)
+
+        xs.append(x_r)
+        ys.append(y_r)
 
     pose_scat.set_offsets(np.column_stack([xs, ys]) if xs else np.empty((0, 2)))
     first_pose_scat.set_offsets([[fx, fy]])
@@ -118,8 +133,12 @@ def update(frame):
 
         first_scan_x = []
         first_scan_y = []
-
+        
         for vid, (px, py, theta) in vertices.items():
+            px_r = c * px - s * py
+            py_r = s * px + c * py
+            theta_r = theta + ROT_OFFSET
+            
             scan_file = SCAN_DIR / f"{vid}.npz"
             if not scan_file.exists():
                 continue
@@ -135,8 +154,9 @@ def update(frame):
             ranges = ranges[mask]
             angs = angs[mask]
 
-            xs = px + ranges * np.cos(angs + theta + LIDAR_YAW_OFFSET)
-            ys = py + ranges * np.sin(angs + theta + LIDAR_YAW_OFFSET)
+           
+            xs = px_r + ranges * np.cos(angs + theta_r)
+            ys = py_r + ranges * np.sin(angs + theta_r)
 
             if vid == first_vid:
                 first_scan_x.extend(xs)
