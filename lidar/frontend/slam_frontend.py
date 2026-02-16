@@ -19,6 +19,7 @@ from utils import *
 from message_filters import Subscriber, ApproximateTimeSynchronizer
 from utils import load_and_filter_scan
 from icp import ndt_icp2, icp
+from grid_map import OccupancyGrid
 
 
 
@@ -53,7 +54,12 @@ class SlamFrontEnd(Node):
         # initialize the pose graph
         self.pose_graph = PoseGraph()
         
+        # intialize occupancy grid
+        self.occupancy_grid = OccupancyGrid(-3, 3, -10, 3, resolution=0.04)
+        
+        # store the initial theta, so we can get new theta measurements relaitve
         self.initial_theta = 0
+        
 
     
     def synced_callback(self, odom: Odometry, scan: LaserScan):
@@ -104,15 +110,11 @@ class SlamFrontEnd(Node):
 
         dtheta = abs(self.latest_odom[2] - self.last_added_pose[2])
 
-        # print(dtheta)
-
-        # RIGHT now does not consider theta
         if dtrans > self.min_translation or dtheta > self.min_rotation:
             return True 
-        
         return False
         
-    
+        
     def reset_slam_data(
         self,
         graph_path: Path = Path("./data/graph.txt"),
@@ -131,50 +133,48 @@ class SlamFrontEnd(Node):
                     p.unlink()
         return 
 
-
     def add_pose_vertex(self, pose: Pose2D, use_icp_odom=True):
-        """Add a pose vertex to the pose graph"""        
-        if self.latest_ranges is None or self.latest_odom is None:
-            self.logger.warn("add_pose_vertex: No data yet")
-            return  
+        """Add a pose vertex to the pose graph"""     
+           
+        assert self.latest_ranges is not None and self.latest_odom is not None
 
-        # create new verttex id
+        # create new vertex id
         new_vertex_key = self.pose_graph.num_vertices + 1
         
         self.logger.info(f"init adding new pose ({new_vertex_key})")
         
+        last_pose_vertex_pointcloud = load_and_filter_scan(vertex_id=self.last_added_vertex_key)
+        new_pose_vertex_pointcloud = filter_scan(ranges=self.latest_ranges, angles=self.latest_angles)
+        
         if use_icp_odom and new_vertex_key != 1:
-            # if using this, drive reallll slow !
-            # should skip if first pose...
-            last_vertex_points = load_and_filter_scan(vertex_id=self.last_added_vertex_key)
-            new_vertex_points = filter_scan(ranges=self.latest_ranges, angles=self.latest_angles)
+            
+            # load curr and prev point clouds
 
-            larger = last_vertex_points.shape[0] < new_vertex_points.shape[0]
-            shape_diff = abs(new_vertex_points.shape[0] - last_vertex_points.shape[0])
+            # find the larger point cloud
+            larger = last_pose_vertex_pointcloud.shape[0] < new_pose_vertex_pointcloud.shape[0]
+            shape_diff = abs(new_pose_vertex_pointcloud.shape[0] - last_pose_vertex_pointcloud.shape[0])
 
-            print(last_vertex_points.shape)
-            print(new_vertex_points.shape)
+            # print(last_pose_vertext_pointcloud.shape)
+            # print(new_pose_vertex_pointcloud.shape)
 
-            print(f"Larger: {larger}")
-            print(f"Shape Diff: {shape_diff}")
+            # print(f"Larger: {larger}")
+            # print(f"Shape Diff: {shape_diff}")
 
+            # make the point clouds the same size, by radomly removing points from one. TEMPORARY FIX.
             if larger:
-                indices_remove = sample(range(0, new_vertex_points.shape[0] + 1), shape_diff)
-                new_vertex_points = np.delete(new_vertex_points, indices_remove, axis=0)
+                indices_remove = sample(range(0, new_pose_vertex_pointcloud.shape[0] + 1), shape_diff)
+                new_pose_vertex_pointcloud = np.delete(new_pose_vertex_pointcloud, indices_remove, axis=0)
             else:
-                indices_remove = sample(range(0, last_vertex_points.shape[0] + 1), shape_diff)
-                last_vertex_points = np.delete(last_vertex_points, indices_remove, axis=0)
+                indices_remove = sample(range(0, last_pose_vertex_pointcloud.shape[0] + 1), shape_diff)
+                last_pose_vertex_pointcloud = np.delete(last_pose_vertex_pointcloud, indices_remove, axis=0)
 
-            print(last_vertex_points.shape)
-            print(new_vertex_points.shape)
+            assert last_pose_vertex_pointcloud.shape == new_pose_vertex_pointcloud.shape
 
-            assert last_vertex_points.shape == new_vertex_points.shape
-
+            # run icp on the two point clouds, get translation matrix
             # t_matrix = ndt_icp2(new_vertex_points, last_vertex_points)
-            t_matrix, _, _ = icp(last_vertex_points, new_vertex_points, max_iterations=20)
+            t_matrix, _, _ = icp(last_pose_vertex_pointcloud, new_pose_vertex_pointcloud, max_iterations=20)
             t_vector = t2v(t_matrix) # (x y theta)
 
-            # t_matrix = np.linalg.inv(t_matrix)
             last_pose_theta = self.pose_graph.get_vertex(self.last_added_vertex_key).pose.theta
             
             # compute global translation vector by rotating it by -pose_theta
@@ -197,18 +197,19 @@ class SlamFrontEnd(Node):
             
             t_theta = t2v(t_matrix)[2]
 
-            print("T THETA:", t_theta)
-
             pose = Pose2D(cur_pose_vector[0], cur_pose_vector[1], last_pose_theta - t_theta)
             self.logger.info(f"ICP diff between {new_vertex_key} and {self.last_added_vertex_key}: x:{cur_pose_vector[0]}, y:{cur_pose_vector[1]}, theta:{t_theta}")
 
         # create the pose object (x, y, theta) and add to graph
         self.pose_graph.add_vertex(key=new_vertex_key, pose=pose, scan=self.latest_ranges.copy(), angles=self.latest_angles.copy()) 
         
+        # update the occupancy grid
+        self.occupancy_grid.update_from_scan(pose=pose, pointcloud=new_pose_vertex_pointcloud)
+        
         # save the point cloud to disk as npz (in ./data/scans)
         self.save_scan_to_disk(new_vertex_key, ranges=self.latest_ranges.copy(), angles=self.latest_angles.copy())
 
-        # TODO: do we need this part below?
+        # TODO: do we need this part below
         if self.last_added_vertex_key == None: 
             self.last_added_vertex_key = new_vertex_key
             return 

@@ -30,3 +30,11 @@ def filter_scan(ranges: np.ndarray, angles: np.ndarray):
     
     points = np.column_stack((ranges_filtered, angles_filtered))
     return points
+
+def load_scan(vertex_id):
+    data = np.load(f"./data/lidar/{vertex_id}.npz")
+    ranges = data["ranges"]
+    angles = data["angles"]
+
+    points = np.column_stack((ranges, angles))
+    return points

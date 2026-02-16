@@ -1,7 +1,7 @@
 from pathlib import Path
 import numpy as np 
 from math import ceil, floor
-from utils import load_and_filter_scan
+from utils import load_and_filter_scan, load_scan
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 
@@ -15,7 +15,7 @@ L_FREE = np.log(0.3 / 0.7)
 L_MIN  = -5.0
 L_MAX  =  5.0
 MIN_RANGE = 0.2
-MAX_RANGE = 10
+MAX_RANGE = 5
 
 def parse_g2o(path: Path):
     vertices = {}
@@ -84,8 +84,8 @@ def bresenham_line(x0, y0, x1, y1):
     cells.append((x1, y1))  # include endpoint
     return cells
 
-class GridMap:
-    def __init__(self, x_min, x_max, y_min, y_max, resolution, vertices):
+class OccupancyGrid:
+    def __init__(self, x_min, x_max, y_min, y_max, resolution):
         margin = 6
 
         self.x_min = x_min
@@ -93,7 +93,6 @@ class GridMap:
         self.y_min = y_min
         self.y_max = y_max
         self.resolution = resolution
-        self.vertices = vertices
         
         self.x_min -= margin
         self.x_max += margin
@@ -126,18 +125,18 @@ class GridMap:
             return False 
         return True
     
-    def process_single_scan(self, scan_number):
-        points = load_and_filter_scan(scan_number)
-        pose = self.vertices[scan_number] 
-        
+    def update_from_scan(self, pointcloud, pose):
         (m_x, m_y) = self.world_to_cell(pose[0], pose[1])
         
-        for beam in points:
+        for beam in pointcloud:
             angle_world = pose[2] + beam[1] # angle (in radian)
             r = beam[0] # range
             
-            if r < MIN_RANGE or r > MAX_RANGE:
-                break
+            if r < MIN_RANGE:
+                continue
+            
+            if r > MAX_RANGE or np.isinf(r):
+                continue
             
             # endpoint in world coordinates
             x_end = pose[0] + r * np.cos(angle_world)
@@ -155,9 +154,8 @@ class GridMap:
             i, j = cells_on_ray[-1]
             if self.cell_in_bounds(i, j):
                 self.grid[j, i] += L_OCC
-
-    def show(self):
-        # convert log-odds grid to discrete states
+                
+    def get_binary_grid(self):
         p = 1 - 1 / (1 + np.exp(self.grid))  # probability from log-odds
 
         occupancy = np.full(self.grid.shape, -1)  # default unknown
@@ -168,12 +166,14 @@ class GridMap:
         disp = np.full_like(occupancy, 1)  # unknown = 1
         disp[occupancy == 0] = 0           # free = 0
         disp[occupancy == 100] = 2         # occupied = 2
-
+        return disp
+    
+    def show(self):
         # define custom colormap: free / unknown / occupied
         cmap = ListedColormap(['lightblue', 'gray', 'darkblue'])
 
         plt.figure(figsize=(8,8))
-        plt.imshow(disp, cmap=cmap, origin='lower')
+        plt.imshow(self.get_binary_grid())
         plt.title("Discrete Occupancy Grid")
         plt.axis('off')
         plt.show()
@@ -181,10 +181,12 @@ class GridMap:
 graph, x_max, x_min, y_max, y_min = parse_g2o(G2O_PATH)
 num_vertices = len(graph)
 
-g = GridMap(x_min, x_max, y_min, y_max, .05, graph)
+g = OccupancyGrid(x_min, x_max, y_min, y_max, .05)
 
 for i in range(1, NUM_SCANS):
-    g.process_single_scan(1)
+    pointcloud = load_scan(i)
+    pose = graph[i]
+    g.update_from_scan(pointcloud, pose)
 
 g.show()
 
