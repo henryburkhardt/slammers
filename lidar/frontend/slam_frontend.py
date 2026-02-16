@@ -138,7 +138,7 @@ class SlamFrontEnd(Node):
     
     def publish_occupancy_grid(self):
         binary_grid = self.occupancy_grid.get_binary_grid()
-            msg = OccupancyGrid()
+        msg = OccupancyGrid()
             
         msg.header.stamp = self.get_clock().now().to_msg()
         msg.header.frame_id = 'map'
@@ -153,10 +153,10 @@ class SlamFrontEnd(Node):
         msg.info.origin.orientation.w = 1.0
         
         # flatten the grid (row-major, bottom-left = row 0)
-        msg.data = occupancy[::-1, :].flatten().tolist()
+        msg.data = binary_grid[::-1, :].flatten().tolist()
         
         self.occ_pub.publish(msg)
-        self.get_logger().debug('Published occupancy grid')
+        self.get_logger().debug('Published binary occupancy grid')
 
     def add_pose_vertex(self, pose: Pose2D, use_icp_odom=True):
         """Add a pose vertex to the pose graph"""     
