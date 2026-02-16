@@ -168,11 +168,11 @@ class SlamFrontEnd(Node):
         
         self.logger.info(f"init adding new pose ({new_vertex_key})")
         
-        last_pose_vertex_pointcloud = load_and_filter_scan(vertex_id=self.last_added_vertex_key)
         new_pose_vertex_pointcloud = filter_scan(ranges=self.latest_ranges, angles=self.latest_angles)
         
         if use_icp_odom and new_vertex_key != 1:
-            
+            last_pose_vertex_pointcloud = load_and_filter_scan(vertex_id=self.last_added_vertex_key)
+
             # load curr and prev point clouds
 
             # find the larger point cloud
@@ -229,7 +229,7 @@ class SlamFrontEnd(Node):
         self.pose_graph.add_vertex(key=new_vertex_key, pose=pose, scan=self.latest_ranges.copy(), angles=self.latest_angles.copy()) 
         
         # update the occupancy grid
-        self.occupancy_grid.update_from_scan(pose=pose, pointcloud=new_pose_vertex_pointcloud)
+        self.occupancy_grid.update_from_scan(pose=[pose.x, pose.y, pose.theta], pointcloud=new_pose_vertex_pointcloud)
         
         # save the point cloud to disk as npz (in ./data/scans)
         self.save_scan_to_disk(new_vertex_key, ranges=self.latest_ranges.copy(), angles=self.latest_angles.copy())
