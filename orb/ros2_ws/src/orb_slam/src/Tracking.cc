@@ -153,7 +153,7 @@ Tracking::Tracking(ORBVocabulary* pVoc, FramePublisher *pFramePublisher, MapPubl
     [this](sensor_msgs::msg::Image::SharedPtr msg) {
         this->GrabImage(msg);
     };
-    this->subscription_ = this->create_subscription<sensor_msgs::msg::Image>("/camera/image_raw", 1, callback);
+    this->subscription_ = this->create_subscription<sensor_msgs::msg::Image>("/cam0/image_raw", 1, callback);
 }
 
 void Tracking::SetLocalMapper(LocalMapping *pLocalMapper)

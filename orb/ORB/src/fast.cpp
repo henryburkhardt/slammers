@@ -4,6 +4,7 @@
 #include <cmath>
 #include <filesystem>
 #include <vector>
+#include <random>
 
 /**
  * An array of points representing the points of the circle with radius 3 relative to a given center pixel.
@@ -321,21 +322,33 @@ void trainDecisionTree(std::vector<cv::Mat>& trainImages, std::vector<cv::Point3
  */
 void train(int n, int threshold) {
     // load images into images vector and calculate keypoints using the slow detector.
-    const auto itr = std::filesystem::directory_iterator("train_images");
+    const auto itr = std::filesystem::directory_iterator("images");
     std::vector<cv::Mat> images;
     std::vector<std::vector<std::vector<bool>>> keypoints;
-    for (const auto& file : itr) {
-        cv::Mat img = cv::imread(file.path(), cv::IMREAD_GRAYSCALE);
-        images.push_back(img);
-        FASTDetector detector = FASTDetector(n, threshold);
-        std::vector<cv::Point> imgKeypoints = detector.detect(img);
 
-        std::vector<std::vector<bool>> keypointBoolArray = std::vector<std::vector<bool>>(img.size().height, std::vector<bool>(img.size().width, false));
-        for (cv::Point point : imgKeypoints) {
-            keypointBoolArray[point.y][point.x] = true;
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::mt19937 eng(seed); // Standard Mersenne Twister 19937 engine
+
+    // 2. Define the distribution (e.g., for a float between 0.0 and 10.0)
+    std::uniform_real_distribution<float> distr(0.0f, 1.0f);
+
+    for (const auto& file : itr) {
+        float random = distr(eng);
+        if (random <= 0.1) {
+            cv::Mat img = cv::imread(file.path(), cv::IMREAD_GRAYSCALE);
+            images.push_back(img);
+            FASTDetector detector = FASTDetector(n, threshold);
+            std::vector<cv::Point> imgKeypoints = detector.detect(img);
+
+            std::vector<std::vector<bool>> keypointBoolArray = std::vector<std::vector<bool>>(img.size().height, std::vector<bool>(img.size().width, false));
+            for (cv::Point point : imgKeypoints) {
+                keypointBoolArray[point.y][point.x] = true;
+            }
+            keypoints.push_back(keypointBoolArray);
         }
-        keypoints.push_back(keypointBoolArray);
     }
+
+    std::cerr << keypoints.size() << std::endl;
 
     // generate initial possible choices (can choose any point on circle at beginning)
     std::vector<int> choices = std::vector<int>(16, 0);
@@ -343,6 +356,7 @@ void train(int n, int threshold) {
         choices[i] = i;
     }
 
+    std::cerr << "Generating Pixel Set" << std::endl;
     // generate initial set of pixels, which starts as all pixels the slow implementation looks at.
     std::vector<cv::Point3d> pixelSet;
     for (size_t i = 0; i < images.size(); i++) {
@@ -355,6 +369,8 @@ void train(int n, int threshold) {
             }
         }
     }
+
+    std::cerr << "Generated Pixel Set" << std::endl;
 
     trainDecisionTree(images, pixelSet, keypoints, choices, threshold, 0);
 }

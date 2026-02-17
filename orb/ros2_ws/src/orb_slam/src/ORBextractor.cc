@@ -81,43 +81,41 @@ const int EDGE_THRESHOLD = 16;
 static void
 HarrisResponses(const Mat& img, vector<KeyPoint>& pts, int blockSize, float harris_k)
 {
-    CV_Assert( img.type() == CV_8UC1 && blockSize*blockSize <= 2048 );
+    int width = img.cols; int height = img.rows;
+    int prod = width * height;
+    int radius = blockSize / 2;
 
-    size_t ptidx, ptsize = pts.size();
+    uchar* raw_data = img.data;
+    int step = img.step;
 
-    const uchar* ptr00 = img.ptr<uchar>();
-    int step = (int)(img.step/img.elemSize1());
-    int r = blockSize/2;
-
-    float scale = (1 << 2) * blockSize * 255.0f;
-    scale = 1.0f / scale;
+    float scale = 1.f/((1 << 2) * blockSize * 255.f);
     float scale_sq_sq = scale * scale * scale * scale;
 
-    AutoBuffer<int> ofsbuf(blockSize*blockSize);
-    int* ofs = ofsbuf;
-    for( int i = 0; i < blockSize; i++ )
-        for( int j = 0; j < blockSize; j++ )
-            ofs[i*blockSize + j] = (int)(i*step + j);
-
-    for( ptidx = 0; ptidx < ptsize; ptidx++ )
-    {
-        int x0 = cvRound(pts[ptidx].pt.x - r);
-        int y0 = cvRound(pts[ptidx].pt.y - r);
-
-        const uchar* ptr0 = ptr00 + y0*step + x0;
-        int a = 0, b = 0, c = 0;
-
-        for( int k = 0; k < blockSize*blockSize; k++ )
-        {
-            const uchar* ptr = ptr0 + ofs[k];
-            int Ix = (ptr[1] - ptr[-1])*2 + (ptr[-step+1] - ptr[-step-1]) + (ptr[step+1] - ptr[step-1]);
-            int Iy = (ptr[step] - ptr[-step])*2 + (ptr[step-1] - ptr[-step-1]) + (ptr[step+1] - ptr[-step+1]);
-            a += Ix*Ix;
-            b += Iy*Iy;
-            c += Ix*Iy;
+    for (auto& keypoint : pts) {
+        long A = 0;
+        long B = 0;
+        long C = 0;
+        int x = keypoint.pt.x;
+        int y = keypoint.pt.y;
+        uchar* prev_pointer = &raw_data[(y - radius - 1) * step + x];
+        uchar* curr_pointer = &raw_data[(y - radius) * step + x];
+        uchar* next_pointer = &raw_data[(y - radius + 1) * step + x];
+        for (int i = -radius; i <= radius; i++) {
+            for (int j = -radius; j <= radius; j++) {
+                int idx, x, y;
+                idx = (keypoint.pt.y + i) * width + (keypoint.pt.x + j);
+                x = prev_pointer[1] + next_pointer[1] - prev_pointer[-1] - next_pointer[-1] + 2 * (curr_pointer[1] - curr_pointer[-1]);
+                y = next_pointer[-1] + next_pointer[1] - prev_pointer[-1] - prev_pointer[1] + 2 * (next_pointer[0] - prev_pointer[0]);
+                A += x * x;
+                B += y * y;
+                C += x * y;
+            }
+            prev_pointer = curr_pointer;
+            curr_pointer = next_pointer;
+            next_pointer = &raw_data[y + i + 2];
         }
-        pts[ptidx].response = ((float)a * b - (float)c * c -
-                               harris_k * ((float)a + b) * ((float)a + b))*scale_sq_sq;
+        // return the Corner Response, which is Det - k Tr^2. Det is A * B - C^2, and Tr is A + B
+        keypoint.response = (((A * B) - (C * C)) - (harris_k * (A + B) * (A + B))) * scale_sq_sq;
     }
 }
 
@@ -588,13 +586,13 @@ void ORBextractor::ComputeKeyPoints(vector<vector<KeyPoint> >& allKeypoints)
 
                 cellKeyPoints[i][j].reserve(nfeaturesCell*5);
 
-                FAST(cellImage,cellKeyPoints[i][j],fastTh,true);
+                learnedFast(cellImage,cellKeyPoints[i][j],fastTh,true);
 
                 if(cellKeyPoints[i][j].size()<=3)
                 {
                     cellKeyPoints[i][j].clear();
 
-                    FAST(cellImage,cellKeyPoints[i][j],7,true);
+                    learnedFast(cellImage,cellKeyPoints[i][j],7,true);
                 }
 
                 if( scoreType == ORB::HARRIS_SCORE )

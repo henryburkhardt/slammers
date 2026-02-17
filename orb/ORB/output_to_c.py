@@ -1,6 +1,25 @@
 import io
 import sys
 
+CIRCLE_POINTS = [
+    [-1, -3],
+    [0, -3],
+    [1, -3],
+    [2, -2],
+    [3, -1],
+    [3, 0],
+    [3, 1],
+    [2, 2],
+    [1, 3],
+    [0, 3],
+    [-1, 3],
+    [-2, 2],
+    [-3, 1],
+    [-3, 0],
+    [-3, -1],
+    [-2, -2]
+];
+
 
 class TreeNode:
     """
@@ -22,8 +41,11 @@ class TreeNode:
             if self.value == -1:
                 print('error')
             else:
-                print(indent_level + 'nmsVals[row * width + col] = get_corner_score(img, row, col);')
+                print(indent_level + 'nmsVals[row * width + col] = get_corner_score(ptr_arr, col);')
             return
+        x = CIRCLE_POINTS[self.value][0]
+        y = CIRCLE_POINTS[self.value][1]
+
         one_two_equal = self.children[0] == self.children[1]
         two_three_equal = self.children[1] == self.children[2]
         one_three_equal = self.children[0] == self.children[2]
@@ -32,26 +54,26 @@ class TreeNode:
         
         if two_three_equal:
             if self.children[1].value != -1:
-                print(indent_level + f'if (pixel + threshold < surrPoints[{self.value}] || pixel - threshold > surrPoints[{self.value}]) {{')
+                print(indent_level + f'if (pixel + threshold < ptr_arr[{y + 3}][col{f' + {x}' if x > 0 else (f' - {-x}' if x < 0 else '')}] || pixel - threshold > ptr_arr[{y + 3}][col{f' + {x}' if x > 0 else (f' - {-x}' if x < 0 else '')}]) {{')
                 self.children[1].generate_tree_text(indent_level + '    ')
                 print(indent_level + '}')
                 print_else = True
         else:
             if not one_two_equal:
                 if self.children[1].value != -1:
-                    print(indent_level + f'if (pixel - threshold > surrPoints[{self.value}]) {{')
+                    print(indent_level + f'if (pixel - threshold > ptr_arr[{y + 3}][col{f' + {x}' if x > 0 else (f' - {-x}' if x < 0 else '')}]) {{')
                     self.children[1].generate_tree_text(indent_level + '    ')
                     print(indent_level + '}')
                     print_else = True
             if not one_three_equal:
                 if self.children[2].value != -1:
-                    print(indent_level + ('else ' if print_else else '') + f'if (pixel + threshold < surrPoints[{self.value}]) {{')
+                    print(indent_level + ('else ' if print_else else '') + f'if (pixel + threshold < ptr_arr[{y + 3}][col{f' + {x}' if x > 0 else (f' - {-x}' if x < 0 else '')}]) {{')
                     self.children[2].generate_tree_text(indent_level + '    ')
                     print(indent_level + '}')
                     print_else = True
         if self.children[0].value != -1:
             if self.children[1].value == -1 or self.children[2].value == -1:
-                print(indent_level + ('else ' if print_else else '') + f'if (pixel + threshold >= surrPoints[{self.value}] && pixel - threshold <= surrPoints[{self.value}]) {{')
+                print(indent_level + ('else ' if print_else else '') + f'if (pixel + threshold >= ptr_arr[{y + 3}][col{f' + {x}' if x > 0 else (f' - {-x}' if x < 0 else '')}] && pixel - threshold <= ptr_arr[{y + 3}][col{f' + {x}' if x > 0 else (f' - {-x}' if x < 0 else '')}]) {{')
                 self.children[0].generate_tree_text(indent_level + '    ')
                 print(indent_level + '}')
             else:
