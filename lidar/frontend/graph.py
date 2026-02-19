@@ -85,18 +85,13 @@ class PoseGraph:
     def get_vertex(self, key: int) -> Vertex:
         return self.vert_list.get(key)
 
-    def add_edge(self, v1_key: int, v2_key: int, information: np.ndarray):
+    def add_edge(self, v1_key: int, v2_key: int, t_matrix: np.ndarray, information: np.ndarray):
         # QUESTION: Edges should be bi-directional ??
         
         # check that vertex exists
         if v1_key not in self.vert_list or v2_key not in self.vert_list:
             raise KeyError("Both vertices must exist before adding an edge")
-        
-        # compute the dx, dy and dtheta between the edges
-        v1_matrix: np.ndarray = self.get_vertex(v1_key).to_matrix()
-        v2_matrix: np.ndarray = self.get_vertex(v2_key).to_matrix()
-        
-        t_matrix = se2_relative_transformation(v1_matrix, v2_matrix)
+    
         
         new_edge = Edge(v1_key, v2_key, t_matrix, information)
 
@@ -152,14 +147,18 @@ class PoseGraph:
                             info_tt
                         )
                     )
-    def update_from_g2o(self, filepath: str):
+                    
+    def update_from_g2o(self, filepath: str, vertex_exist: bool = True):
         """
-        update an existing pose graph from a g2o file.
+        Update or build a pose graph from a g2o file.
 
-        Assumptions:
-        - All vertices already exist in self.vert_list
-        - All edges already exist in vertex.neighbors
-        - topology is identical; only values change
+        If vertex_exist=True:
+            - Assumes vertices and edges already exist
+            - Only updates values
+
+        If vertex_exist=False:
+            - Creates vertices and edges as needed
+            - Builds the graph from scratch
         """
 
         with open(filepath, "r") as f:
@@ -171,30 +170,67 @@ class PoseGraph:
                 tokens = line.split()
                 tag = tokens[0]
 
-                
-                # Update vertex poses
+                # -----------------------
+                # VERTEX
+                # -----------------------
                 if tag == "VERTEX_SE2":
                     key = int(tokens[1])
+                    x = float(tokens[2])
+                    y = float(tokens[3])
+                    theta = float(tokens[4])
 
-                    vertex = self.vert_list[key]  # must exist
-                    vertex.pose.x = float(tokens[2])
-                    vertex.pose.y = float(tokens[3])
-                    vertex.pose.theta = float(tokens[4])
+                    if vertex_exist:
+                        # Update existing vertex
+                        vertex = self.vert_list[key]
+                        vertex.pose.x = x
+                        vertex.pose.y = y
+                        vertex.pose.theta = theta
+                    else:
+                        # Create vertex if missing
+                        if key not in self.vert_list:
+                            vertex = Vertex(key)          # adjust constructor as needed
+                            self.vert_list[key] = vertex
+                        else:
+                            vertex = self.vert_list[key]
 
-                # Update edge measurements
+                        vertex.pose.x = x
+                        vertex.pose.y = y
+                        vertex.pose.theta = theta
+
+                # -----------------------
+                # EDGE
+                # -----------------------
                 elif tag == "EDGE_SE2":
                     from_key = int(tokens[1])
                     to_key = int(tokens[2])
 
-                    edge = self.vert_list[from_key].neighbors[to_key]  # must exist
+                    dx = float(tokens[3])
+                    dy = float(tokens[4])
+                    dtheta = float(tokens[5])
 
-                    edge.dx = float(tokens[3])
-                    edge.dy = float(tokens[4])
-                    edge.dtheta = float(tokens[5])
+                    info_xx = float(tokens[6])
+                    info_yy = float(tokens[9])
+                    info_tt = float(tokens[11])
 
-                    # Upper-triangular information matrix
-                    edge.information = (
-                        float(tokens[6]),   # I_xx
-                        float(tokens[9]),   # I_yy
-                        float(tokens[11]),  # I_tt
-                    )
+                    if vertex_exist:
+                        # Update existing edge
+                        edge = self.vert_list[from_key].neighbors[to_key]
+                    else:
+                        # Ensure both vertices exist
+                        if from_key not in self.vert_list:
+                            self.vert_list[from_key] = Vertex(from_key)
+                        if to_key not in self.vert_list:
+                            self.vert_list[to_key] = Vertex(to_key)
+
+                        # Create edge if missing
+                        if to_key not in self.vert_list[from_key].neighbors:
+                            edge = Edge(from_key, to_key)  # adjust constructor as needed
+                            self.vert_list[from_key].neighbors[to_key] = edge
+                        else:
+                            edge = self.vert_list[from_key].neighbors[to_key]
+
+                    # Update edge values
+                    edge.dx = dx
+                    edge.dy = dy
+                    edge.dtheta = dtheta
+                    edge.information = (info_xx, info_yy, info_tt)

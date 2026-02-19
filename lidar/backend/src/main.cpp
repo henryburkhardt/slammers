@@ -9,7 +9,7 @@
 #include <g2o/solvers/dense/linear_solver_dense.h>
 #include <g2o/types/slam2d/types_slam2d.h>
 
-t_theta
+
 // intialize the optimimzer
 std::unique_ptr<g2o::SparseOptimizer> setupOptimizer() {
     auto optimizer = std::make_unique<g2o::SparseOptimizer>();

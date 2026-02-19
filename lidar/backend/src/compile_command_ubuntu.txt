@@ -9,4 +9,5 @@ g++ main.cpp -o main \
   -lg2o_stuff \
   -lg2o_types_slam2d \
   -lg2o_solver_csparse \
-  -lfmt
+  -lfmt \
+  -pthread

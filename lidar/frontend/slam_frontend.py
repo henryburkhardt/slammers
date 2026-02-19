@@ -29,6 +29,8 @@ from nav_msgs.msg import MapMetaData
 class SlamFrontEnd(Node):
     def __init__(self):
         super().__init__('slam_frontend')
+
+        self.reset_slam_data()
         
         self.logger = self.get_logger()
 
@@ -59,7 +61,7 @@ class SlamFrontEnd(Node):
         
         # intialize occupancy grid
         self.occ_pub = self.create_publisher(OccupancyGrid, '/occupancy_grid', 1)
-        self.occupancy_grid = GridMap(-3, 3, -10, 3, resolution=0.04)
+        self.occupancy_grid = GridMap(-2, 2, -2, 2, resolution=0.05)
         self.create_timer(1.0, self.publish_occupancy_grid)
         
         # store the initial theta, so we can get new theta measurements relaitve
@@ -93,7 +95,11 @@ class SlamFrontEnd(Node):
         # init first pose  
         if self.last_added_pose == None and self.last_added_vertex_key == None: 
             self.initial_theta = current_pose[2]
-            self.add_pose_vertex(pose=Pose2D(current_pose[0], current_pose[1], current_pose[2]))
+            print(f"updated initial theta to: {self.initial_theta}")
+
+            assert current_pose[2] - self.initial_theta == 0
+            self.add_pose_vertex(pose=Pose2D(0,0,0))
+
             self.last_added_vertex_key = 1
             self.last_added_pose = current_pose
             return 
@@ -126,6 +132,9 @@ class SlamFrontEnd(Node):
         scans_dir: Path = Path("./data/lidar"),
     ):
         """Clear all data (in the ./data folder)"""
+
+        print("Deleting from:", scans_dir.resolve())
+
         
         # Delete graph file
         if graph_path.exists():
@@ -143,24 +152,25 @@ class SlamFrontEnd(Node):
         msg = OccupancyGrid()
         
         msg.header.stamp = self.get_clock().now().to_msg()
-        msg.header.frame_id = 'map'
+        msg.header.frame_id = 'occupancy_grid'
         
         msg.info = MapMetaData()
         msg.info.resolution = float(self.occupancy_grid.resolution)
         msg.info.width = int(self.occupancy_grid.width)
         msg.info.height = int(self.occupancy_grid.height)
-        msg.info.origin.position.x = float(self.occupancy_grid.x_min)
-        msg.info.origin.position.y = float(self.occupancy_grid.y_min)
+        msg.info.origin.position.x = float(6.0)
+        msg.info.origin.position.y = float(6.0)
         msg.info.origin.position.z = float(0.0)
-        msg.info.origin.orientation.w = float(1.0)
+        msg.info.origin.orientation.w = float(0.0)
       
-        # flatten the grid (row-major, bottom-left = row 0)
-        msg.data = binary_grid[::-1, :].flatten().tolist()
-        
+        ros_grid = np.full(binary_grid.shape, -1, dtype=np.int8)  # unknown
+        ros_grid[binary_grid == 0] = 0      # free
+        ros_grid[binary_grid == 1] = 100    # occupied
+
+        msg.data = ros_grid[::-1, :].flatten().tolist()
+                
 
         self.occ_pub.publish(msg)
-        print("pub")
-
         self.get_logger().debug('Published binary occupancy grid')
 
     def add_pose_vertex(self, pose: Pose2D, use_icp_odom=True):
@@ -174,6 +184,8 @@ class SlamFrontEnd(Node):
         self.logger.info(f"init adding new pose ({new_vertex_key})")
         
         new_pose_vertex_pointcloud = filter_scan(ranges=self.latest_ranges, angles=self.latest_angles)
+
+        t_matrix = None
         
         if use_icp_odom and new_vertex_key != 1:
             last_pose_vertex_pointcloud = load_and_filter_scan(vertex_id=self.last_added_vertex_key)
@@ -181,6 +193,7 @@ class SlamFrontEnd(Node):
             # load curr and prev point clouds
 
             # find the larger point cloud
+            diff = last_pose_vertex_pointcloud.shape[0] == new_pose_vertex_pointcloud.shape[0]
             larger = last_pose_vertex_pointcloud.shape[0] < new_pose_vertex_pointcloud.shape[0]
             shape_diff = abs(new_pose_vertex_pointcloud.shape[0] - last_pose_vertex_pointcloud.shape[0])
 
@@ -192,10 +205,10 @@ class SlamFrontEnd(Node):
 
             # make the point clouds the same size, by radomly removing points from one. TEMPORARY FIX.
             if larger:
-                indices_remove = sample(range(0, new_pose_vertex_pointcloud.shape[0] + 1), shape_diff)
+                indices_remove = sample(range(0, new_pose_vertex_pointcloud.shape[0]), shape_diff)
                 new_pose_vertex_pointcloud = np.delete(new_pose_vertex_pointcloud, indices_remove, axis=0)
             else:
-                indices_remove = sample(range(0, last_pose_vertex_pointcloud.shape[0] + 1), shape_diff)
+                indices_remove = sample(range(0, last_pose_vertex_pointcloud.shape[0]), shape_diff)
                 last_pose_vertex_pointcloud = np.delete(last_pose_vertex_pointcloud, indices_remove, axis=0)
 
             assert last_pose_vertex_pointcloud.shape == new_pose_vertex_pointcloud.shape
@@ -227,11 +240,16 @@ class SlamFrontEnd(Node):
             
             t_theta = t2v(t_matrix)[2]
 
-            pose = Pose2D(cur_pose_vector[0], cur_pose_vector[1], last_pose_theta - t_theta)
+            pose = Pose2D(cur_pose_vector[0], cur_pose_vector[1], (last_pose_theta - t_theta))
             self.logger.info(f"ICP diff between {new_vertex_key} and {self.last_added_vertex_key}: x:{cur_pose_vector[0]}, y:{cur_pose_vector[1]}, theta:{t_theta}")
 
         # create the pose object (x, y, theta) and add to graph
         self.pose_graph.add_vertex(key=new_vertex_key, pose=pose, scan=self.latest_ranges.copy(), angles=self.latest_angles.copy()) 
+
+        if new_vertex_key != 1:
+            assert t_matrix is not None
+            self.pose_graph.add_edge(v2_key=self.last_added_vertex_key, v1_key=new_vertex_key, t_matrix=t_matrix, information=DEFAULT_CONFIDENT_INFORMATION_MATRIX)
+
         
         # update the occupancy grid
         self.occupancy_grid.update_from_scan(pose=[pose.x, pose.y, pose.theta], pointcloud=new_pose_vertex_pointcloud)
@@ -243,9 +261,7 @@ class SlamFrontEnd(Node):
         if self.last_added_vertex_key == None: 
             self.last_added_vertex_key = new_vertex_key
             return 
-        
-        # self.pose_graph.add_edge(v1_key=self.last_added_vertex_key, v2_key=new_vertex_key, information=DEFAULT_CONFIDENT_INFORMATION_MATRIX)
-        
+                
         # save graph to g2o output file
         # TODO: make this add line by line instead of whole graph? idk
         self.pose_graph.save_graph_to_file(filepath=POSE_GRAPH_FILE_PATH)
