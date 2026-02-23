@@ -4,6 +4,7 @@ import scipy
 import math
 # import seaborn as sns
 import matplotlib.pyplot as plt
+from random import sample
 
 
 LaserScan = np.ndarray  # [(p1, p2), ...] OR [(r, theta), ...]
@@ -516,6 +517,23 @@ def icp(A, B, init_pose=None, max_iterations=20, tolerance=0.001):
         distances: Euclidean distances (errors) of the nearest neighbor
         i: number of iterations to converge
     '''
+    
+    larger = A.shape[0] < B.shape[0]
+    shape_diff = abs(B.shape[0] - A.shape[0])
+
+    # print(last_pose_vertext_pointcloud.shape)
+    # print(new_pose_vertex_pointcloud.shape)
+
+    # print(f"Larger: {larger}")
+    # print(f"Shape Diff: {shape_diff}")
+
+    # make the point clouds the same size, by radomly removing points from one. TEMPORARY FIX.
+    if larger:
+        indices_remove = sample(range(0, B.shape[0]), shape_diff)
+        B = np.delete(B, indices_remove, axis=0)
+    else:
+        indices_remove = sample(range(0, A.shape[0]), shape_diff)
+        A = np.delete(A, indices_remove, axis=0)
 
     assert A.shape == B.shape
 

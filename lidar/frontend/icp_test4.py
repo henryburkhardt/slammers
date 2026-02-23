@@ -39,7 +39,7 @@ def filter_scan(ranges: np.ndarray, angles: np.ndarray):
 # pts1 = pts1.T
 
 last_vertex_points = load_and_filter_scan(vertex_id=6)
-new_vertex_points = load_and_filter_scan(vertex_id=7)
+new_vertex_points = load_and_filter_scan(vertex_id=1)
 
 larger = last_vertex_points.shape[0] < new_vertex_points.shape[0]
 shape_diff = abs(new_vertex_points.shape[0] - last_vertex_points.shape[0])

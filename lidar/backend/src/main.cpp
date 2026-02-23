@@ -2,6 +2,7 @@
 #include <iostream>
 #include <sstream>
 #include <memory>
+#include <dlfcn.h>
 
 #include <g2o/core/sparse_optimizer.h>
 #include <g2o/core/block_solver.h>
@@ -57,6 +58,11 @@ void handleOptimize(const httplib::Request& req, httplib::Response& res) {
 
 // main server
 int main() {
+    void* handle = dlopen("libg2o_types_slam2d.so", RTLD_NOW | RTLD_GLOBAL);
+    if (!handle) {
+        std::cerr << "Failed to load g2o_types_slam2d: " << dlerror() << std::endl;
+    }
+    
     httplib::Server svr;
 
     svr.Post("/optimize", handleOptimize);

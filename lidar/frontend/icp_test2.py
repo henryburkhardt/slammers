@@ -51,7 +51,7 @@ points2 = np.column_stack((ranges2_filtered, angles2_filtered))
 # M2 = ndt_icp2(b, a, tx_est=0.1, ty_est=0.33, phi_est=np.pi/2.2, max_it=30)
 
 points1 = load_and_filter_scan(1)
-points2 = load_and_filter_scan(2)
+points2 = load_and_filter_scan(6)
 M2 = ndt_icp2(points2, points1, max_it=30)
 
 print("RESULT:")

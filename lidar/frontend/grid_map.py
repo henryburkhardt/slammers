@@ -9,8 +9,8 @@ from matplotlib.colors import ListedColormap
 
 
 G2O_PATH = Path("./data/graph.g2o")
-NUM_SCANS = 8
-L_OCC  = np.log(0.7 / 0.3)
+NUM_SCANS = 38
+L_OCC  = np.log(0.9 / 0.3)
 L_FREE = np.log(0.3 / 0.7)
 L_MIN  = -5.0
 L_MAX  =  5.0
@@ -148,7 +148,7 @@ class GridMap:
 
             for i, j in cells_on_ray[:-1]:  # all but last = free
                 if self.cell_in_bounds(i, j):
-                    self.grid[j, i] += L_FREE  # or just +=1 if testing
+                    self.grid[j, i] += L_FREE
 
             # last cell = occupied
             i, j = cells_on_ray[-1]
@@ -158,15 +158,15 @@ class GridMap:
     def get_binary_grid(self):
         p = 1 - 1 / (1 + np.exp(self.grid))  # probability from log-odds
 
-        occupancy = np.full(self.grid.shape, -1)  # default unknown
-        occupancy[p > 0.65] = 100  # occupied
+        occupancy = np.full(self.grid.shape, 1)  # default unknown
+        occupancy[p > 0.65] = 2  # occupied
         occupancy[p < 0.35] = 0    # free
 
         # map occupancy values to colormap indices
-        disp = np.full_like(occupancy, 1)  # unknown = 1
-        disp[occupancy == 0] = 0           # free = 0
-        disp[occupancy == 100] = 2         # occupied = 2
-        return disp
+        # disp = np.full_like(occupancy, 1)  # unknown = 1
+        # disp[occupancy == 0] = 0           # free = 0
+        # disp[occupancy == 100] = 2         # occupied = 2
+        return occupancy
     
     def show(self):
         # define custom colormap: free / unknown / occupied
@@ -182,7 +182,7 @@ if __name__ == "__main__":
     graph, x_max, x_min, y_max, y_min = parse_g2o(G2O_PATH)
     num_vertices = len(graph)
 
-    g = GridMap(-2, 2, -7, 2, resolution=0.1)
+    g = GridMap(-2, 2, -7, 2, resolution=0.05)
 
     for i in range(1, NUM_SCANS):
         pointcloud = load_scan(i)

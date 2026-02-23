@@ -25,6 +25,17 @@ from std_msgs.msg import Header
 from nav_msgs.msg import MapMetaData
 
 
+## loop closure stuff
+USE_LOOP = True
+XY_THRESHOLD = 2  # 2 meters
+# TH_THRESHOLD = 3.14 * 2 * 10 / 360
+KEY_IGNORE = 3
+USE_ODOM = False
+
+
+keyframe_ids = []  # time-sensitive
+
+
 
 class SlamFrontEnd(Node):
     def __init__(self):
@@ -191,34 +202,22 @@ class SlamFrontEnd(Node):
             last_pose_vertex_pointcloud = load_and_filter_scan(vertex_id=self.last_added_vertex_key)
 
             # load curr and prev point clouds
-
-            # find the larger point cloud
-            diff = last_pose_vertex_pointcloud.shape[0] == new_pose_vertex_pointcloud.shape[0]
-            larger = last_pose_vertex_pointcloud.shape[0] < new_pose_vertex_pointcloud.shape[0]
-            shape_diff = abs(new_pose_vertex_pointcloud.shape[0] - last_pose_vertex_pointcloud.shape[0])
-
-            # print(last_pose_vertext_pointcloud.shape)
-            # print(new_pose_vertex_pointcloud.shape)
-
-            # print(f"Larger: {larger}")
-            # print(f"Shape Diff: {shape_diff}")
-
-            # make the point clouds the same size, by radomly removing points from one. TEMPORARY FIX.
-            if larger:
-                indices_remove = sample(range(0, new_pose_vertex_pointcloud.shape[0]), shape_diff)
-                new_pose_vertex_pointcloud = np.delete(new_pose_vertex_pointcloud, indices_remove, axis=0)
-            else:
-                indices_remove = sample(range(0, last_pose_vertex_pointcloud.shape[0]), shape_diff)
-                last_pose_vertex_pointcloud = np.delete(last_pose_vertex_pointcloud, indices_remove, axis=0)
-
-            assert last_pose_vertex_pointcloud.shape == new_pose_vertex_pointcloud.shape
+            
+            last_pose_theta = self.pose_graph.get_vertex(self.last_added_vertex_key).pose.theta
 
             # run icp on the two point clouds, get translation matrix
             # t_matrix = ndt_icp2(new_vertex_points, last_vertex_points)
-            t_matrix, _, _ = icp(last_pose_vertex_pointcloud, new_pose_vertex_pointcloud, max_iterations=20)
+            theta_odom_est = (pose.theta - self.initial_theta) - last_pose_theta
+            init_cos_val = np.cos(theta_odom_est)
+            init_sin_val = np.sin(theta_odom_est)
+            initial_mat = np.array([[init_cos_val, init_sin_val, 0], 
+                                    [-1 * init_sin_val, init_cos_val, 0],
+                                    [0, 0, 1]])
+
+            t_matrix, _, _ = icp(last_pose_vertex_pointcloud, new_pose_vertex_pointcloud, init_pose=initial_mat, max_iterations=20)
             t_vector = t2v(t_matrix) # (x y theta)
 
-            last_pose_theta = self.pose_graph.get_vertex(self.last_added_vertex_key).pose.theta
+            
             
             # compute global translation vector by rotating it by -pose_theta
             # cos_val = np.cos(-1 * last_pose_theta)
@@ -248,7 +247,7 @@ class SlamFrontEnd(Node):
 
         if new_vertex_key != 1:
             assert t_matrix is not None
-            self.pose_graph.add_edge(v2_key=self.last_added_vertex_key, v1_key=new_vertex_key, t_matrix=t_matrix, information=DEFAULT_CONFIDENT_INFORMATION_MATRIX)
+            self.pose_graph.add_edge(v2_key=self.last_added_vertex_key, v1_key=new_vertex_key, t_matrix=t_matrix, information=DEFAULT_LESS_CONFIDENT_INFORMATION_MATRIX)
 
         
         # update the occupancy grid
@@ -257,7 +256,7 @@ class SlamFrontEnd(Node):
         # save the point cloud to disk as npz (in ./data/scans)
         self.save_scan_to_disk(new_vertex_key, ranges=self.latest_ranges.copy(), angles=self.latest_angles.copy())
 
-        # TODO: do we need this part below
+
         if self.last_added_vertex_key == None: 
             self.last_added_vertex_key = new_vertex_key
             return 
@@ -266,9 +265,13 @@ class SlamFrontEnd(Node):
         # TODO: make this add line by line instead of whole graph? idk
         self.pose_graph.save_graph_to_file(filepath=POSE_GRAPH_FILE_PATH)
 
-        self.last_added_vertex_key = new_vertex_key
+        if USE_LOOP:
+            loop_detected = self.loop_closure(new_vertex_key)
+            if loop_detected:
+                 # if a loop closure happens, we optimize the whole graph
+                 self.optimize_graph()
 
-        self.add_virtual_edges(new_vertex_key)
+        self.last_added_vertex_key = new_vertex_key
         
         self.logger.info(f"finish adding new pose ({new_vertex_key})")
         
@@ -281,21 +284,6 @@ class SlamFrontEnd(Node):
         filepath = f"./data/lidar/{vertex_id}.npz"
         np.savez(filepath, ranges=ranges, angles=angles)
         return
- 
-
-    def is_pose_near_previsouly_explored_area(self, vertex_key) -> bool:
-        """check if given pose is an a previsouly explored area that is being revisited"""
-        # TODO: finish function
-        return True
-
-    def add_virtual_edges(self, vertext_key:int):
-        # TODO: finish 
-        # check if the pose is back in an area that the robot has not visited for a while
-        if(self.is_pose_near_previsouly_explored_area(vertext_key)):
-            # run loop closure alg!
-            pass
-        else: 
-            return 
     
     async def optimize_graph(self):
         """Senf graph to backend to be optimized, then update graph to be the optimized version"""
@@ -319,6 +307,69 @@ class SlamFrontEnd(Node):
             print(f"Optimization failed! Status: {response.status_code}")
             print(response.text)
         return
+
+
+    def scan_diff_tf(self, matrix):
+        (x, y, theta) = t2v(matrix)
+        print(f"est dist: x {x}, y {y}")
+        return np.sum(np.power([x, y], [2, 2])) >= np.power(XY_THRESHOLD, 2)
+        # th_cross = np.abs(theta) >= TH_THRESHOLD
+        # return xy_cross or th_cross
+
+
+    def within_keyframe_tf(self, matrix):
+        (x, y, theta) = t2v(matrix)
+        return np.sum(np.power([x, y], [2, 2])) <= np.power(XY_THRESHOLD, 2)
+
+
+    def get_global_theta(self, id):
+        return self.pose_graph.get_vertex(id).pose.theta
+
+
+    def loop_closure(self, cur_id):
+        # add keyframe at start
+        if len(keyframe_ids) == 0:
+            keyframe_ids.append(cur_id)
+            return
+        
+        # check if current lidar scan is sufficiently diff. from latest keyframe
+        key_scan = load_and_filter_scan(keyframe_ids[-1])
+        cur_scan = load_and_filter_scan(cur_id)
+
+        print(f"LOOP: Comparing {cur_id} to {keyframe_ids[-1]}")
+
+        t_mat, _, _ = icp(key_scan, cur_scan)
+
+        if not self.scan_diff_tf(t_mat):
+            return False
+        
+        print("LOOP: adding new keyframe")
+        
+        # current scan is sufficiently diff. from latest keyframe
+        keyframe_ids.append(cur_id)
+
+        # compare with all previous scans
+        for idx, key_id in enumerate(keyframe_ids):
+            if len(keyframe_ids) - idx <= KEY_IGNORE:
+                break
+            # cur_scan is now current keyframe
+            key_scan = load_and_filter_scan(keyframe_ids[-1])
+
+            est_mat = None
+            if USE_ODOM:
+                # only use theta values
+                theta_est = self.get_global_theta(cur_id) - self.get_global_theta(key_id)
+                cos_val = np.cos(theta_est)
+                sin_val = np.sin(theta_est)
+                est_mat = np.array([[cos_val, -1 * sin_val], 
+                                    [sin_val, cos_val]])
+
+            # compute icp difference
+            t_mat, _, _ = icp(key_scan, cur_scan, init_pose=est_mat)
+            if self.within_keyframe_tf(t_mat):
+                self.pose_graph.add_edge(v2_key=cur_id, v1_key=key_id, t_matrix=t_mat, information=DEFAULT_CONFIDENT_INFORMATION_MATRIX)
+                print("LOOP: DETECTED")
+                return True
 
     def destroy_node(self):
         self.running = False
