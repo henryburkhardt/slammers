@@ -27,7 +27,7 @@ from nav_msgs.msg import MapMetaData
 
 ## loop closure stuff
 USE_LOOP = True
-XY_THRESHOLD = 2  # 2 meters
+XY_THRESHOLD = 0.5  # 2 
 # TH_THRESHOLD = 3.14 * 2 * 10 / 360
 KEY_IGNORE = 3
 USE_ODOM = False
@@ -192,7 +192,7 @@ class SlamFrontEnd(Node):
         # create new vertex id
         new_vertex_key = self.pose_graph.num_vertices + 1
         
-        self.logger.info(f"init adding new pose ({new_vertex_key})")
+        self.logger.debug(f"init adding new pose ({new_vertex_key})")
         
         new_pose_vertex_pointcloud = filter_scan(ranges=self.latest_ranges, angles=self.latest_angles)
 
@@ -210,9 +210,11 @@ class SlamFrontEnd(Node):
             theta_odom_est = (pose.theta - self.initial_theta) - last_pose_theta
             init_cos_val = np.cos(theta_odom_est)
             init_sin_val = np.sin(theta_odom_est)
-            initial_mat = np.array([[init_cos_val, init_sin_val, 0], 
-                                    [-1 * init_sin_val, init_cos_val, 0],
-                                    [0, 0, 1]])
+            # initial_mat = np.array([[init_cos_val, init_sin_val, 0], 
+            #                         [-1 * init_sin_val, init_cos_val, 0],
+            #                         [0, 0, 1]])
+
+            initial_mat = None
 
             t_matrix, _, _ = icp(last_pose_vertex_pointcloud, new_pose_vertex_pointcloud, init_pose=initial_mat, max_iterations=20)
             t_vector = t2v(t_matrix) # (x y theta)
@@ -234,13 +236,13 @@ class SlamFrontEnd(Node):
             last_pose_vector = self.pose_graph.get_vertex(self.last_added_vertex_key).to_matrix()[0:2]
             cur_pose_vector = last_pose_vector - global_t_vec  # translation by global tx, ty
 
-            print(last_pose_vector)
-            print(global_t_vec)
+            # print(last_pose_vector)
+            # print(global_t_vec)
             
             t_theta = t2v(t_matrix)[2]
 
             pose = Pose2D(cur_pose_vector[0], cur_pose_vector[1], (last_pose_theta - t_theta))
-            self.logger.info(f"ICP diff between {new_vertex_key} and {self.last_added_vertex_key}: x:{cur_pose_vector[0]}, y:{cur_pose_vector[1]}, theta:{t_theta}")
+            self.logger.debug(f"ICP diff between {new_vertex_key} and {self.last_added_vertex_key}: x:{cur_pose_vector[0]}, y:{cur_pose_vector[1]}, theta:{t_theta}")
 
         # create the pose object (x, y, theta) and add to graph
         self.pose_graph.add_vertex(key=new_vertex_key, pose=pose, scan=self.latest_ranges.copy(), angles=self.latest_angles.copy()) 
@@ -268,12 +270,13 @@ class SlamFrontEnd(Node):
         if USE_LOOP:
             loop_detected = self.loop_closure(new_vertex_key)
             if loop_detected:
+                 print("Trying to Optimize")
                  # if a loop closure happens, we optimize the whole graph
-                 self.optimize_graph()
+                #  self.optimize_graph()
 
         self.last_added_vertex_key = new_vertex_key
         
-        self.logger.info(f"finish adding new pose ({new_vertex_key})")
+        self.logger.debug(f"finish adding new pose ({new_vertex_key})")
         
         return
 
@@ -311,39 +314,66 @@ class SlamFrontEnd(Node):
 
     def scan_diff_tf(self, matrix):
         (x, y, theta) = t2v(matrix)
-        print(f"est dist: x {x}, y {y}")
-        return np.sum(np.power([x, y], [2, 2])) >= np.power(XY_THRESHOLD, 2)
+        # print(f"est dist: {np.sqrt(x ** 2 + y ** 2)}")
+        return np.hypot(x, y) > XY_THRESHOLD
         # th_cross = np.abs(theta) >= TH_THRESHOLD
         # return xy_cross or th_cross
 
 
     def within_keyframe_tf(self, matrix):
         (x, y, theta) = t2v(matrix)
-        return np.sum(np.power([x, y], [2, 2])) <= np.power(XY_THRESHOLD, 2)
+        return np.hypot(x, y) <= XY_THRESHOLD
 
 
     def get_global_theta(self, id):
         return self.pose_graph.get_vertex(id).pose.theta
+    
+
+    # ! ADD
+    def get_global_xy(self, id):
+        pose = self.pose_graph.get_vertex(id).pose
+        return (pose.x, pose.y)
 
 
     def loop_closure(self, cur_id):
         # add keyframe at start
         if len(keyframe_ids) == 0:
             keyframe_ids.append(cur_id)
-            return
+            return False
         
         # check if current lidar scan is sufficiently diff. from latest keyframe
         key_scan = load_and_filter_scan(keyframe_ids[-1])
         cur_scan = load_and_filter_scan(cur_id)
 
-        print(f"LOOP: Comparing {cur_id} to {keyframe_ids[-1]}")
+        # print(f"LOOP: Comparing {cur_id} to {keyframe_ids[-1]}")
 
-        t_mat, _, _ = icp(key_scan, cur_scan)
+        # compute initial estimate (translation and rotation)
+        cur_xy = self.get_global_xy(cur_id)
+        key_xy = self.get_global_xy(keyframe_ids[-1])
+        cur_dir = self.get_global_theta(cur_id)
+        key_dir = self.get_global_theta(keyframe_ids[-1])
+
+        cos_val = np.cos(-1 * cur_dir)
+        sin_val = np.sin(-1 * cur_dir)
+
+        x_diff, y_diff = key_xy[0] - cur_xy[0], key_xy[1] - cur_xy[1]
+        adjusted_xy = np.array([[cos_val, -1 * sin_val], [sin_val, cos_val]]) @ np.array([[x_diff], [y_diff]])
+        est_rot = key_dir - cur_dir  # theta
+
+        c_val = np.cos(-1 * est_rot)
+        s_val = np.sin(-1 * est_rot)
+
+        est_mat = np.array([[c_val, -1 * s_val, adjusted_xy[0][0]], 
+                            [s_val, c_val, adjusted_xy[1][0]],
+                            [0, 0, 1]])
+
+        # compute icp with input transformation estimate
+        t_mat, _, _ = icp(key_scan, cur_scan, init_pose=None)
 
         if not self.scan_diff_tf(t_mat):
             return False
         
-        print("LOOP: adding new keyframe")
+        print(f"Adding new keyframe: {keyframe_ids}")
         
         # current scan is sufficiently diff. from latest keyframe
         keyframe_ids.append(cur_id)
@@ -361,14 +391,14 @@ class SlamFrontEnd(Node):
                 theta_est = self.get_global_theta(cur_id) - self.get_global_theta(key_id)
                 cos_val = np.cos(theta_est)
                 sin_val = np.sin(theta_est)
-                est_mat = np.array([[cos_val, -1 * sin_val], 
-                                    [sin_val, cos_val]])
+                est_mat = np.array([[cos_val, -1 * sin_val, 0], 
+                                    [sin_val, cos_val, 0]])
 
             # compute icp difference
             t_mat, _, _ = icp(key_scan, cur_scan, init_pose=est_mat)
             if self.within_keyframe_tf(t_mat):
                 self.pose_graph.add_edge(v2_key=cur_id, v1_key=key_id, t_matrix=t_mat, information=DEFAULT_CONFIDENT_INFORMATION_MATRIX)
-                print("LOOP: DETECTED")
+                print(f"LOOP: DETECTED between {cur_id} and {key_id}")
                 return True
 
     def destroy_node(self):
