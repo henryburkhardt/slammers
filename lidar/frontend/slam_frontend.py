@@ -3,13 +3,7 @@ from rclpy.node import Node
 from sensor_msgs.msg import LaserScan
 from nav_msgs.msg import Odometry
 import numpy as np
-import math
 from random import sample
-import threading
-import sys
-import termios
-import tty
-import select
 from dataclasses import dataclass
 from pathlib import Path
 from graph import PoseGraph, Vertex, Pose2D, Edge
@@ -23,14 +17,19 @@ from grid_map import GridMap
 from nav_msgs.msg import OccupancyGrid
 from std_msgs.msg import Header
 from nav_msgs.msg import MapMetaData
-
+import time
+from tf2_ros import TransformBroadcaster
+from geometry_msgs.msg import TransformStamped
+import math
+from geometry_msgs.msg import PoseStamped
 
 ## loop closure stuff
 USE_LOOP = True
 XY_THRESHOLD = 0.5  # 2 
 # TH_THRESHOLD = 3.14 * 2 * 10 / 360
-KEY_IGNORE = 3
+KEY_IGNORE = 6
 USE_ODOM = False
+LOOP_THRESHOLD = 0.08
 
 
 keyframe_ids = []  # time-sensitive
@@ -78,6 +77,9 @@ class SlamFrontEnd(Node):
         # store the initial theta, so we can get new theta measurements relaitve
         self.initial_theta = 0
         
+        self.tf_broadcaster = TransformBroadcaster(self)
+        self.pose_pub = self.create_publisher(PoseStamped, '/robot_pose', 1)
+        
 
     
     def synced_callback(self, odom: Odometry, scan: LaserScan):
@@ -123,6 +125,44 @@ class SlamFrontEnd(Node):
         
         return 
     
+
+    def publish_robot_tf(self, x, y, theta):
+        t = TransformStamped()
+        t.header.stamp = self.get_clock().now().to_msg()
+        t.header.frame_id = "map"        # same frame as occupancy grid
+        t.child_frame_id = "base_link"   # robot frame
+
+        t.transform.translation.x = x
+        t.transform.translation.y = y
+        t.transform.translation.z = 0.0
+
+        qz = math.sin(theta / 2.0)
+        qw = math.cos(theta / 2.0)
+
+        t.transform.rotation.z = qz
+        t.transform.rotation.w = qw
+
+        self.tf_broadcaster.sendTransform(t)
+    
+    def publish_pose_marker(self, x, y, theta):
+        msg = PoseStamped()
+        msg.header.stamp = self.get_clock().now().to_msg()
+        msg.header.frame_id = "map"  # must match your occupancy grid frame
+
+        msg.pose.position.x = x
+        msg.pose.position.y = y
+        msg.pose.position.z = 0.0
+
+        # convert yaw to quaternion
+        import math
+        qz = math.sin(theta / 2.0)
+        qw = math.cos(theta / 2.0)
+        msg.pose.orientation.z = qz
+        msg.pose.orientation.w = qw
+
+        self.pose_pub.publish(msg)
+
+        
     def check_add_new_pose(self) -> bool:
         """Check if robot has traveled threshold distance"""
         
@@ -163,7 +203,7 @@ class SlamFrontEnd(Node):
         msg = OccupancyGrid()
         
         msg.header.stamp = self.get_clock().now().to_msg()
-        msg.header.frame_id = 'occupancy_grid'
+        msg.header.frame_id = 'map'
         
         msg.info = MapMetaData()
         msg.info.resolution = float(self.occupancy_grid.resolution)
@@ -272,7 +312,11 @@ class SlamFrontEnd(Node):
             if loop_detected:
                  print("Trying to Optimize")
                  # if a loop closure happens, we optimize the whole graph
-                #  self.optimize_graph()
+                 self.optimize_graph()
+
+        self.pose_graph.save_graph_to_file(filepath=POSE_GRAPH_FILE_PATH)
+
+        self.publish_pose_marker(self.last_added_pose[0], self.last_added_pose[1], self.last_added_pose[2])
 
         self.last_added_vertex_key = new_vertex_key
         
@@ -288,8 +332,10 @@ class SlamFrontEnd(Node):
         np.savez(filepath, ranges=ranges, angles=angles)
         return
     
-    async def optimize_graph(self):
+    def optimize_graph(self):
         """Senf graph to backend to be optimized, then update graph to be the optimized version"""
+        start = time.time()
+
         with open(POSE_GRAPH_FILE_PATH, "r") as f:
             g2o_content = f.read()
         
@@ -301,14 +347,19 @@ class SlamFrontEnd(Node):
             print("Optimization successful!")
             optimized_content = response.text
             # Save the optimized graph
-            with open(POSE_GRAPH_FILE_PATH, "w") as f:
+            with open("./data/graphBACK.g2o", "w") as f:
                 f.write(optimized_content)
             
             # update pose graph to reflect optimized version 
-            self.pose_graph.update_from_g2o(POSE_GRAPH_FILE_PATH)
+            self.pose_graph.update_from_g2o("./data/graphBACK.g2o")
+            self.last_added_pose = self.pose_graph.get_vertex(self.last_added_pose)
         else:
             print(f"Optimization failed! Status: {response.status_code}")
             print(response.text)
+
+        end = time.time()
+        print(f"Optimized and re-built graph in: {end - start:.6f} seconds")
+
         return
 
 
@@ -322,6 +373,7 @@ class SlamFrontEnd(Node):
 
     def within_keyframe_tf(self, matrix):
         (x, y, theta) = t2v(matrix)
+        print(f"Check keyframe overlap: {np.hypot(x, y)}")
         return np.hypot(x, y) <= XY_THRESHOLD
 
 
@@ -339,6 +391,7 @@ class SlamFrontEnd(Node):
         # add keyframe at start
         if len(keyframe_ids) == 0:
             keyframe_ids.append(cur_id)
+            print(f"Added new keyframe: {keyframe_ids}")
             return False
         
         # check if current lidar scan is sufficiently diff. from latest keyframe
@@ -370,20 +423,18 @@ class SlamFrontEnd(Node):
         # compute icp with input transformation estimate
         t_mat, _, _ = icp(key_scan, cur_scan, init_pose=None)
 
-        if not self.scan_diff_tf(t_mat):
-            return False
-        
-        print(f"Adding new keyframe: {keyframe_ids}")
-        
-        # current scan is sufficiently diff. from latest keyframe
-        keyframe_ids.append(cur_id)
+        if self.scan_diff_tf(t_mat):
+            # current scan is sufficiently diff. from latest keyframe
+            keyframe_ids.append(cur_id)
+
+            print(f"Added new keyframe: {keyframe_ids}")
 
         # compare with all previous scans
         for idx, key_id in enumerate(keyframe_ids):
             if len(keyframe_ids) - idx <= KEY_IGNORE:
                 break
             # cur_scan is now current keyframe
-            key_scan = load_and_filter_scan(keyframe_ids[-1])
+            key_scan = load_and_filter_scan(key_id)
 
             est_mat = None
             if USE_ODOM:
@@ -395,11 +446,13 @@ class SlamFrontEnd(Node):
                                     [sin_val, cos_val, 0]])
 
             # compute icp difference
-            t_mat, _, _ = icp(key_scan, cur_scan, init_pose=est_mat)
-            if self.within_keyframe_tf(t_mat):
+            t_mat, _, error = icp(cur_scan, key_scan, init_pose=est_mat)
+            print(f"Error: {error}")
+            if error < LOOP_THRESHOLD and self.within_keyframe_tf(t_mat):
                 self.pose_graph.add_edge(v2_key=cur_id, v1_key=key_id, t_matrix=t_mat, information=DEFAULT_CONFIDENT_INFORMATION_MATRIX)
-                print(f"LOOP: DETECTED between {cur_id} and {key_id}")
+                print(f"LOOP: DETECTED between {cur_id} and {key_id} with error {error}")
                 return True
+        return False
 
     def destroy_node(self):
         self.running = False

@@ -565,6 +565,8 @@ def icp(A, B, init_pose=None, max_iterations=20, tolerance=0.001):
     if init_pose is not None:
         src = np.dot(init_pose, src)
 
+    min_mean_distances = 0
+    min_max_distance = 0
     prev_error = 0
 
     for i in range(max_iterations):
@@ -579,14 +581,19 @@ def icp(A, B, init_pose=None, max_iterations=20, tolerance=0.001):
 
         # check error
         mean_error = np.mean(distances)
+        min_mean_distances = mean_error
+        min_max_distance = np.max(distances)
+
         if np.abs(prev_error - mean_error) < tolerance:
             break
         prev_error = mean_error
+    
 
     # calculate final transformation
     T,_,_ = best_fit_transform(points1_cart, src[:m,:].T)
 
-    return T, distances, i
+    # return T, distances, i
+    return T, distances, min_mean_distances
 
 
 if __name__ == "__main__":

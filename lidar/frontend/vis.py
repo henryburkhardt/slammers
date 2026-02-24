@@ -4,7 +4,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
-ROT_OFFSET = -0.4 #TODO: make this alwasy be the first pose
+ROT_OFFSET = 0 #TODO: make this alwasy be the first pose
 c = np.cos(ROT_OFFSET)
 s = np.sin(ROT_OFFSET)
 N_BEAMS = 360
@@ -119,11 +119,18 @@ def update(frame):
     lines.clear()
 
     for v1, v2 in edges:
-        if v1 in vertices and v2 in vertices:
-            x1, y1, _ = vertices[v1]
-            x2, y2, _ = vertices[v2]
-            ln, = ax.plot([x1, x2], [y1, y2], "k-", linewidth=1)
-            lines.append(ln)
+            if v1 in vertices and v2 in vertices:
+                x1, y1, _ = vertices[v1]
+                x2, y2, _ = vertices[v2]
+                
+                # rotate both endpoints into normalized frame
+                x1_r = c * x1 - s * y1
+                y1_r = s * x1 + c * y1
+                x2_r = c * x2 - s * y2
+                y2_r = s * x2 + c * y2
+
+                ln, = ax.plot([x2_r, x1_r], [y2_r, y1_r], "k-", linewidth=1)
+                lines.append(ln)
 
 
     # --- lidar scans (optional) ---

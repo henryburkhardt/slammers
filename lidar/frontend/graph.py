@@ -122,7 +122,7 @@ class PoseGraph:
                 )
 
                 if(first_node):
-                    f.write(f"FIX 0\n")
+                    f.write(f"FIX 1\n")
                     first_node = False
 
             # --- Write edges ---
@@ -233,4 +233,8 @@ class PoseGraph:
                     edge.dx = dx
                     edge.dy = dy
                     edge.dtheta = dtheta
-                    edge.information = (info_xx, info_yy, info_tt)
+                    edge.information = np.array([
+                                                [info_xx, 0, 0],
+                                                [0, info_yy, 0],
+                                                [0, 0, info_tt]
+                                            ])

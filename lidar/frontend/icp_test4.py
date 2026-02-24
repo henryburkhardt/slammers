@@ -38,7 +38,7 @@ def filter_scan(ranges: np.ndarray, angles: np.ndarray):
 # pts2 = pts2.T
 # pts1 = pts1.T
 
-last_vertex_points = load_and_filter_scan(vertex_id=10)
+last_vertex_points = load_and_filter_scan(vertex_id=95)
 new_vertex_points = load_and_filter_scan(vertex_id=2)
 
 larger = last_vertex_points.shape[0] < new_vertex_points.shape[0]
@@ -64,7 +64,8 @@ else:
 
 #Run the icp
 # M10 = ndt_icp2(last_vertex_points, new_vertex_points, max_it=20)
-M10, _, _ = icp(last_vertex_points, new_vertex_points, max_iterations=20)
+M10, _, error = icp(last_vertex_points, new_vertex_points, max_iterations=20)
+print(f"ERROR: {error}")
 est_vec_tuple = t2v(M10)
 print(est_vec_tuple)
 distance = hypot(est_vec_tuple[0], est_vec_tuple[1])

@@ -9,13 +9,8 @@ from matplotlib.colors import ListedColormap
 
 
 G2O_PATH = Path("./data/graph.g2o")
-NUM_SCANS = 38
-L_OCC  = np.log(0.9 / 0.3)
-L_FREE = np.log(0.3 / 0.7)
-L_MIN  = -5.0
-L_MAX  =  5.0
-MIN_RANGE = 0.2
-MAX_RANGE = 5
+NUM_SCANS = 10
+
 
 def parse_g2o(path: Path):
     vertices = {}
@@ -110,6 +105,13 @@ class GridMap:
         self.grid = np.zeros((self.height, self.width))
         print(f"Grid init at h:{self.height}, w:{self.width} ")
         print(f" Ranges x:({self.x_min},{self.x_max}) y:({self.y_min},{self.y_max})")
+
+        self.L_OCC  = np.log(0.80 / 0.2)   # strong hit confidence
+        self.L_FREE = np.log(0.4 / 0.6)     # weaker free evidence
+        self.L_MIN  = -5.0
+        self.L_MAX  =  5.0
+        self.MIN_RANGE = 0.2
+        self.MAX_RANGE = 8
         
         return 
     
@@ -132,10 +134,10 @@ class GridMap:
             angle_world = pose[2] + beam[1] # angle (in radian)
             r = beam[0] # range
             
-            if r < MIN_RANGE:
+            if r < self.MIN_RANGE:
                 continue
             
-            if r > MAX_RANGE or np.isinf(r):
+            if r > self.MAX_RANGE or np.isinf(r):
                 continue
             
             # endpoint in world coordinates
@@ -148,12 +150,12 @@ class GridMap:
 
             for i, j in cells_on_ray[:-1]:  # all but last = free
                 if self.cell_in_bounds(i, j):
-                    self.grid[j, i] += L_FREE
+                    self.grid[j, i] += self.L_FREE
 
             # last cell = occupied
             i, j = cells_on_ray[-1]
             if self.cell_in_bounds(i, j):
-                self.grid[j, i] += L_OCC
+                self.grid[j, i] += self.L_OCC
                 
     def get_binary_grid(self):
         p = 1 - 1 / (1 + np.exp(self.grid))  # probability from log-odds
@@ -171,9 +173,8 @@ class GridMap:
     def show(self):
         # define custom colormap: free / unknown / occupied
         cmap = ListedColormap(['lightblue', 'gray', 'darkblue'])
-        fig, ax = plt.subplots()
         plt.figure(figsize=(8,8))
-        plt.imshow(self.get_binary_grid())
+        plt.imshow(self.get_binary_grid(), cmap=cmap)
         plt.title("Discrete Occupancy Grid")
         plt.axis('off')
         plt.show()
@@ -182,7 +183,7 @@ if __name__ == "__main__":
     graph, x_max, x_min, y_max, y_min = parse_g2o(G2O_PATH)
     num_vertices = len(graph)
 
-    g = GridMap(-2, 2, -7, 2, resolution=0.05)
+    g = GridMap(-2, 2, -7, 2, resolution=0.1)
 
     for i in range(1, NUM_SCANS):
         pointcloud = load_scan(i)
