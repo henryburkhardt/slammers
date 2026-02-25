@@ -38,8 +38,8 @@ def filter_scan(ranges: np.ndarray, angles: np.ndarray):
 # pts2 = pts2.T
 # pts1 = pts1.T
 
-last_vertex_points = load_and_filter_scan(vertex_id=95)
-new_vertex_points = load_and_filter_scan(vertex_id=2)
+last_vertex_points = load_and_filter_scan(vertex_id=6)
+new_vertex_points = load_and_filter_scan(vertex_id=7)
 
 larger = last_vertex_points.shape[0] < new_vertex_points.shape[0]
 shape_diff = abs(new_vertex_points.shape[0] - last_vertex_points.shape[0])
@@ -61,13 +61,32 @@ else:
 # print(new_vertex_points.shape)
 # print((last_vertex_points.T)[0])
 
+def correct_icp_for_lidar_offset(tx, ty, theta, lidar_offset=0.03):
+    """
+    Remove the translation artifact caused by lidar not being at robot center.
+    lidar_offset: distance from robot center to lidar, along robot's forward axis.
+    """
+    # Translation induced purely by rotation around robot center
+    artifact_dx = lidar_offset * (np.cos(theta) - 1)
+    artifact_dy = lidar_offset * np.sin(theta)
+    
+    corrected_tx = tx - artifact_dx
+    corrected_ty = ty - artifact_dy
+    
+    return corrected_tx, corrected_ty, theta
 
 #Run the icp
 # M10 = ndt_icp2(last_vertex_points, new_vertex_points, max_it=20)
 M10, _, error = icp(last_vertex_points, new_vertex_points, max_iterations=20)
 print(f"ERROR: {error}")
 est_vec_tuple = t2v(M10)
+
+print("##")
 print(est_vec_tuple)
+print(correct_icp_for_lidar_offset(est_vec_tuple[0], est_vec_tuple[1], est_vec_tuple[2]))
+
+
+
 distance = hypot(est_vec_tuple[0], est_vec_tuple[1])
 print(f"estimated distance: {distance}")
 
@@ -93,7 +112,7 @@ res1 = cv2.transform(src, M10)
 plt.figure()
 plt.plot((last_points_cart.T)[0], (last_points_cart.T)[1], marker='.', linestyle='', color='blue', markersize=1)
 plt.plot(res1[0].T[0], res1[0].T[1], marker='.', linestyle='', color='red', markersize=1)
-plt.plot((new_points_cart.T)[0], (new_points_cart.T)[1], marker='.', linestyle='', color='green', markersize=1)
+# plt.plot((new_points_cart.T)[0], (new_points_cart.T)[1], marker='.', linestyle='', color='green', markersize=1)
 plt.axis('equal')
 plt.show()
 
