@@ -38,7 +38,7 @@ def filter_scan(ranges: np.ndarray, angles: np.ndarray):
 # pts2 = pts2.T
 # pts1 = pts1.T
 
-last_vertex_points = load_and_filter_scan(vertex_id=54)
+last_vertex_points = load_and_filter_scan(vertex_id=43)
 new_vertex_points = load_and_filter_scan(vertex_id=2)
 
 larger = last_vertex_points.shape[0] < new_vertex_points.shape[0]

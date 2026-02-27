@@ -25,7 +25,7 @@ from geometry_msgs.msg import PoseStamped
 
 ## loop closure stuff
 USE_LOOP = True
-LOOP_THRESHOLD = 0.08
+LOOP_THRESHOLD = 0.1
 XY_THRESHOLD = 0.5  # 2 
 # TH_THRESHOLD = 3.14 * 2 * 10 / 360
 KEY_IGNORE = 6

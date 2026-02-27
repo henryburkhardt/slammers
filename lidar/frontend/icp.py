@@ -572,8 +572,10 @@ def icp(A, B, init_pose=None, max_iterations=20, tolerance=0.001):
     if init_pose is not None:
         src = np.dot(init_pose, src)
 
-    min_mean_distances = 0
-    min_max_distance = 0
+    # # min mean distances isn't necessarly small even if estimation is good (bc different # of points)
+    # min_mean_distances = 0
+
+    close_perc = 0
     prev_error = 0
 
     for i in range(max_iterations):
@@ -588,8 +590,9 @@ def icp(A, B, init_pose=None, max_iterations=20, tolerance=0.001):
 
         # check error
         mean_error = np.mean(distances)
-        min_mean_distances = mean_error
-        min_max_distance = np.max(distances)
+        # min_mean_distances = mean_error
+        close_tf = distances <= 0.1
+        close_perc = sum(close_tf) / len(close_tf)
 
         if np.abs(prev_error - mean_error) < tolerance:
             break
@@ -600,7 +603,7 @@ def icp(A, B, init_pose=None, max_iterations=20, tolerance=0.001):
     T,_,_ = best_fit_transform(points1_cart, src[:m,:].T)
 
     # return T, distances, i
-    return T, distances, min_mean_distances
+    return T, distances, 1 - close_perc
 
 
 if __name__ == "__main__":
