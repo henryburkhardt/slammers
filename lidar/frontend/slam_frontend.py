@@ -322,13 +322,44 @@ class SlamFrontEnd(Node):
         self.pose_graph.add_vertex(key=new_vertex_key, pose=pose, scan=self.latest_ranges.copy(), angles=add_nintey_to_angles(self.latest_angles.copy(), initial_theta=self.initial_theta)) 
 
         if new_vertex_key != 1:
+            old_x = self.pose_graph.get_vertex(self.last_added_vertex_key).pose.x
+            old_y = self.pose_graph.get_vertex(self.last_added_vertex_key).pose.y
+            old_theta = self.pose_graph.get_vertex(self.last_added_vertex_key).pose.theta
+
+            new_x = pose.x
+            new_y = pose.y 
+            new_theta = pose.theta
+
+            def compute_edge(old_x, old_y, old_theta, new_x, new_y, new_theta):
+                # world-frame delta
+                dx_w = new_x - old_x
+                dy_w = new_y - old_y
+
+                # rotate into OLD pose frame (inverse rotation of old pose)
+                c = np.cos(old_theta)
+                s = np.sin(old_theta)
+
+                dx =  c * dx_w + s * dy_w
+                dy = -s * dx_w + c * dy_w
+
+                # relative rotation
+                dtheta = new_theta - old_theta
+                dtheta = (dtheta + np.pi) % (2*np.pi) - np.pi  # wrap to [-pi, pi]
+
+                return dx, dy, dtheta
+                
+            dx, dy, dtheta = compute_edge(
+                old_x, old_y, old_theta,
+                new_x, new_y, new_theta
+            )
+
             c_val, s_val = np.cos(t_global), np.sin(t_global)
             mat_diff = np.array([[c_val, -1 * s_val, x_global], 
                                 [s_val, c_val, y_global], 
                                 [0, 0, 1]])
 
             self.pose_graph.add_edge(v1_key=self.last_added_vertex_key, v2_key=new_vertex_key, t_matrix=mat_diff, information=DEFAULT_LESS_CONFIDENT_INFORMATION_MATRIX
-                                     , vector=(x_global, y_global, t_global))
+                                     , vector=(dx, dy, dtheta))
 
         
         # update the occupancy grid
