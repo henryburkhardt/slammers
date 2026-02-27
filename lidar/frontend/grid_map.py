@@ -106,7 +106,7 @@ class GridMap:
         print(f"Grid init at h:{self.height}, w:{self.width} ")
         print(f" Ranges x:({self.x_min},{self.x_max}) y:({self.y_min},{self.y_max})")
 
-        self.L_OCC  = np.log(0.80 / 0.2)   # strong hit confidence
+        self.L_OCC  = np.log(0.9 / 0.1)   # strong hit confidence
         self.L_FREE = np.log(0.4 / 0.6)     # weaker free evidence
         self.L_MIN  = -5.0
         self.L_MAX  =  5.0
@@ -131,7 +131,7 @@ class GridMap:
         (m_x, m_y) = self.world_to_cell(pose[0], pose[1])
         
         for beam in pointcloud:
-            angle_world = pose[2] + beam[1] + np.pi/2 # angle (in radian)
+            angle_world = pose[2] + beam[1] - np.pi/2 # angle (in radian)
             r = beam[0] # range
             
             if r < self.MIN_RANGE:
