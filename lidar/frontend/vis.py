@@ -12,7 +12,7 @@ angles = np.linspace(-np.pi, np.pi, N_BEAMS, endpoint=True)
 
 
 
-G2O_PATH = Path("./data/graph.g2o")
+G2O_PATH = Path("./data/back.g2o")
 # SCAN_DIR = None
 SCAN_DIR = Path("./data/lidar")
 DRAW_SCANS = True  # set True to draw lidar scans
@@ -142,9 +142,9 @@ def update(frame):
         first_scan_y = []
         
         for vid, (px, py, theta) in vertices.items():
-            px_r = c * px - s * py
-            py_r = s * px + c * py
-            theta_r = theta + ROT_OFFSET
+            # px_r = c * px - s * py
+            # py_r = s * px + c * py
+            # theta_r = theta + ROT_OFFSET
             
             scan_file = SCAN_DIR / f"{vid}.npz"
             if not scan_file.exists():
@@ -162,8 +162,11 @@ def update(frame):
             angs = angs[mask]
 
            
-            xs = px_r + ranges * np.cos(angs + theta_r)
-            ys = py_r + ranges * np.sin(angs + theta_r)
+            # xs = px + ranges * np.cos(angs + theta + 0.5 * np.pi)
+            # ys = py + ranges * np.sin(angs + theta + 0.5 * np.pi)
+            
+            xs = px + ranges * np.cos(angs + theta)
+            ys = py + ranges * np.sin(angs + theta)
 
             if vid == first_vid:
                 first_scan_x.extend(xs)

@@ -23,6 +23,9 @@ GRID_CNT = math.ceil(COORD_LIMIT / CELL_SIZE) * 2
 CHECK = True
 DO_PRINT = False
 
+MEASURE_RATIO = 0.855
+LIDAR_SHIFT = 0.05 * MEASURE_RATIO  # x-axis direction
+
 
 def cart2idx(point: np.ndarray):
     """Converts cartesian coordinates into row, col indices for grid indexing"""
@@ -551,6 +554,10 @@ def icp(A, B, init_pose=None, max_iterations=20, tolerance=0.001):
     x2 = r2 * np.cos(t2)
     y2 = r2 * np.sin(t2)
     points2_cart = np.column_stack((x2, y2))
+
+    # shift points by x-value to account for lidar sensor location
+    points1_cart[:, 0] -= LIDAR_SHIFT
+    points2_cart[:, 0] -= LIDAR_SHIFT
 
     # get number of dimensions
     m = A.shape[1]

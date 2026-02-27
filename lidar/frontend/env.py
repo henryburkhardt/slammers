@@ -4,7 +4,7 @@ GRAPH_OPTIMIZATION_EDNPOINT="http://localhost:8080/optimize"
 
 POSE_GRAPH_FILE_PATH = "./data/graph.g2o"
 
-ROBOT_NAME = "raph"
+ROBOT_NAME = "mikey"
 
 DEFAULT_LESS_CONFIDENT_INFORMATION_MATRIX = np.array([
     [10, 0, 0],

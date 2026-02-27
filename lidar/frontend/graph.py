@@ -16,7 +16,7 @@ class Pose2D:
 class Edge:
     """SE(2) relative pose constraint between two vertices."""
     """the syntax is implied FROM v1 TO v2"""
-    def __init__(self, v1_key: int, v2_key: int, t_matrix:np.ndarray, information: np.ndarray):
+    def __init__(self, v1_key: int, v2_key: int, t_matrix:np.ndarray, information: np.ndarray, vector: np.ndarray):
         
         self.v1_key = v1_key
         self.v2_key = v2_key
@@ -24,6 +24,8 @@ class Edge:
 
         # 3x3 information (inverse covariance) matrix
         self.information = information
+
+        self.vector = vector
     
     def as_vector(self):
         """get edge as (dx, dy, dtheta) vector"""
@@ -85,7 +87,7 @@ class PoseGraph:
     def get_vertex(self, key: int) -> Vertex:
         return self.vert_list.get(key)
 
-    def add_edge(self, v1_key: int, v2_key: int, t_matrix: np.ndarray, information: np.ndarray):
+    def add_edge(self, v1_key: int, v2_key: int, t_matrix: np.ndarray, information: np.ndarray, vector: np.ndarray):
         # QUESTION: Edges should be bi-directional ??
         
         # check that vertex exists
@@ -93,23 +95,23 @@ class PoseGraph:
             raise KeyError("Both vertices must exist before adding an edge")
     
         
-        new_edge = Edge(v1_key, v2_key, t_matrix, information)
+        new_edge = Edge(v1_key, v2_key, t_matrix, information, vector=vector)
 
         self.vert_list[v1_key].add_neighbor(v2_key, new_edge)
 
-    def save_graph_to_file(self, filepath: str):
+    def save_graph_to_file(self, filepath: str, intial_theta):
         """
         Save the pose graph to a g2o-like file (2D SE2).
         """
-        with open("lidar.txt", "w") as f:
-            # --- Write vertices ---
-            for key, vertex in self.vert_list.items():
-                scan = vertex.scan
-                angles = vertex.angles
+        # with open("lidar.txt", "w") as f:
+        #     # --- Write vertices ---
+        #     for key, vertex in self.vert_list.items():
+        #         scan = vertex.scan
+        #         angles = vertex.angles
 
-                f.write(
-                    f"POINTCLOUD {key} {scan} {angles}\n"
-                )
+        #         f.write(
+        #             f"POINTCLOUD {key} {scan} {angles}\n"
+        #         )
 
         with open(filepath, "w") as f:
             # --- Write vertices ---
@@ -118,7 +120,7 @@ class PoseGraph:
             for key, vertex in self.vert_list.items():
                 p = vertex.pose
                 f.write(
-                    f"VERTEX_SE2 {key} {p.x:.6f} {p.y:.6f} {p.theta:.6f}\n"
+                    f"VERTEX_SE2 {key} {p.x:.6f} {p.y:.6f} {p.theta -intial_theta:.6f}\n"
                 )
 
                 if(first_node):
@@ -128,7 +130,7 @@ class PoseGraph:
             # --- Write edges ---
             for from_key, vertex in self.vert_list.items():
                 for to_key, edge in vertex.neighbors.items():
-                    dx, dy, dtheta = edge.as_vector()
+                    dx, dy, dtheta = edge.vector
 
                     # Extract diagonal entries from 3x3 information matrix
                     info_xx = float(edge.information[0, 0])

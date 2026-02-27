@@ -25,11 +25,15 @@ from geometry_msgs.msg import PoseStamped
 
 ## loop closure stuff
 USE_LOOP = True
+LOOP_THRESHOLD = 0.08
 XY_THRESHOLD = 0.5  # 2 
 # TH_THRESHOLD = 3.14 * 2 * 10 / 360
 KEY_IGNORE = 6
-USE_ODOM = False
-LOOP_THRESHOLD = 0.08
+USE_ODOM_FOR_LOOP_ICP = False
+
+
+USE_ICP_FOR_POSE = False
+ICP_IT = 10
 
 
 keyframe_ids = []  # time-sensitive
@@ -63,7 +67,7 @@ class SlamFrontEnd(Node):
         
         # cutoff values for adding new poses
         self.min_translation = 0.1  # meters (5 cm)
-        self.min_rotation = 0.1
+        self.min_rotation = 0.4
                
 
         # initialize the pose graph
@@ -76,6 +80,8 @@ class SlamFrontEnd(Node):
         
         # store the initial theta, so we can get new theta measurements relaitve
         self.initial_theta = 0
+        self.initial_x = 0
+        self.initial_y = 0
         
         self.tf_broadcaster = TransformBroadcaster(self)
         self.pose_pub = self.create_publisher(PoseStamped, '/robot_pose', 1)
@@ -108,10 +114,12 @@ class SlamFrontEnd(Node):
         # init first pose  
         if self.last_added_pose == None and self.last_added_vertex_key == None: 
             self.initial_theta = current_pose[2]
+            self.initial_x = current_pose[0]
+            self.initial_y = current_pose[1]
             print(f"updated initial theta to: {self.initial_theta}")
 
             assert current_pose[2] - self.initial_theta == 0
-            self.add_pose_vertex(pose=Pose2D(0,0,0))
+            self.add_pose_vertex(pose=Pose2D(current_pose[0],current_pose[1],current_pose[2]))
 
             self.last_added_vertex_key = 1
             self.last_added_pose = current_pose
@@ -224,19 +232,23 @@ class SlamFrontEnd(Node):
         self.occ_pub.publish(msg)
         self.get_logger().debug('Published binary occupancy grid')
 
-    def add_pose_vertex(self, pose: Pose2D, use_icp_odom=True):
+    def add_pose_vertex(self, pose: Pose2D, use_icp_odom=USE_ICP_FOR_POSE):
         """Add a pose vertex to the pose graph"""     
            
         assert self.latest_ranges is not None and self.latest_odom is not None
 
         # create new vertex id
         new_vertex_key = self.pose_graph.num_vertices + 1
-        
-        self.logger.debug(f"init adding new pose ({new_vertex_key})")
-        
-        new_pose_vertex_pointcloud = filter_scan(ranges=self.latest_ranges, angles=self.latest_angles)
+        new_pose_vertex_pointcloud = filter_scan(ranges=self.latest_ranges, angles=add_nintey_to_angles(self.latest_angles.copy(), initial_theta=self.initial_theta))
 
         t_matrix = None
+
+        # create the pose object (x, y, theta) and add to graph
+        pose.x -= self.initial_x
+        pose.y -= self.initial_y
+        # pose.theta -= self.initial_theta
+
+        x_global, y_global, t_global = 0, 0, 0
         
         if use_icp_odom and new_vertex_key != 1:
             last_pose_vertex_pointcloud = load_and_filter_scan(vertex_id=self.last_added_vertex_key)
@@ -247,56 +259,83 @@ class SlamFrontEnd(Node):
 
             # run icp on the two point clouds, get translation matrix
             # t_matrix = ndt_icp2(new_vertex_points, last_vertex_points)
-            theta_odom_est = (pose.theta - self.initial_theta) - last_pose_theta
+            theta_odom_est = pose.theta - last_pose_theta
             init_cos_val = np.cos(theta_odom_est)
             init_sin_val = np.sin(theta_odom_est)
-            # initial_mat = np.array([[init_cos_val, init_sin_val, 0], 
-            #                         [-1 * init_sin_val, init_cos_val, 0],
-            #                         [0, 0, 1]])
+            initial_mat = np.array([[init_cos_val, -1 * init_sin_val, 0], 
+                                    [init_sin_val, init_cos_val, 0],
+                                    [0, 0, 1]])
 
-            initial_mat = None
+            # initial_mat = None
 
-            t_matrix, _, _ = icp(last_pose_vertex_pointcloud, new_pose_vertex_pointcloud, init_pose=initial_mat, max_iterations=20)
-            t_vector = t2v(t_matrix) # (x y theta)
+            t_matrix, _, _ = icp(new_pose_vertex_pointcloud, last_pose_vertex_pointcloud, init_pose=initial_mat, max_iterations=ICP_IT)
 
+            # t_mat is currently from robot perspective, change to global translation
+            (x_icp, y_icp, t_icp) = t2v(t_matrix)
+            t_global = t_icp
+            print(f"icp: {x_icp}, {y_icp}, {t_icp}")
+
+            c_adj, s_adj = np.cos(last_pose_theta), np.sin(last_pose_theta)
+            x_global = c_adj * x_icp - s_adj * y_icp
+            y_global = s_adj * x_icp + c_adj * y_icp
+
+            print(f"x/y global: {x_global}, {y_global}")
             
-            
-            # compute global translation vector by rotating it by -pose_theta
-            # cos_val = np.cos(-1 * last_pose_theta)
-            # sin_val = np.sin(-1 * last_pose_theta)
-            cos_val = np.cos(last_pose_theta)
-            sin_val = np.sin(last_pose_theta)
-            rot_matrix = np.array([[cos_val, -1 * sin_val], [sin_val, cos_val]])
-
-            local_t_vec = np.array(t_vector[0:2])[:, np.newaxis]  # col vector
-            global_t_vec = ((rot_matrix @ local_t_vec).T)[0]  # row vector
-
-            # compute new pose from previous pose (global translation, then theta)
-
             last_pose_vector = self.pose_graph.get_vertex(self.last_added_vertex_key).to_matrix()[0:2]
-            cur_pose_vector = last_pose_vector - global_t_vec  # translation by global tx, ty
+            cur_pose_vector = last_pose_vector + np.array([x_global, y_global])  # translation by global tx, ty
 
             # print(last_pose_vector)
             # print(global_t_vec)
+
+            pose = Pose2D(cur_pose_vector[0], cur_pose_vector[1], (last_pose_theta + t_icp))
+            self.logger.debug(f"ICP diff between {new_vertex_key} and {self.last_added_vertex_key}: x:{cur_pose_vector[0]}, y:{cur_pose_vector[1]}, theta:{t_icp}")
+
             
-            t_theta = t2v(t_matrix)[2]
+            # t_vector = t2v(t_matrix) # (x y theta)
+            # # compute global translation vector by rotating it by -pose_theta
+            # # cos_val = np.cos(-1 * last_pose_theta)
+            # # sin_val = np.sin(-1 * last_pose_theta)
+            # cos_val = np.cos(last_pose_theta)
+            # sin_val = np.sin(last_pose_theta)
+            # rot_matrix = np.array([[cos_val, -1 * sin_val], [sin_val, cos_val]])
 
-            pose = Pose2D(cur_pose_vector[0], cur_pose_vector[1], (last_pose_theta - t_theta))
-            self.logger.debug(f"ICP diff between {new_vertex_key} and {self.last_added_vertex_key}: x:{cur_pose_vector[0]}, y:{cur_pose_vector[1]}, theta:{t_theta}")
+            # local_t_vec = np.array(t_vector[0:2])[:, np.newaxis]  # col vector
+            # global_t_vec = ((rot_matrix @ local_t_vec).T)[0]  # row vector
 
-        # create the pose object (x, y, theta) and add to graph
-        self.pose_graph.add_vertex(key=new_vertex_key, pose=pose, scan=self.latest_ranges.copy(), angles=self.latest_angles.copy()) 
+            # # compute new pose from previous pose (global translation, then theta)
+
+            # last_pose_vector = self.pose_graph.get_vertex(self.last_added_vertex_key).to_matrix()[0:2]
+            # cur_pose_vector = last_pose_vector - global_t_vec  # translation by global tx, ty
+
+            # # print(last_pose_vector)
+            # # print(global_t_vec)
+            
+            # t_theta = t2v(t_matrix)[2]
+
+            # pose = Pose2D(cur_pose_vector[0], cur_pose_vector[1], (last_pose_theta - t_theta))
+            # self.logger.debug(f"ICP diff between {new_vertex_key} and {self.last_added_vertex_key}: x:{cur_pose_vector[0]}, y:{cur_pose_vector[1]}, theta:{t_theta}")
+        elif not use_icp_odom and new_vertex_key != 1:
+            x_global = pose.x - self.pose_graph.get_vertex(self.last_added_vertex_key).pose.x
+            y_global = pose.y - self.pose_graph.get_vertex(self.last_added_vertex_key).pose.y
+            t_global = pose.theta - self.pose_graph.get_vertex(self.last_added_vertex_key).pose.theta
+            pass
+        self.pose_graph.add_vertex(key=new_vertex_key, pose=pose, scan=self.latest_ranges.copy(), angles=add_nintey_to_angles(self.latest_angles.copy(), initial_theta=self.initial_theta)) 
 
         if new_vertex_key != 1:
-            assert t_matrix is not None
-            self.pose_graph.add_edge(v2_key=self.last_added_vertex_key, v1_key=new_vertex_key, t_matrix=t_matrix, information=DEFAULT_LESS_CONFIDENT_INFORMATION_MATRIX)
+            c_val, s_val = np.cos(t_global), np.sin(t_global)
+            mat_diff = np.array([[c_val, -1 * s_val, x_global], 
+                                [s_val, c_val, y_global], 
+                                [0, 0, 1]])
+
+            self.pose_graph.add_edge(v1_key=self.last_added_vertex_key, v2_key=new_vertex_key, t_matrix=mat_diff, information=DEFAULT_LESS_CONFIDENT_INFORMATION_MATRIX
+                                     , vector=(x_global, y_global, t_global))
 
         
         # update the occupancy grid
         self.occupancy_grid.update_from_scan(pose=[pose.x, pose.y, pose.theta], pointcloud=new_pose_vertex_pointcloud)
         
         # save the point cloud to disk as npz (in ./data/scans)
-        self.save_scan_to_disk(new_vertex_key, ranges=self.latest_ranges.copy(), angles=self.latest_angles.copy())
+        self.save_scan_to_disk(new_vertex_key, ranges=self.latest_ranges.copy(), angles=add_nintey_to_angles(self.latest_angles.copy(), initial_theta=self.initial_theta))
 
 
         if self.last_added_vertex_key == None: 
@@ -305,18 +344,18 @@ class SlamFrontEnd(Node):
                 
         # save graph to g2o output file
         # TODO: make this add line by line instead of whole graph? idk
-        self.pose_graph.save_graph_to_file(filepath=POSE_GRAPH_FILE_PATH)
+        self.pose_graph.save_graph_to_file(filepath=POSE_GRAPH_FILE_PATH, intial_theta=self.initial_theta)
 
         if USE_LOOP:
             loop_detected = self.loop_closure(new_vertex_key)
             if loop_detected:
-                 print("Trying to Optimize")
-                 # if a loop closure happens, we optimize the whole graph
-                 self.optimize_graph()
+                print("Trying to Optimize")
+                # if a loop closure happens, we optimize the whole graph
+                # self.optimize_graph()
 
-        self.pose_graph.save_graph_to_file(filepath=POSE_GRAPH_FILE_PATH)
+        self.pose_graph.save_graph_to_file(filepath=POSE_GRAPH_FILE_PATH, intial_theta=self.initial_theta)
 
-        self.publish_pose_marker(self.last_added_pose[0], self.last_added_pose[1], self.last_added_pose[2])
+        # self.publish_pose_marker(self.last_added_pose[0], self.last_added_pose[1], self.last_added_pose[2])
 
         self.last_added_vertex_key = new_vertex_key
         
@@ -329,6 +368,11 @@ class SlamFrontEnd(Node):
     def save_scan_to_disk(self, vertex_id: int, ranges, angles):
         """Save lidar scan to disk as npz"""
         filepath = f"./data/lidar/{vertex_id}.npz"
+
+        assert type(angles) == np.ndarray
+
+        # angles += np.pi/2
+
         np.savez(filepath, ranges=ranges, angles=angles)
         return
     
@@ -437,7 +481,7 @@ class SlamFrontEnd(Node):
             key_scan = load_and_filter_scan(key_id)
 
             est_mat = None
-            if USE_ODOM:
+            if USE_ODOM_FOR_LOOP_ICP:
                 # only use theta values
                 theta_est = self.get_global_theta(cur_id) - self.get_global_theta(key_id)
                 cos_val = np.cos(theta_est)
@@ -446,10 +490,24 @@ class SlamFrontEnd(Node):
                                     [sin_val, cos_val, 0]])
 
             # compute icp difference
-            t_mat, _, error = icp(cur_scan, key_scan, init_pose=est_mat)
+            t_mat, _, error = icp(key_scan, cur_scan, init_pose=est_mat)
+
+            # t_mat is currently from robot perspective, change to global map
+            (x_icp, y_icp, t_icp) = t2v(t_mat)
+
+            theta_adj = self.get_global_theta(cur_id)
+            c_adj, s_adj = np.cos(theta_adj), np.sin(theta_adj)
+            x_global = c_adj * x_icp - s_adj * y_icp
+            y_global = s_adj * x_icp + c_adj * y_icp
+
+            mat_loop = t_mat.copy()
+            mat_loop[0][2] = x_global
+            mat_loop[1][2] = y_global
+
             print(f"Error: {error}")
             if error < LOOP_THRESHOLD and self.within_keyframe_tf(t_mat):
-                self.pose_graph.add_edge(v2_key=cur_id, v1_key=key_id, t_matrix=t_mat, information=DEFAULT_CONFIDENT_INFORMATION_MATRIX)
+                self.pose_graph.add_edge(v1_key=cur_id, v2_key=key_id, t_matrix=mat_loop, information=DEFAULT_CONFIDENT_INFORMATION_MATRIX, 
+                                         vector=(x_global, y_global, t_icp))
                 print(f"LOOP: DETECTED between {cur_id} and {key_id} with error {error}")
                 return True
         return False
