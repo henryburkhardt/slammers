@@ -5,6 +5,7 @@ import math
 # import seaborn as sns
 import matplotlib.pyplot as plt
 from random import sample
+from sklearn.neighbors import NearestNeighbors
 
 
 LaserScan = np.ndarray  # [(p1, p2), ...] OR [(r, theta), ...]
@@ -14,8 +15,8 @@ MIN_PT_CNT = 3
 CELL_SIZE = 50.0   # cm
 RANGE_MIN = 0.0
 RANGE_MAX = 500.0
-IT_MAX = 100
-CONV_CRITERION = 0.00000001
+IT_MAX = 20
+CONV_CRITERION = 0.0001
 
 COORD_LIMIT = math.ceil(RANGE_MAX)
 GRID_CNT = math.ceil(COORD_LIMIT / CELL_SIZE) * 2
@@ -373,10 +374,6 @@ def ndt_icp(
 # QUICK NDP_ICP
 
 import cv2
-import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.neighbors import NearestNeighbors
-
 
 def ndt_icp2(
         points1: LaserScan, 
@@ -439,90 +436,41 @@ def ndt_icp2(
         # print("trans_matrix:", transform_matrix)
     return transform_matrix[0:2]
 
-import numpy as np
-from sklearn.neighbors import NearestNeighbors
 
-
-def best_fit_transform(A, B):
-    '''
-    Calculates the least-squares best-fit transform that maps corresponding points A to B in m spatial dimensions
-    Input:
-      A: Nxm numpy array of corresponding points
-      B: Nxm numpy array of corresponding points
-    Returns:
-      T: (m+1)x(m+1) homogeneous transformation matrix that maps A on to B
-      R: mxm rotation matrix
-      t: mx1 translation vector
-    '''
-
-    assert A.shape == B.shape
-
-    # get number of dimensions
-    m = A.shape[1]
-
-    # translate points to their centroids
-    centroid_A = np.mean(A, axis=0)
-    centroid_B = np.mean(B, axis=0)
-    AA = A - centroid_A
-    BB = B - centroid_B
-
-    # rotation matrix
-    H = np.dot(AA.T, BB)
-    U, S, Vt = np.linalg.svd(H)
-    R = np.dot(Vt.T, U.T)
-
-    # special reflection case
-    if np.linalg.det(R) < 0:
-       Vt[m-1,:] *= -1
-       R = np.dot(Vt.T, U.T)
-
-    # translation
-    t = centroid_B.T - np.dot(R,centroid_A.T)
-
-    # homogeneous transformation
-    T = np.identity(m+1)
-    T[:m, :m] = R
-    T[:m, m] = t
-
-    return T, R, t
-
-
-def nearest_neighbor(src, dst):
-    '''
-    Find the nearest (Euclidean) neighbor in dst for each point in src
-    Input:
-        src: Nxm array of points
-        dst: Nxm array of points
-    Output:
-        distances: Euclidean distances of the nearest neighbor
-        indices: dst indices of the nearest neighbor
-    '''
-
-    assert src.shape == dst.shape
-
-    neigh = NearestNeighbors(n_neighbors=1)
-    neigh.fit(dst)
-    distances, indices = neigh.kneighbors(src, return_distance=True)
-    return distances.ravel(), indices.ravel()
-
-
-def icp(A, B, init_pose=None, max_iterations=20, tolerance=0.001):
-    '''
-    The Iterative Closest Point method: finds best-fit transform that maps points A on to points B
-    Input:
-        A: Nxm numpy array of source mD points
-        B: Nxm numpy array of destination mD point
-        init_pose: (m+1)x(m+1) homogeneous transformation
-        max_iterations: exit algorithm after max_iterations
-        tolerance: convergence criteria
-    Output:
-        T: final homogeneous transformation that maps A on to B
-        distances: Euclidean distances (errors) of the nearest neighbor
-        i: number of iterations to converge
-    '''
+def estimate_2D_transform(points1, points2):
+    # http://nghiaho.com/?page_id=671
     
-    larger = A.shape[0] < B.shape[0]
-    shape_diff = abs(B.shape[0] - A.shape[0])
+    points1_adj = points1 - np.mean(points1, axis=0)
+    points2_adj = points2 - np.mean(points2, axis=0)
+
+    cov = np.dot(points1_adj.T, points2_adj)
+    # singular value decomp
+    U, S, V = scipy.linalg.svd(cov)
+    # triangular matrix (QR)
+    R = np.dot(V.T, U.T)
+
+    if scipy.linalg.det(R) < 0:
+        V[2,:] *= -1
+        R = np.dot(V.T, U.T)
+
+    trans_vec = (np.mean(points2, axis=0)).T - np.dot(R, (np.mean(points1, axis=0)).T)
+
+    T = np.array([[R[0, 0], R[0, 1], trans_vec[0]],
+                  [R[1, 0], R[1, 1], trans_vec[1]], 
+                  [0, 0, 1]])
+
+    return T
+
+
+def icp(points1, 
+        points2, 
+        est=None, 
+        max_it: int = IT_MAX
+        ):
+    # maps points1 to points2
+    
+    larger = points1.shape[0] < points2.shape[0]
+    shape_diff = abs(points2.shape[0] - points1.shape[0])
 
     # print(last_pose_vertext_pointcloud.shape)
     # print(new_pose_vertex_pointcloud.shape)
@@ -532,17 +480,15 @@ def icp(A, B, init_pose=None, max_iterations=20, tolerance=0.001):
 
     # make the point clouds the same size, by radomly removing points from one. TEMPORARY FIX.
     if larger:
-        indices_remove = sample(range(0, B.shape[0]), shape_diff)
+        indices_remove = sample(range(0, points2.shape[0]), shape_diff)
         B = np.delete(B, indices_remove, axis=0)
     else:
-        indices_remove = sample(range(0, A.shape[0]), shape_diff)
-        A = np.delete(A, indices_remove, axis=0)
-
-    assert A.shape == B.shape
+        indices_remove = sample(range(0, points1.shape[0]), shape_diff)
+        points1 = np.delete(points1, indices_remove, axis=0)
 
     # convert polar coordinates to cartesian coordinates (vectorized)
-    p1 = np.asarray(A)
-    p2 = np.asarray(B)
+    p1 = np.asarray(points1)
+    p2 = np.asarray(points2)
 
     r1, t1 = p1[:, 0], p1[:, 1]
     r2, t2 = p2[:, 0], p2[:, 1]
@@ -559,18 +505,17 @@ def icp(A, B, init_pose=None, max_iterations=20, tolerance=0.001):
     points1_cart[:, 0] -= LIDAR_SHIFT
     points2_cart[:, 0] -= LIDAR_SHIFT
 
-    # get number of dimensions
-    m = A.shape[1]
+    # homogeneous coordinates
+    source = (np.c_[points1_cart, np.ones(points1_cart.shape[0], dtype=np.float32)]).T
+    print(source)
+    dest = (np.c_[points2_cart, np.ones(points2_cart.shape[0], dtype=np.float32)]).T
 
-    # make points homogeneous, copy them to maintain the originals
-    src = np.ones((m+1,points1_cart.shape[0]))
-    dst = np.ones((m+1,points2_cart.shape[0]))
-    src[:m,:] = np.copy(points1_cart.T)
-    dst[:m,:] = np.copy(points2_cart.T)
+    # source = np.array([points1_cart], copy=True).astype(np.float32)
+    # dest = np.array([points2_cart], copy=True).astype(np.float32)
 
     # apply the initial pose estimation
-    if init_pose is not None:
-        src = np.dot(init_pose, src)
+    if est is not None:
+        source = np.dot(est, source)
 
     # # min mean distances isn't necessarly small even if estimation is good (bc different # of points)
     # min_mean_distances = 0
@@ -578,32 +523,29 @@ def icp(A, B, init_pose=None, max_iterations=20, tolerance=0.001):
     close_perc = 0
     prev_error = 0
 
-    for i in range(max_iterations):
-        # find the nearest neighbors between the current source and destination points
-        distances, indices = nearest_neighbor(src[:m,:].T, dst[:m,:].T)
+    for i in range(max_it):
+        neighbors = NearestNeighbors(n_neighbors=1).fit(dest[: 2, :].T)
+        distances, indices = neighbors.kneighbors(source[: 2, :].T, return_distance=True)
+        distances, indices = distances.flatten(), indices.flatten()
 
-        # compute the transformation between the current source and nearest destination points
-        T,_,_ = best_fit_transform(src[:m,:].T, dst[:m,indices].T)
+        # T = cv2.estimateAffinePartial2D(source[: 2, :].T, dest[: 2, indices].T)
+        T = estimate_2D_transform(source[: 2, :].T, dest[: 2, indices].T)
+        source = np.dot(T, source)
 
-        # update the current source
-        src = np.dot(T, src)
-
-        # check error
+        # break criterion
         mean_error = np.mean(distances)
         # min_mean_distances = mean_error
         close_tf = distances <= 0.1
         close_perc = sum(close_tf) / len(close_tf)
 
-        if np.abs(prev_error - mean_error) < tolerance:
+        if np.abs(prev_error - mean_error) < CONV_CRITERION:
             break
         prev_error = mean_error
     
 
-    # calculate final transformation
-    T,_,_ = best_fit_transform(points1_cart, src[:m,:].T)
+    T = estimate_2D_transform(points1_cart, source[: 2, :].T)
 
-    # return T, distances, i
-    return T, distances, 1 - close_perc
+    return T, 1 - close_perc
 
 
 if __name__ == "__main__":

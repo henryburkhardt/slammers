@@ -268,7 +268,7 @@ class SlamFrontEnd(Node):
 
             # initial_mat = None
 
-            t_matrix, _, _ = icp(new_pose_vertex_pointcloud, last_pose_vertex_pointcloud, init_pose=initial_mat, max_iterations=ICP_IT)
+            t_matrix, _ = icp(new_pose_vertex_pointcloud, last_pose_vertex_pointcloud, est=initial_mat, max_it=ICP_IT)
 
             # t_mat is currently from robot perspective, change to global translation
             (x_icp, y_icp, t_icp) = t2v(t_matrix)
@@ -465,7 +465,7 @@ class SlamFrontEnd(Node):
                             [0, 0, 1]])
 
         # compute icp with input transformation estimate
-        t_mat, _, _ = icp(key_scan, cur_scan, init_pose=None)
+        t_mat, _ = icp(key_scan, cur_scan, est=None)
 
         if self.scan_diff_tf(t_mat):
             # current scan is sufficiently diff. from latest keyframe
@@ -490,7 +490,7 @@ class SlamFrontEnd(Node):
                                     [sin_val, cos_val, 0]])
 
             # compute icp difference
-            t_mat, _, error = icp(key_scan, cur_scan, init_pose=est_mat)
+            t_mat, error = icp(key_scan, cur_scan, est=est_mat)
 
             # t_mat is currently from robot perspective, change to global map
             (x_icp, y_icp, t_icp) = t2v(t_mat)
