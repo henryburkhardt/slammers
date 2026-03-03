@@ -12,7 +12,7 @@ angles = np.linspace(-np.pi, np.pi, N_BEAMS, endpoint=True)
 
 
 
-G2O_PATH = Path("./data/back.g2o")
+G2O_PATH = Path("./data/graph.g2o")
 # SCAN_DIR = None
 SCAN_DIR = Path("./data/lidar")
 DRAW_SCANS = True  # set True to draw lidar scans

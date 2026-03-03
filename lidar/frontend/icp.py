@@ -535,7 +535,7 @@ def icp(points1,
         # break criterion
         mean_error = np.mean(distances)
         # min_mean_distances = mean_error
-        close_tf = distances <= 0.1
+        close_tf = distances <= 0.15
         close_perc = sum(close_tf) / len(close_tf)
 
         if np.abs(prev_error - mean_error) < CONV_CRITERION:

@@ -42,6 +42,7 @@ def load_scan(vertex_id):
 def add_nintey_to_angles(angles, initial_theta):
     assert type(angles) == np.ndarray
 
-    angles += np.pi/2 + initial_theta
+    # angles += np.pi/2 + initial_theta
+    angles += np.pi/2
 
     return angles

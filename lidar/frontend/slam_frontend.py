@@ -25,7 +25,7 @@ from geometry_msgs.msg import PoseStamped
 
 ## loop closure stuff
 USE_LOOP = True
-LOOP_THRESHOLD = 0.1
+LOOP_THRESHOLD = 0.2
 XY_THRESHOLD = 0.5  # 2 
 # TH_THRESHOLD = 3.14 * 2 * 10 / 360
 KEY_IGNORE = 6
@@ -336,17 +336,17 @@ class SlamFrontEnd(Node):
                 dy_w = new_y - old_y
 
                 # rotate into OLD pose frame (inverse rotation of old pose)
-                c = np.cos(old_theta)
-                s = np.sin(old_theta)
+                c = np.cos(-1 * old_theta)
+                s = np.sin(-1 * old_theta)
 
-                dx =  c * dx_w + s * dy_w
-                dy = -s * dx_w + c * dy_w
+                dx =  c * dx_w - s * dy_w
+                dy =  s * dx_w + c * dy_w
 
                 # relative rotation
                 dtheta = new_theta - old_theta
                 dtheta = (dtheta + np.pi) % (2*np.pi) - np.pi  # wrap to [-pi, pi]
 
-                return dx, dy, dtheta
+                return dx, dy, t_global
                 
             dx, dy, dtheta = compute_edge(
                 old_x, old_y, old_theta,
@@ -368,10 +368,6 @@ class SlamFrontEnd(Node):
         # save the point cloud to disk as npz (in ./data/scans)
         self.save_scan_to_disk(new_vertex_key, ranges=self.latest_ranges.copy(), angles=add_nintey_to_angles(self.latest_angles.copy(), initial_theta=self.initial_theta))
 
-
-        if self.last_added_vertex_key == None: 
-            self.last_added_vertex_key = new_vertex_key
-            return 
                 
         # save graph to g2o output file
         # TODO: make this add line by line instead of whole graph? idk
@@ -382,10 +378,15 @@ class SlamFrontEnd(Node):
             if loop_detected:
                 print("Trying to Optimize")
                 # if a loop closure happens, we optimize the whole graph
-                # self.optimize_graph()
+                self.optimize_graph(id=new_vertex_key)
+                
 
         self.pose_graph.save_graph_to_file(filepath=POSE_GRAPH_FILE_PATH, intial_theta=self.initial_theta)
 
+        if self.last_added_vertex_key == None: 
+            self.last_added_vertex_key = new_vertex_key
+            return 
+        
         # self.publish_pose_marker(self.last_added_pose[0], self.last_added_pose[1], self.last_added_pose[2])
 
         self.last_added_vertex_key = new_vertex_key
@@ -407,7 +408,7 @@ class SlamFrontEnd(Node):
         np.savez(filepath, ranges=ranges, angles=angles)
         return
     
-    def optimize_graph(self):
+    def optimize_graph(self, id:int):
         """Senf graph to backend to be optimized, then update graph to be the optimized version"""
         start = time.time()
 
@@ -422,11 +423,11 @@ class SlamFrontEnd(Node):
             print("Optimization successful!")
             optimized_content = response.text
             # Save the optimized graph
-            with open("./data/graphBACK.g2o", "w") as f:
+            with open(f"./data/graphs/graph_response{id}.g2o", "w") as f:
                 f.write(optimized_content)
             
             # update pose graph to reflect optimized version 
-            self.pose_graph.update_from_g2o("./data/graphBACK.g2o")
+            self.pose_graph.update_from_g2o(f"./data/graphs/graph_response{id}.g2o")
             self.last_added_pose = self.pose_graph.get_vertex(self.last_added_pose)
         else:
             print(f"Optimization failed! Status: {response.status_code}")

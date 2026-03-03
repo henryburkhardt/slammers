@@ -120,7 +120,7 @@ class PoseGraph:
             for key, vertex in self.vert_list.items():
                 p = vertex.pose
                 f.write(
-                    f"VERTEX_SE2 {key} {p.x:.6f} {p.y:.6f} {p.theta - intial_theta:.6f}\n"
+                    f"VERTEX_SE2 {key} {p.x:.6f} {p.y:.6f} {p.theta:.6f}\n"
                 )
 
                 if(first_node):

@@ -131,7 +131,7 @@ class GridMap:
         (m_x, m_y) = self.world_to_cell(pose[0], pose[1])
         
         for beam in pointcloud:
-            angle_world = pose[2] + beam[1] - np.pi/2 # angle (in radian)
+            angle_world = pose[2] + beam[1]
             r = beam[0] # range
             
             if r < self.MIN_RANGE:
