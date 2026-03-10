@@ -28,7 +28,7 @@ target_link_libraries(trainrBrief ${OpenCV_LIBS} OpenMP::OpenMP_CXX)
 # add_executable(testORB src/testorb.cpp src/orb.cpp src/orb.hpp src/fast.cpp src/fast.hpp src/harris.cpp src/harris.hpp src/briefpattern.hpp src/processing.cpp src/processing.hpp)
 # target_link_libraries(testORB ${OpenCV_LIBS})
 
-add_executable(optim optimization_playground.cpp src/harris.hpp src/harris.cpp)
+add_executable(optim optimization_playground.cpp src/processing.hpp src/processing.cpp)
 target_link_libraries(optim ${OpenCV_LIBS} OpenMP::OpenMP_CXX)
 # target_include_directories(optim PRIVATE ${OpenCV_INCLUDE_DIRS})
 # target_link_libraries(optim PRIVATE ${OpenCV_LIBS})

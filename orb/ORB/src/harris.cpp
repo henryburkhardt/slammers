@@ -95,14 +95,12 @@ void getHarrisResponse(const cv::Mat& img, std::vector<cv::KeyPoint>& keypoints,
 
 
 // int main() {
-//     cv::Mat img = cv::imread("train_images/image.png", cv::IMREAD_GRAYSCALE);
+//     cv::Mat img = cv::imread("euroc.jpg", cv::IMREAD_GRAYSCALE);
 //     int pixels = img.size().height * img.size().width;
 
 //     int *xGrad = (int*) malloc(sizeof(int) * pixels);
 //     int *yGrad = (int*) malloc(sizeof(int) * pixels);
 
-//     cv::imshow("Image", img);
-//     cv::waitKey(0);
 //     const auto& start = std::chrono::high_resolution_clock::now();
 //     applyKernel(xGrad, yGrad, img);
 //     const auto& end = std::chrono::high_resolution_clock::now();
@@ -118,6 +116,9 @@ void getHarrisResponse(const cv::Mat& img, std::vector<cv::KeyPoint>& keypoints,
 //         }
 //     }
 
-//     cv::imshow("Image", derivativeImage);
-//     cv::waitKey(0);
+//     cv::imwrite("demo_result.png", derivativeImage);
+//     // cv::waitKey(0);
+
+//     free(xGrad);
+//     free(yGrad);
 // }
