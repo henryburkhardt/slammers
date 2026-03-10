@@ -97,9 +97,10 @@ def main():
     # compute axis limits from full vertex set
     xs_all = [v[0] for v in all_vertices.values()]
     ys_all = [v[1] for v in all_vertices.values()]
-    pad = 1.0
-    ax.set_xlim(min(xs_all) - pad, max(xs_all) + pad)
-    ax.set_ylim(min(ys_all) - pad, max(ys_all) + pad)
+    pad = 6.0
+    
+    ax.set_xlim(-14, 20)
+    ax.set_ylim(-2.9, 16)
 
     pose_scat       = ax.scatter([], [], s=12,  c="blue",  zorder=4, label="poses")
     current_scat    = ax.scatter([], [], s=40,  c="orange",marker="*", zorder=6, label="current pose")
@@ -107,7 +108,7 @@ def main():
     first_scan_scat = ax.scatter([], [], s=0.8, c="green", alpha=0.6,  zorder=3, label="first scan")
     edge_lines      = []
 
-    ax.legend(loc="upper right", markerscale=2)
+    # ax.legend(loc="upper right", markerscale=2)
 
     first_vid   = vid_order[0]
     fx, fy, fth = all_vertices[first_vid]
