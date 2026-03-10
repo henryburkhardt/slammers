@@ -1,3 +1,5 @@
+"""Gridmap data class, generates grid maps from posegraph + lidar scans"""
+
 from pathlib import Path
 import numpy as np 
 from math import ceil, floor

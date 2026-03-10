@@ -1,3 +1,5 @@
+"""Various utilites needed for our SLAM implimentation"""
+
 import numpy as np 
 
 def se2_relative_transformation(m1:np.ndarray, m2:np.ndarray):

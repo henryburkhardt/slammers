@@ -1,4 +1,7 @@
+"""Global variables, centralizzed to one file"""
+
 import numpy as np
+
 
 GRAPH_OPTIMIZATION_EDNPOINT="http://localhost:8080/optimize"
 

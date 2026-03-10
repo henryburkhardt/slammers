@@ -1,3 +1,5 @@
+"""Iterative closes point algorithm (can be used for odometry or loop closure detection)"""
+
 import typing
 import numpy as np
 import scipy

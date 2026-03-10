@@ -1,3 +1,6 @@
+"""Main SLAM file that runs the SLAM process, connects to robot via ROS, contructs posegraph and updates it, runs loop closure detection, passes graph to optimizer."""
+
+
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import LaserScan

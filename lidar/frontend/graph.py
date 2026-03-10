@@ -1,3 +1,5 @@
+"""General posegraph datastructure"""
+
 from dataclasses import dataclass
 import numpy as np
 import math

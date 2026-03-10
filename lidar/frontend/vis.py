@@ -1,3 +1,5 @@
+"""Visualie lidar scans on top of posegraph for a whole SLAM run"""
+
 import time
 import numpy as np
 from pathlib import Path
