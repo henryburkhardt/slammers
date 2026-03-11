@@ -34,7 +34,7 @@ It will generate `slam_map.txt` that `MapPointSelection.cc` could read. Then run
 You may also run it with `--synthetic` to test without real data:
 
 ```bash
-./build/MapPointSelection --synthetic --syn_kf KEYFRAME_NUM_OF_YOUR_CHOICE --syn_mp MAPPOINT_NUM_OF_YOUR_CHOICE --budget 500
+./build/MapPointSelection --synthetic --syn_kf KEYFRAME_NUM_OF_YOUR_CHOICE --syn_mp MAPPOINT_NUM_OF_YOUR_CHOICE --budget BUDGET_OF_YOUR_CHOICE
 ```
 
 ## Reference
