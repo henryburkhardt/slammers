@@ -22,4 +22,4 @@ We also include a settings file for use with the EuRoC SLAM dataset. To use the 
 
 ```ros2 run rviz2 rviz2```
 
-Unfortunately, due to GitHub size limits, we cannot distribute any demo footage. To obtain the demo footage distributed with ORB-SLAM. 
+Unfortunately, due to GitHub size limits, we cannot distribute any demo footage. To obtain the demo footage distributed with ORB-SLAM, download it from the original ORB-SLAM repository and use [rosbags](https://ternaris.gitlab.io/rosbags/topics/convert.html) to convert it. 
