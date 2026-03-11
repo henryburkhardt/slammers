@@ -1,4 +1,4 @@
-#MapPoint Selection for Visual SLAM
+# MapPoint Selection for Visual SLAM
 
 **Author:** [Yuming Zhang](mailto:zhanga5@carleton.edu)
 
