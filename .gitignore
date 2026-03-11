@@ -1,10 +1,55 @@
-*.vscode
-*.DS_Store
-*CMakeCache.txt
-*/CMakeFiles/*
-orb/ros2_ws/src/orb_slam/Data/ORBvoc.txt
-*CMakeFiles*
-orb/ORB/rBRIEFImages/*
-orb/ORB/build
-orb/ORB/.venv
-orb/ORB/.vscode
+# -----------------------------
+# Python
+# -----------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Packaging
+*.egg-info/
+dist/
+build/
+
+# -----------------------------
+# Testing / coverage
+# -----------------------------
+.pytest_cache/
+.coverage
+htmlcov/
+
+# -----------------------------
+# Editors / OS
+# -----------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# -----------------------------
+# Logs
+# -----------------------------
+*.log
+
+# -----------------------------
+# Data / outputs (SLAM-friendly)
+# -----------------------------
+# -----------------------------
+# Matplotlib
+# -----------------------------
+.matplotlib/
+
+# -----------------------------
+# Jupyter
+# -----------------------------
+.ipynb_checkpoints/
+
+./data

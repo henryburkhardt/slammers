@@ -1,0 +1,41 @@
+#nav-div {
+    display: inline-block;
+    position: relative;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+
+nav ul {
+    list-style-type:none;
+    display: flex;
+    position: relative;
+    padding: 0;
+}
+
+nav ul li {
+    padding: 0 10px 0 10px;
+    border-right: 2px gray solid;
+    margin: none;
+}
+
+nav ul li:last-child {
+    border-right: none;
+    padding-left: none;
+}
+
+h1 {
+    text-align: center;
+}
+
+body {
+    padding: 0 20px 0 20px;
+}
+
+#orb-display {
+    /* Yeah I cheated I made a little CSS. Oops. */
+    display:grid;
+    grid-template-columns: min-content min-content;
+    column-gap: 8px;
+    width: auto;
+    text-align: center;
+}
