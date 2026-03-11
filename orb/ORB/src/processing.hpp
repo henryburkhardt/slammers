@@ -4,6 +4,6 @@
 #define PROCESSING_LIBRARY
 
 void blurImage(const cv::Mat& src, cv::Mat& dest, int kernelRadius, double stdDev);
-double calculateOrientation(const cv::Mat& img, cv::Point2i point);
-
+void calculateOrientation(const cv::Mat& img, cv::KeyPoint& point);
+void learnedFast(const cv::Mat& img, std::vector<cv::KeyPoint>& keypoints, int threshold, bool nonMaxSuppression = true);
 #endif

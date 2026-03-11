@@ -59,6 +59,8 @@ std::vector<cv::Point2i> selectKeypoints(const cv::Mat& img) {
             pq.pop();
         }
         keypoints.erase(keypoints.begin() + NUMBER_KEYPOINTS, keypoints.end());
+        free(xGrad);
+        free(yGrad);
     }
     
     return keypoints;

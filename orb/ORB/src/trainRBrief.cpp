@@ -5,23 +5,23 @@
 #include <algorithm>
 #include <random>
 #include <unordered_map>
-#include "fast.hpp"
 #include "processing.hpp"
+#include "harris.hpp"
 // #include "orb.cpp"
 
 // how many FAST keypoints from dataset to analyze
 size_t SAMPLE_SIZE = 300000;
 // how many images to check for FAST keypoints. Set high to analyze whole dataset.
-size_t IMAGE_LIMIT = 99999999999999999;
+size_t IMAGE_LIMIT = 99999999999999;
 size_t BRIEF_TESTS = 256;
 double CORRELATION_INCREMENT = 0.05;
 
 
 struct imagePointPair {
     int pictureIndex;
-    cv::Point2i keypoint;
+    cv::KeyPoint keypoint;
     int rotationIndex;
-    imagePointPair(int index, cv::Point2i point) {
+    imagePointPair(int index, cv::KeyPoint point) {
         pictureIndex = index;
         keypoint = point;
     }
@@ -80,12 +80,12 @@ class PointTest {
                 int stepSize = targetPicture.step;
 
                 int idx = point.rotationIndex;
-                const cv::Point2i& keypoint = point.keypoint;
+                const cv::KeyPoint& keypoint = point.keypoint;
 
-                int x1 = keypoint.x + point1[idx].x;
-                int y1 = keypoint.y + point1[idx].y;
-                int x2 = keypoint.x + point2[idx].x;
-                int y2 = keypoint.y + point2[idx].y;
+                int x1 = keypoint.pt.x + point1[idx].x;
+                int y1 = keypoint.pt.y + point1[idx].y;
+                int x2 = keypoint.pt.x + point2[idx].x;
+                int y2 = keypoint.pt.y + point2[idx].y;
                 if (x1 < 0 || x1 >= width || x2 < 0 || x2 >= width || y1 < 0 || y1 >= height || y2 < 0 || y2 >= height) {
                     results.push_back(0);
                     continue;
@@ -141,11 +141,16 @@ int main() {
     for (const auto& file : itr) {
         if (counter++ > IMAGE_LIMIT) break;
         cv::Mat img = cv::imread(file.path(), cv::IMREAD_GRAYSCALE);
-        std::vector<cv::Point2i> imgKeypoints;
-        learnedFast(imgKeypoints, img, 10);
+        std::vector<cv::KeyPoint> imgKeypoints;
+        learnedFast(img, imgKeypoints, 10, true);
+
+        getHarrisResponse(img, imgKeypoints, 7);
+        cv::KeyPointsFilter::retainBest(imgKeypoints, 500);
+
         cv::Mat dest;
         blurImage(img, dest, 2, 2);
         images.push_back(dest);
+
         for (const auto& keypoint : imgKeypoints) {
             keypoints.push_back(imagePointPair(images.size() - 1, keypoint));
         }
@@ -173,12 +178,12 @@ int main() {
 
     int pointCounter = 0;
     for (auto& pair : keypoints) {
-        double orientation = calculateOrientation(images[pair.pictureIndex], pair.keypoint);
-        if (orientation < 0) orientation += 2 * M_PI;
-        int idx = (int) round(orientation / (M_PI / 15)) % 30;
+        calculateOrientation(images[pair.pictureIndex], pair.keypoint);
+        double orientation = pair.keypoint.angle;
+        int idx = cvRound(orientation / 12) % 30;
         pair.rotationIndex = idx;
         for (auto& test : tests) {
-            test.runTest(images[pair.pictureIndex], pair.keypoint, pair.rotationIndex);
+            test.runTest(images[pair.pictureIndex], pair.keypoint.pt, pair.rotationIndex);
         }
         if (++pointCounter % 1000 == 0) std::cerr << "Tested " << pointCounter << " points." << std::endl;
     }

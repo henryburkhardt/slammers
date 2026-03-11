@@ -1,3 +1,23 @@
+*.vscode
+*.DS_Store
+*CMakeCache.txt
+*/CMakeFiles/*
+orb/ros2_ws/src/orb_slam/Data/ORBvoc.txt
+*CMakeFiles*
+orb/ORB/rBRIEFImages/*
+orb/ORB/build
+orb/ORB/.venv
+orb/ORB/.vscode
+orb/ORB/blur
+orb/ORB/c_code.txt
+orb/ORB/cmake_install.cmake
+orb/ORB/CMakeLists.txt
+orb/ORB/fast_results.txt
+orb/ORB/FAST
+orb/ORB/optim
+orb/ORB/testORB
+orb/ORB/trainrBrief
+orb/ORB/Makefile
 # -----------------------------
 # Python
 # -----------------------------
