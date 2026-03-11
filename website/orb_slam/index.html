@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../global.css">
+    <title>ORB-SLAM</title>
+</head>
+<body>
+    <div id="nav-div">
+        <nav>
+            <ul>
+                <li>LiDAR SLAM</li>
+                <li>Visual SLAM</li>
+                <li>Slides</li>
+                <li>GitHub</li>
+                <li>Credits</li>
+            </ul>
+        </nav>
+    </div>
+    <p>ORB-SLAM is a Visual SLAM system for monocular cameras, meaning it generates entire 3D maps from basic video footage. When it released in 2015 it was considered a state-of-the-art SLAM method for its use of Bundle Adjustment (BA), which is very computationally expensive. Thus, the use of BA in live tasks was very restricted.</p>
+    <p>To enable BA in ORB-SLAM, the developers had to make a number of optimizations that were unique to ORB-SLAM. First, they use the same features for all parts of the SLAM system. In earlier implementations, different types of keypoints were often used for different SLAM tasks like loop closure and tracking. ORB-SLAM optimizes this by using the same ORB features for all three threads it initializes.</p>
+    <p>Another optimization in the ORB-SLAM procedure is the procedure it uses to spawn keyframes and map points. While an abundance of these features can make mapping more accurate, they also contribute to the computational cost of running Online SLAM. The ORB-SLAM authors develop a procedure that spawns many map points and keyframes, but as they algorithm progresses, restricts the number of such points to allow for real-time computation.</p>
+    <p>ORB-SLAM was designed to work with the Robot Operating System (ROS), which is designed for Ubuntu 20. Newer Ubuntu distributions, like Ubuntu 24, which was used for this project, only support ROS2, which is not compatible with original ROS code. This necessitated a port of the ORB-SLAM package to implement our updates.</p>
+    <p>The porting process was more difficult than simply updating calls from <code>roscpp</code>, which was the ROS package, to <code>rclcpp</code>, the updated ROS2 package. There were also several files relying on other outdated libraries like the legacy <code>OpenCV</code> API and outdated versions of <code>tf</code> code, which is used to publish transformations for the mapping process.</p>
+    <p>Other work included restructuring the CMake file to support the ROS2 build, porting video files that were designed for ROS, and restructuring code where the port to ROS2 made the original structure unsupportable.</p>
+    <p>When mapping the provided demo footage, we saw similar results to the claimed performance. The authors claimed this footage would see two relocalizations and a loop closure. In our testing, both these are visible and effective. Here is a sped-up video of our ORB-SLAM port running on the Euroc dataset:</p>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/dmW0hG2Dohs?si=uXT-U4GY0oM37bkb" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+</body>
+</html>

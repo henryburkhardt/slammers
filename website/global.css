@@ -30,3 +30,12 @@ h1 {
 body {
     padding: 0 20px 0 20px;
 }
+
+#orb-display {
+    /* Yeah I cheated I made a little CSS. Oops. */
+    display:grid;
+    grid-template-columns: min-content min-content;
+    column-gap: 8px;
+    width: auto;
+    text-align: center;
+}
