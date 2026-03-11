@@ -15,49 +15,49 @@
 #include <limits>
 #include <array>
 
-// DEBUG 2.2: Template
-// template<int R, int C>
-// struct Mat {
-//     std::array<double, R * C> d;
-//     Mat() { d.fill(0.0); }
-//     double& operator()(int r, int c)       { return d[r * C + c]; }
-//     double  operator()(int r, int c) const { return d[r * C + c]; }
+// Template
+template<int R, int C>
+struct Mat {
+    std::array<double, R * C> d;
+    Mat() { d.fill(0.0); }
+    double& operator()(int r, int c)       { return d[r * C + c]; }
+    double  operator()(int r, int c) const { return d[r * C + c]; }
 
-//     static Mat Identity() {
-//         static_assert(R == C);
-//         Mat m; for (int i = 0; i < R; i++) m(i,i) = 1.0; return m;
-//     }
-//     static Mat Scaled(double s) {
-//         static_assert(R == C);
-//         Mat m; for (int i = 0; i < R; i++) m(i,i) = s; return m;
-//     }
-//     Mat operator+(const Mat& o) const {
-//         Mat r; for (int i = 0; i < R*C; i++) r.d[i] = d[i]+o.d[i]; return r;
-//     }
-//     Mat& operator+=(const Mat& o) {
-//         for (int i = 0; i < R*C; i++) d[i] += o.d[i]; return *this;
-//     }
-//     Mat operator*(double s) const {
-//         Mat r; for (int i = 0; i < R*C; i++) r.d[i] = d[i]*s; return r;
-//     }
-//     template<int C2>
-//     Mat<R,C2> operator*(const Mat<C,C2>& o) const {
-//         Mat<R,C2> r;
-//         for (int i = 0; i < R; i++)
-//             for (int j = 0; j < C2; j++) {
-//                 double s = 0;
-//                 for (int k = 0; k < C; k++) s += (*this)(i,k) * o(k,j);
-//                 r(i,j) = s;
-//             }
-//         return r;
-//     }
-//     Mat<C,R> T() const {
-//         Mat<C,R> r;
-//         for (int i = 0; i < R; i++)
-//             for (int j = 0; j < C; j++) r(j,i) = (*this)(i,j);
-//         return r;
-//     }
-// };
+    static Mat Identity() {
+        static_assert(R == C);
+        Mat m; for (int i = 0; i < R; i++) m(i,i) = 1.0; return m;
+    }
+    static Mat Scaled(double s) {
+        static_assert(R == C);
+        Mat m; for (int i = 0; i < R; i++) m(i,i) = s; return m;
+    }
+    Mat operator+(const Mat& o) const {
+        Mat r; for (int i = 0; i < R*C; i++) r.d[i] = d[i]+o.d[i]; return r;
+    }
+    Mat& operator+=(const Mat& o) {
+        for (int i = 0; i < R*C; i++) d[i] += o.d[i]; return *this;
+    }
+    Mat operator*(double s) const {
+        Mat r; for (int i = 0; i < R*C; i++) r.d[i] = d[i]*s; return r;
+    }
+    template<int C2>
+    Mat<R,C2> operator*(const Mat<C,C2>& o) const {
+        Mat<R,C2> r;
+        for (int i = 0; i < R; i++)
+            for (int j = 0; j < C2; j++) {
+                double s = 0;
+                for (int k = 0; k < C; k++) s += (*this)(i,k) * o(k,j);
+                r(i,j) = s;
+            }
+        return r;
+    }
+    Mat<C,R> T() const {
+        Mat<C,R> r;
+        for (int i = 0; i < R; i++)
+            for (int j = 0; j < C; j++) r(j,i) = (*this)(i,j);
+        return r;
+    }
+};
 
 // Helper typedefs
 using M6  = Mat<6,6>;
@@ -151,7 +151,7 @@ M26 PoseJacobian(const V3& Xc, double fx, double fy) {
     Jx(1,3)=-z; Jx(1,4)= 0; Jx(1,5)= x;
     Jx(2,3)= y; Jx(2,4)=-x; Jx(2,5)= 0;
 
-    return Jp * Jx; //DEBUG 2.2: 2x6
+    return Jp * Jx;
 }
 
 // MapPointSelector: Localisation Approximation
@@ -173,9 +173,7 @@ public:
         // Max-heap
         using E=std::pair<double,int>;
         std::priority_queue<E> pq;
-        std::cout << "  Initial gains..." << std::flush;
         for (int i=0;i<n;i++) pq.push({Gain(i,info,ld), i});
-        std::cout << " ok\n";
 
         std::vector<bool> sel(n,false);
         std::vector<int> res; res.reserve(budget);
@@ -194,10 +192,7 @@ public:
                 int ki=map_.kf_idx.at(o.kf_id);
                 info[ki]+=o.info; ld[ki]=LogDet6(info[ki]);
             }
-            if ((int)res.size()%step==0)
-                std::cout<<"    "<<res.size()<<"/"<<budget<<" (recomp "<<rc<<")\n";
         }
-        std::cout<<"  Done. Recomps: "<<rc<<" (brute: "<<(long long)n*budget<<")\n";
         return res;
     }
 
@@ -215,7 +210,6 @@ private:
     std::unordered_map<int,std::vector<ObsInfo>> oi_;
 
     void Precompute() {
-        std::cout<<"  Precompute info..."<<std::flush;
         int ok=0,skip=0;
         for (auto& [mi,ois]:map_.mp_obs) {
             auto& mp=map_.mappoints[mi];
@@ -236,7 +230,6 @@ private:
                 ok++;
             }
         }
-        std::cout<<" ("<<ok<<" valid, "<<skip<<" skip)\n";
     }
 
     double Gain(int mi,const std::vector<M6>& info,const std::vector<double>& ld) const {
@@ -401,24 +394,24 @@ int main(int argc,char** argv) {
 
     SlamMap map;
     if (cfg.syn) {
-        std::cout<<"[MPS] Generating synthetic ("<<cfg.snk<<" KFs, "<<cfg.snm<<" MPs)\n";
+        std::cout<<"Generating synthetic ("<<cfg.snk<<" KFs, "<<cfg.snm<<" MPs)\n";
         map=GenSynthetic(cfg.snk,cfg.snm,cfg.sns);
     } else {
-        std::cout<<"[MPS] Loading: "<<cfg.input<<"\n";
+        std::cout<<"Loading: "<<cfg.input<<"\n";
         map=LoadMap(cfg.input);
     }
 
     int N=(int)map.mappoints.size(), K=(int)map.keyframes.size(), O=(int)map.observations.size();
-    std::cout<<"[MPS] Map: "<<K<<" KFs, "<<N<<" MPs, "<<O<<" obs ("
+    std::cout<<"Map: "<<K<<" KFs, "<<N<<" MPs, "<<O<<" obs ("
              <<std::fixed<<std::setprecision(1)<<(double)O/N<<" obs/pt)\n";
 
     int budget=std::min(cfg.budget,N);
-    std::cout<<"[MPS] Budget: "<<budget<<"/"<<N<<" ("<<std::setprecision(1)<<100.0*budget/N<<"%)\n\n";
+    std::cout<<"Budget: "<<budget<<"/"<<N<<" ("<<std::setprecision(1)<<100.0*budget/N<<"%)\n\n";
 
     MapPointSelector sel(map,cfg.eps,cfg.sigma,cfg.sf);
     std::vector<int> all(N); std::iota(all.begin(),all.end(),0);
     double uf=sel.Utility(all);
-    std::cout<<"  Full utility: "<<std::setprecision(2)<<uf<<"\n\n";
+    // std::cout<<"  Full utility: "<<std::setprecision(2)<<uf<<"\n\n";
 
     auto t0=std::chrono::high_resolution_clock::now();
     auto chosen=sel.SelectLazyGreedy(budget);
@@ -436,16 +429,14 @@ int main(int argc,char** argv) {
     int mn=*std::min_element(kk.begin(),kk.end());
     int mx=*std::max_element(kk.begin(),kk.end());
 
-    std::cout<<"\n[MPS] === RESULTS ===\n"
+    std::cout<<"\n=== RESULTS ===\n"
         <<"  Selected:       "<<chosen.size()<<" pts\n"
-        <<"  Utility (sel):  "<<std::setprecision(2)<<us<<"\n"
+        <<"  Utility (reduced):  "<<std::setprecision(2)<<us<<"\n"
         <<"  Utility (full): "<<std::setprecision(2)<<uf<<"\n"
         <<"  Retained:       "<<std::setprecision(1)<<100.0*us/uf<<"%\n"
-        <<"  Time:           "<<std::setprecision(0)<<ms<<" ms\n"
-        <<"  Obs/KF:         min="<<mn<<" avg="<<std::setprecision(1)<<(double)ko/K<<" max="<<mx<<"\n"
-        <<"  Obs kept:       "<<ko<<"/"<<O<<"\n";
+        <<"  Time:           "<<std::setprecision(0)<<ms<<" ms\n";
 
-    std::cout<<"\n[MPS] Saving: "<<cfg.output<<"\n";
+    std::cout<<"\nSaving: "<<cfg.output<<"\n";
     SaveMap(cfg.output,map,chosen);
     SaveIDs(cfg.output,map,chosen);
     if (cfg.syn) { std::string ff=cfg.output+".full"; SaveMap(ff,map,all); std::cout<<"  Full: "<<ff<<"\n"; }
