@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../global.css">
+    <title>ORB</title>
+</head>
+<body>
+    <div id="nav-div">
+        <nav>
+            <ul>
+                <li>LiDAR SLAM</li>
+                <li>Visual SLAM</li>
+                <li>Slides</li>
+                <li>GitHub</li>
+                <li>Credits</li>
+            </ul>
+        </nav>
+    </div>
+     <h1>MapPoint Selection for Visual SLAM</h1>
+    <p>Visual SLAM systems like ORB-SLAM accumulate map points indefinitely. Every point that passes the initial quality filter is kept forever, regardless of how redundant it becomes for future localization. In the long run, this bloats memory and slows down the system. With the goal to keep the map <b>small but informative</b>, MapPoint Selection addresses this by asking a different question: given a fixed budget, <i>which subset of map points is most valuable for the camera to localize itself?</i></p>
+    <h2>Fisher Information and Utility</h2>
+    <p>The value of a map point is measured through Fisher Information — a quantity that captures how sensitively a pixel observation responds to changes in camera pose. When a known 3D point is projected into a keyframe, the resulting pixel location constrains the camera's 6 degrees of freedom (3 translation, 3 rotation). The Fisher Information Matrix (FIM) for a keyframe is:</p>
+    <div style="display:flex; flex-direction:column; align-items:center; gap:16px;">
+    <figure style="text-align:center; margin:0;">
+        <img src="media/fim.png" alt="FIM Formula" width="280px">
+    </figure>
+    </div>
+    <p>where J is the 2&times;6 Jacobian of the reprojection with respect to camera pose, w = 1/&sigma;&sup2; is a noise weight scaled by the ORB pyramid octave, and &epsilon;I is a small regularizing prior. The total utility across all keyframes is:</p>
+    <div style="display:flex; flex-direction:column; align-items:center; gap:16px;">
+    <figure style="text-align:center; margin:0;">
+        <img src="media/utility.png" alt="Utility Score Formula" width="280px">
+    </figure>
+    </div>
+    <p>Log-determinant captures all six degrees of freedom simultaneously — it is the log-volume of the pose uncertainty ellipsoid. Maximizing it is equivalent to minimizing the total localization uncertainty across all keyframes.</p>
+ 
+    <h2>Lazy Greedy Selection</h2>
+    <p>The utility function U(S) is submodular: adding a point to a larger set yields a smaller marginal gain than adding it to a smaller set. This diminishing-returns property means a greedy algorithm — always picking the point with the highest marginal gain — achieves a guaranteed (1 &minus; 1/e) &asymp; 63% approximation of the optimal selection.</p>
+    <p>A naive greedy implementation would recompute every point's gain from scratch at each step, which is prohibitively slow. The lazy greedy algorithm avoids this by maintaining a max-heap of stale upper bounds. A candidate is only re-evaluated when it reaches the top of the heap. Because gains can only decrease as points are added, the stale value is always a valid upper bound — and in practice most candidates never need re-evaluation. This reduces recomputations from O(n &times; budget) to roughly O(n log n).</p>
+    
+    <h2>Validation on ETH3D</h2>
+    <p>The algorithm was validated on the <a href="https://www.eth3d.net">ETH3D</a> dataset, a widely used SLAM and stereo-vision benchmark dataset for evaluating 3D reconstruction. Below are original and reduced maps of one of the dataset named delivery_area, a high-resolution DSLR reconstruction with ground-truth camera poses provided in COLMAP format. A conversion script parses the COLMAP files (quaternion poses, 3D point positions, 2D observations) and writes them into the format the selection algorithm reads.</p>
+
+    <div style="display:flex; flex-direction:column; align-items:center; gap:16px;">
+    <figure style="text-align:center; margin:0;">
+        <img src="media/deliveryarea_original.png" alt="Original map" width="1200px">
+        <figcaption>Original Map of the Dataset Delivery_area From ETH3D</figcaption>
+    </figure>
+    </div>
+
+    <div style="display:flex; flex-direction:column; align-items:center; gap:16px;">
+    <figure style="text-align:center; margin:0;">
+        <img src="media/deliveryarea_reduced.png" alt="Original map" width="1200px">
+        <figcaption>Reduced Map of the Dataset Delivery_area From ETH3D</figcaption>
+    </figure>
+    </div>
+
+    <p>The original full map has 31,978 points, while the reduced map has 12,791 kepy points with 40% budget. As you can tell with raw eyes, though the number of points is significantly reduced, the overall geometric structure of the environment is still preserved. Below is another visualization to better show the contrast with red points being the ones discarded and green points being the ones kept:</p>
+    
+    <div style="display:flex; flex-direction:column; align-items:center; gap:16px;">
+    <figure style="text-align:center; margin:0;">
+        <img src="media/deliveryarea_contrast.png" alt="Original map" width="1200px">
+        <figcaption>Visualization to Show Contrast</figcaption>
+    </figure>
+</div>
+
+    <p>With the validation on the ETH3D dataset, we proved that the reduced map is indeed <b>small and informative</b></p>
+
+    <p><strong>Works Cited</strong></p>
+    <div class="csl-bib-body" style="line-height: 2; margin-left: 2em; text-indent:-2em;">
+    <div class="csl-entry">Müller, C., &amp; Dayoub, F. (2022). Map Point Selection for Visual SLAM. <i>IEEE International Conference on Robotics and Automation (ICRA)</i>. https://arxiv.org/abs/2209.09445</a>.</div>
+    <div class="csl-entry">Schöps, T., et al. (2017). A Multi-View Stereo Benchmark with High-Resolution Images and Multi-Camera Videos. <i>CVPR</i>.</a>.</div>
+</div>
+</body>
+</html>
