@@ -39,3 +39,16 @@ body {
     width: auto;
     text-align: center;
 }
+
+.img-ctr {
+    max-width: 600px;
+}
+
+.img-cont {
+    text-align: center;
+}
+
+figcaption {
+    color: rgb(70, 70, 70);
+    font-size: 15px;
+}

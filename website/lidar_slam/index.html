@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="../global.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+        <div id="nav-div">
+        <nav>
+            <ul>
+                <li>LiDAR SLAM</li>
+                <li>Visual SLAM</li>
+                <li>Slides</li>
+                <li>GitHub</li>
+                <li>Credits</li>
+            </ul>
+        </nav>
+    </div>
+    <h1>2d Pose Graph LiDAR Based SLAM</h1>
+
+    <p> Our SLAM system uses LiDAR information, and a data structure called a "pose graph" to iterativley build a map of an unknwon environment. We also emply a process called "loop closure detection" to correct errors in the pose graph, by recognizing when the robot has returned to a location it has previsouly been in. </p>
+
+    <div class="img-cont">
+        <figure>
+        <img src="./media/whole_system.png" class="img-ctr">
+        </figure>
+        <figcaption>A process diagram of our whole SLAM system for realtime mapping on the Turtlebot4.</figcaption>
+    </div>
+
+    <p>[TALK ABOUT BUILDING MAP FROM LiDAR SCANS] </p>
+
+    <div class="img-cont">
+        <figure>
+        <img src="./media/scan_diagram.png" class="img-ctr">
+        <figcaption></figcaption>
+        </figure>
+    </div>
+
+    <div class="img-cont">
+        <img src="./media/loop_closure.png" class="img-ctr">
+    </div>
+    
+    <div class="img-cont">
+        <img src="./media/final_map.png" class="img-ctr">
+    </div>
+
+
+
+
+    <iframe width="1020" height="574" src="https://www.youtube.com/embed/_kQW_v_9nQk" title="LiDAR-based SLAM results." frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+</body>
+</html>
