@@ -18,6 +18,14 @@
                 <li><a href="../credits">Credits</a></li>
             </ul>
         </nav>
+        <br>
+        <nav>
+            <ul>
+                <li><a href="orb.html">ORB</a></li>
+                <li><a href="mappoint.html">MapPoint Selection</a></li>
+                <li><a href="BA.html">Bundle Adjustment</a></li>
+            </ul>
+        </nav>
     </div>
      <h1>MapPoint Selection for Visual SLAM</h1>
     <p>Visual SLAM systems like ORB-SLAM accumulate map points indefinitely. Every point that passes the initial quality filter is kept forever, regardless of how redundant it becomes for future localization. In the long run, this bloats memory and slows down the system. With the goal to keep the map <b>small but informative</b>, MapPoint Selection addresses this by asking a different question: given a fixed budget, <i>which subset of map points is most valuable for the camera to localize itself?</i></p>
