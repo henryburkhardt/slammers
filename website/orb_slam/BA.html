@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang = 'en'>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../global.css">
+    <title> Bundle Adjustment </title>
+</head>
+
+<body>
+    <div id="nav-div">
+        <nav>
+            <ul>
+                <li>LiDAR SLAM</li>
+                <li>Visual SLAM</li>
+                <li>Slides</li>
+                <li>GitHub</li>
+                <li>Credits</li>
+            </ul>
+        </nav>
+    </div>
+    <h1> Bundle Adjustment </h1>
+    <p> Bundle adjustment is the process of refining the 3D map points and poses created during ORB SLAM. Once bundle adjustment is finished we will have an accurate map of the environment we were tracking during ORB SLAM.</p>
+    <p> To do this bundle adjustment solves the reprojection error. Since 3D map points are calculated during the process of triangulation it can be incorrectly calculated due to issues with the camera or tracking. So in order to determine how inaccurate a 3D mappoint is, it is compared to a 2D coordinate of a map point. We can compare these two by reprojecting the 3D mappoint to 2D and comparing it to the 2D mappoint that we already had. The difference between the 2D mappoint and the reprojected 3D mappoint is the reprojection error.</p>
+    <p> Minimizing the reprojection error is what Bundle Adjustment tackles and it is formulated as a non linear optimizatio problem. The algorithm we use to minimize the reprojection error simultaneously adjusts both 3D map points and poses to find and optimal set that will minimize the reprojection error for all 3D map points.  </p>
+    
+</body>
+</html>
