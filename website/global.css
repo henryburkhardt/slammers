@@ -28,6 +28,22 @@ nav ul li {
     margin: none;
 }
 
+nav ul li a {
+    text-decoration: none;
+    color: black;
+    font-weight: 400;
+}
+
+nav ul li a:hover {
+    text-decoration: none;
+    color: black;
+    font-weight: 600;
+}
+
+.selected {
+    font-weight: 600;
+}
+
 nav ul li:last-child {
     border-right: none;
     padding-left: none;
