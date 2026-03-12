@@ -38,9 +38,12 @@
         </figure>
     </div>
 
+    <p> As our robot moves around, the map it buids accumulates error because the odometry sensors (the sensors that tell how many times the wheels turn) are not 100% accurate. We call this problem the problem of "drift." To fix drift, we first need for our robot to be able to detect when it's internal pose graph is inaccurate. We do this by comparing the LiDAR scans of poses, in a process called point cloud registration. This process allows for the robot to derive the relative difference in poses between the scans. Then, the robot can introduce this information into it's pose graph -- essentially accounting for any </p>
+
     <div class="img-cont">
         <img src="./media/loop_closure.png" class="img-ctr">
     </div>
+
     
     <div class="img-cont">
         <img src="./media/final_map.png" class="img-ctr">
