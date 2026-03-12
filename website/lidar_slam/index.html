@@ -21,7 +21,8 @@
     </div>
     <h1>2d Pose Graph LiDAR Based SLAM</h1>
 
-    <p> Our SLAM system uses LiDAR information, and a data structure called a "pose graph" to iterativley build a map of an unknwon environment. We also emply a process called "loop closure detection" to correct errors in the pose graph, by recognizing when the robot has returned to a location it has previsouly been in. </p>
+    <h4>System Overview</h4>
+    <p> Our SLAM system uses LiDAR information, and a data structure called a "pose graph" to iterativley build a map of an unknwon environment. We also emply a process called <a href="https://knowledge.navvis.com/docs/loop-closures-1" target="_blank">"loop closure detection"</a> to correct errors in sensor measurments, by recognizing when the robot has returned to a location it has previsouly visited. We bring all these pieces together into a single system that runs in realtime on a <a href="https://clearpathrobotics.com/turtlebot-4/" target="_blank">Turtlebot4</a>. When the system is run, the robot generates a map 2d grid map of it's enviroment (see <strong>results</strong> below for more).</p> 
 
     <div class="img-cont">
         <figure>
@@ -30,7 +31,10 @@
         <figcaption>A process diagram of our whole SLAM system for realtime mapping on the Turtlebot4.</figcaption>
     </div>
 
-    <p>[TALK ABOUT BUILDING MAP FROM LiDAR SCANS] </p>
+    <h4>The Basics</h4>
+    <p>LiDAR detectors on the robot give us 2d scans of the robot's enviroment (the points on the right in the image below shows what this data looks like). Our general mapping approach is to drive the robot around an enviroment, taking many lidar scans (aproximatley one scan everytime the robot moves more than 5cm). Using odometry sensors (sensors that tell how far the robot has moved by measuring the rotation of it's wheels), we can then "draw" each LiDAR scan on a "canvas", centered around where the robot thinks it was when it took that scan. The result is a map, consisting of many many points (from the many many lidar scans).</p>
+
+    <p>Under the hood, the robot maintains a graph whose vertices represent discrete robot locations over time (this is functionally equivalent to this idea of drawing all the LiDAR scans on a cavnas).  As we explain in the following secetion, this graph is constantly updated and optimized as the robot drives around. <p>
 
     <div class="img-cont">
         <figure>
@@ -39,20 +43,57 @@
         </figure>
     </div>
 
-    <p> As our robot moves around, the map it buids accumulates error because the odometry sensors (the sensors that tell how many times the wheels turn) are not 100% accurate. We call this problem the problem of "drift." To fix drift, we first need for our robot to be able to detect when it's internal pose graph is inaccurate. We do this by comparing the LiDAR scans of poses, in a process called point cloud registration. This process allows for the robot to derive the relative difference in poses between the scans. Then, the robot can introduce this information into it's pose graph -- essentially accounting for any </p>
+    <h4>Loop Closure</h4>
+    <p> As our robot moves around however, the map it buids accumulates error because the odometry sensors (the sensors that tell how many times the wheels turn) are not 100% accurate. We call this problem  "drift." To combat drift, we  need for our robot to be able to detect when it's internal pose graph is inaccurate. We do this by comparing the LiDAR scans of poses, in a process called point cloud registration. This process allows for the robot to derive the relative difference in poses between the scans. Then, the robot can introduce this information into it's pose graph -- essentially accounting for sensor inaccuracies. Put in very simple terms, the robot can evaualte the </p>
+
+    <p>After the corrected pose information is added to the graph, we use a process called graph optimization (specifcally <a href="https://en.wikipedia.org/wiki/Gauss%E2%80%93Newton_algorithm">Gauss-Newton</a> optimization) to update the graph. Graph optmization -- on a very high level -- moves all of the nodes and edges in the pose graph around to account for all of the robots observations about it's enviroment (both from odometry and point cloud registration).</p>
 
     <div class="img-cont">
-        <img src="./media/loop_closure.png" class="img-ctr">
+        <figure>
+        <img src="./media/loop_incorrect.png" class="img-ctr">
+        </figure>
+        <figcaption>A visual example of how the robots map of the world (right), can differ from the actual state of it's enviroment (left) because of drift.</figcaption>
     </div>
 
-    
+    <div class="img-cont">
+        <figure>
+        <img src="./media/loop_correct.png" class="img-ctr">
+        </figure>
+        <figcaption>By comparing lidar scans between poses, the robot can update it's understanding of the world (the pose graph) to more closley align with the real world.</figcaption>
+    </div>
+
+    <h4>Results</h4>
+    <p>To reiview, our sytem  does three things constantly: <strong> (1) maps and localizes, (2) detects errors in the map it's making and (3) corrects those errors </strong> (when possible).</p>
+
+    <p>Here's what it looks like running our system in real time on a Turtlebot4, as we drove it around Carleton Collge's Computer Science Deparment (on the 3rd floor of Olin Hall)</p>.
+
+    <figure class="centered-iframe">
+    <iframe width="651" height="366" src="https://www.youtube.com/embed/_kQW_v_9nQk" title="LiDAR-based SLAM results." frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    <figcaption>In this video you can see the robot poses (blue dots) and points from LiDAR scans (red dots) accumulating in realtime, as it was driven around Olin.</figcaption>
+    </figure>
+
+    <p>When it's time to create a final map, we draw a grid over the accumualted lidar scan points. We initalize all cells as "empty". If there are enought points in any one cell  we switch that cell to "occuppied". The result is what's known as an occupancy grid map.</p>
+
+    <figure>
     <div class="img-cont">
         <img src="./media/final_map.png" class="img-ctr">
     </div>
+    <figcaption>The occupancy grid map (with added labels) genereated from the test run shown in the previous video.</figcaption>
+    </figure>
 
+    <h4>Works Cited</h4>
+    <div class="csl-bib-body" style="line-height: 1.35; margin-left: 2em; text-indent:-2em;">
+  <div class="csl-entry" style="margin-bottom: 1em;">Bosse, Michael, and Robert Zlot. 2008. “Map Matching and Data Association for Large-Scale Two-Dimensional Laser Scan-Based SLAM.” <i>The International Journal of Robotics Research</i> 27(6): 667–91. doi:<a href="https://doi.org/10.1177/0278364908091366">10.1177/0278364908091366</a>.</div>
+  <span class="Z3988" title="url_ver=Z39.88-2004&amp;ctx_ver=Z39.88-2004&amp;rfr_id=info%3Asid%2Fzotero.org%3A2&amp;rft_id=info%3Adoi%2F10.1177%2F0278364908091366&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&amp;rft.genre=article&amp;rft.atitle=Map%20Matching%20and%20Data%20Association%20for%20Large-Scale%20Two-dimensional%20Laser%20Scan-based%20SLAM&amp;rft.jtitle=The%20International%20Journal%20of%20Robotics%20Research&amp;rft.stitle=The%20International%20Journal%20of%20Robotics%20Research&amp;rft.volume=27&amp;rft.issue=6&amp;rft.aufirst=Michael&amp;rft.aulast=Bosse&amp;rft.au=Michael%20Bosse&amp;rft.au=Robert%20Zlot&amp;rft.date=2008-06&amp;rft.pages=667-691&amp;rft.spage=667&amp;rft.epage=691&amp;rft.issn=0278-3649%2C%201741-3176&amp;rft.language=en"></span>
+  <div class="csl-entry" style="margin-bottom: 1em;">Grisetti, G, R Kummerle, C Stachniss, and W Burgard. 2010. “A Tutorial on Graph-Based SLAM.” <i>IEEE Intelligent Transportation Systems Magazine</i> 2(4): 31–43. doi:<a href="https://doi.org/10.1109/MITS.2010.939925">10.1109/MITS.2010.939925</a>.</div>
+  <span class="Z3988" title="url_ver=Z39.88-2004&amp;ctx_ver=Z39.88-2004&amp;rfr_id=info%3Asid%2Fzotero.org%3A2&amp;rft_id=info%3Adoi%2F10.1109%2FMITS.2010.939925&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&amp;rft.genre=article&amp;rft.atitle=A%20Tutorial%20on%20Graph-Based%20SLAM&amp;rft.jtitle=IEEE%20Intelligent%20Transportation%20Systems%20Magazine&amp;rft.stitle=IEEE%20Intell.%20Transport.%20Syst.%20Mag.&amp;rft.volume=2&amp;rft.issue=4&amp;rft.aufirst=G&amp;rft.aulast=Grisetti&amp;rft.au=G%20Grisetti&amp;rft.au=R%20Kummerle&amp;rft.au=C%20Stachniss&amp;rft.au=W%20Burgard&amp;rft.date=2010&amp;rft.pages=31-43&amp;rft.spage=31&amp;rft.epage=43&amp;rft.issn=1939-1390&amp;rft.language=en"></span>
+  <div class="csl-entry" style="margin-bottom: 1em;">Hess, Wolfgang, Damon Kohler, Holger Rapp, and Daniel Andor. 2016. “Real-Time Loop Closure in 2D LIDAR SLAM.” In <i>2016 IEEE International Conference on Robotics and Automation (ICRA)</i>, Stockholm, Sweden: IEEE, 1271–78. doi:<a href="https://doi.org/10.1109/ICRA.2016.7487258">10.1109/ICRA.2016.7487258</a>.</div>
+  <span class="Z3988" title="url_ver=Z39.88-2004&amp;ctx_ver=Z39.88-2004&amp;rfr_id=info%3Asid%2Fzotero.org%3A2&amp;rft_id=info%3Adoi%2F10.1109%2FICRA.2016.7487258&amp;rft_id=urn%3Aisbn%3A978-1-4673-8026-3&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook&amp;rft.genre=proceeding&amp;rft.atitle=Real-time%20loop%20closure%20in%202D%20LIDAR%20SLAM&amp;rft.btitle=2016%20IEEE%20International%20Conference%20on%20Robotics%20and%20Automation%20(ICRA)&amp;rft.place=Stockholm%2C%20Sweden&amp;rft.publisher=IEEE&amp;rft.aufirst=Wolfgang&amp;rft.aulast=Hess&amp;rft.au=Wolfgang%20Hess&amp;rft.au=Damon%20Kohler&amp;rft.au=Holger%20Rapp&amp;rft.au=Daniel%20Andor&amp;rft.date=2016-05&amp;rft.pages=1271-1278&amp;rft.spage=1271&amp;rft.epage=1278&amp;rft.isbn=978-1-4673-8026-3&amp;rft.language=en"></span>
+  <div class="csl-entry" style="margin-bottom: 1em;">Kummerle, Rainer, Giorgio Grisetti, Hauke Strasdat, Kurt Konolige, and Wolfram Burgard. 2011. “G<sup>2</sup>o: A General Framework for Graph Optimization.” In <i>2011 IEEE International Conference on Robotics and Automation</i>, Shanghai, China: IEEE, 3607–13. doi:<a href="https://doi.org/10.1109/ICRA.2011.5979949">10.1109/ICRA.2011.5979949</a>.</div>
+  <span class="Z3988" title="url_ver=Z39.88-2004&amp;ctx_ver=Z39.88-2004&amp;rfr_id=info%3Asid%2Fzotero.org%3A2&amp;rft_id=info%3Adoi%2F10.1109%2FICRA.2011.5979949&amp;rft_id=urn%3Aisbn%3A978-1-61284-386-5&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook&amp;rft.genre=proceeding&amp;rft.atitle=G%3Csup%3E2%3C%2Fsup%3Eo%3A%20A%20general%20framework%20for%20graph%20optimization&amp;rft.btitle=2011%20IEEE%20International%20Conference%20on%20Robotics%20and%20Automation&amp;rft.place=Shanghai%2C%20China&amp;rft.publisher=IEEE&amp;rft.aufirst=Rainer&amp;rft.aulast=Kummerle&amp;rft.au=Rainer%20Kummerle&amp;rft.au=Giorgio%20Grisetti&amp;rft.au=Hauke%20Strasdat&amp;rft.au=Kurt%20Konolige&amp;rft.au=Wolfram%20Burgard&amp;rft.date=2011-05&amp;rft.pages=3607-3613&amp;rft.spage=3607&amp;rft.epage=3613&amp;rft.isbn=978-1-61284-386-5&amp;rft.language=en"></span>
+  <div class="csl-entry">Tee, Yi Kiat, and Yi Chiew Han. 2021. “Lidar-Based 2D SLAM for Mobile Robot in an Indoor Environment: A Review.” In <i>2021 International Conference on Green Energy, Computing and Sustainable Technology (GECOST)</i>, , 1–7. doi:<a href="https://doi.org/10.1109/GECOST52368.2021.9538731">10.1109/GECOST52368.2021.9538731</a>.</div>
+  <span class="Z3988" title="url_ver=Z39.88-2004&amp;ctx_ver=Z39.88-2004&amp;rfr_id=info%3Asid%2Fzotero.org%3A2&amp;rft_id=info%3Adoi%2F10.1109%2FGECOST52368.2021.9538731&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook&amp;rft.genre=proceeding&amp;rft.atitle=Lidar-Based%202D%20SLAM%20for%20Mobile%20Robot%20in%20an%20Indoor%20Environment%3A%20A%20Review&amp;rft.btitle=2021%20International%20Conference%20on%20Green%20Energy%2C%20Computing%20and%20Sustainable%20Technology%20(GECOST)&amp;rft.aufirst=Yi%20Kiat&amp;rft.aulast=Tee&amp;rft.au=Yi%20Kiat%20Tee&amp;rft.au=Yi%20Chiew%20Han&amp;rft.date=2021-07&amp;rft.pages=1-7&amp;rft.spage=1&amp;rft.epage=7"></span>
+</div>
 
-
-
-    <iframe width="1020" height="574" src="https://www.youtube.com/embed/_kQW_v_9nQk" title="LiDAR-based SLAM results." frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 </body>
 </html>

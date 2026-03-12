@@ -78,13 +78,30 @@ body {
 
 .img-cont {
     text-align: center;
+    margin-top: 35px;
+    margin-bottom: 35px;
 }
 
 figcaption {
     color: rgb(70, 70, 70);
     font-size: 15px;
+    max-width: 550px;
+    text-align: center;
+    margin: auto;
+    font-style: italic;
+}
+
+figcaption::before{
+    font-style: normal;
+    content: "⬆️ ";
 }
 
 strong, b {
     font-weight: 600;
+}
+
+.centered-iframe iframe {
+    display: block; /* Changes the iframe from inline to a block-level element */
+    margin-left: auto; /* Sets the left margin to automatically adjust */
+    margin-right: auto; /* Sets the right margin to automatically adjust */
 }
