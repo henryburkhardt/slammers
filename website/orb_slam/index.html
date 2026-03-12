@@ -18,6 +18,14 @@
                 <li><a href="../credits">🧾 Credits</a></li>
             </ul>
         </nav>
+        <br>
+        <nav>
+            <ul>
+                <li><a href="orb.html">ORB</a></li>
+                <li><a href="mappoint.html">MapPoint Selection</a></li>
+                <li><a href="BA.html">Bundle Adjustment</a></li>
+            </ul>
+        </nav>
     </div>
     <p>ORB-SLAM is a Visual SLAM system for monocular cameras, meaning it generates entire 3D maps from basic video footage. When it released in 2015 it was considered a state-of-the-art SLAM method for its use of Bundle Adjustment (BA), which is very computationally expensive. Thus, the use of BA in live tasks was very restricted.</p>
     <p>To enable BA in ORB-SLAM, the developers had to make a number of optimizations that were unique to ORB-SLAM. First, they use the same features for all parts of the SLAM system. In earlier implementations, different types of keypoints were often used for different SLAM tasks like loop closure and tracking. ORB-SLAM optimizes this by using the same ORB features for all three threads it initializes.</p>
