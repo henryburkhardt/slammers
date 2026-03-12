@@ -42,7 +42,6 @@ body {
 }
 
 #orb-display {
-    /* Yeah I cheated I made a little CSS. Oops. */
     display:grid;
     grid-template-columns: min-content min-content;
     column-gap: 100px;
