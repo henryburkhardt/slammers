@@ -84,3 +84,7 @@ figcaption {
     color: rgb(70, 70, 70);
     font-size: 15px;
 }
+
+strong, b {
+    font-weight: 600;
+}
