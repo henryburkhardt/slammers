@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="../global.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../global.css">
     <title>Document</title>
 </head>
 <body>
-        <div id="nav-div">
+    <div id="nav-div">
         <nav>
             <ul>
                 <li><a href="..">🏠 Home</a></li>
@@ -25,7 +28,7 @@
             </ul>
         </nav>
     </div>
-    <h1>2d Pose Graph LiDAR Based SLAM</h1>
+    <h1>2D Pose Graph LiDAR Based SLAM</h1>
 
     <h4>System Overview</h4>
     <p> Our SLAM system uses LiDAR information, and a data structure called a "pose graph" to iteratively build a map of an unknown environment. We also employ a process called "<a href="https://knowledge.navvis.com/docs/loop-closures-1" target="_blank">loop closure detection</a>" to correct errors in sensor measurements, by recognizing when the robot has returned to a location it has previously visited. We bring all these pieces together into a single system that runs in realtime on a <a href="https://clearpathrobotics.com/turtlebot-4/" target="_blank">TurtleBot4</a>. When the system is run, the robot generates a 2D grid map of its enviroment (see <strong>results</strong> below for more).</p> 
