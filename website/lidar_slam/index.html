@@ -28,63 +28,63 @@
     <h1>2d Pose Graph LiDAR Based SLAM</h1>
 
     <h4>System Overview</h4>
-    <p> Our SLAM system uses LiDAR information, and a data structure called a "pose graph" to iterativley build a map of an unknwon environment. We also emply a process called <a href="https://knowledge.navvis.com/docs/loop-closures-1" target="_blank">"loop closure detection"</a> to correct errors in sensor measurments, by recognizing when the robot has returned to a location it has previsouly visited. We bring all these pieces together into a single system that runs in realtime on a <a href="https://clearpathrobotics.com/turtlebot-4/" target="_blank">Turtlebot4</a>. When the system is run, the robot generates a map 2d grid map of it's enviroment (see <strong>results</strong> below for more).</p> 
+    <p> Our SLAM system uses LiDAR information, and a data structure called a "pose graph" to iteratively build a map of an unknown environment. We also employ a process called "<a href="https://knowledge.navvis.com/docs/loop-closures-1" target="_blank">loop closure detection</a>" to correct errors in sensor measurements, by recognizing when the robot has returned to a location it has previously visited. We bring all these pieces together into a single system that runs in realtime on a <a href="https://clearpathrobotics.com/turtlebot-4/" target="_blank">TurtleBot4</a>. When the system is run, the robot generates a 2D grid map of its enviroment (see <strong>results</strong> below for more).</p> 
 
     <div class="img-cont">
         <figure>
         <img src="./media/whole_system.png" class="img-ctr">
         </figure>
-        <figcaption>A process diagram of our whole SLAM system for realtime mapping on the Turtlebot4.</figcaption>
+        <figcaption>A process diagram of our whole SLAM system for realtime LiDAR mapping on the TurtleBot4.</figcaption>
     </div>
 
     <h4>The Basics</h4>
-    <p>LiDAR detectors on the robot give us 2d scans of the robot's enviroment (the points on the right in the image below shows what this data looks like). Our general mapping approach is to drive the robot around an enviroment, taking many lidar scans (aproximatley one scan everytime the robot moves more than 5cm). Using odometry sensors (sensors that tell how far the robot has moved by measuring the rotation of it's wheels), we can then "draw" each LiDAR scan on a "canvas", centered around where the robot thinks it was when it took that scan. The result is a map, consisting of many many points (from the many many lidar scans).</p>
+    <p>LiDAR detectors on the robot give us 2D scans of the robot's environment (the points on the right in the image below shows what this data looks like). Our general mapping approach is to drive the robot around an environment, taking many LiDAR scans (approximately one scan every time the robot moves more than 5cm). Using odometry sensors (wheel rotation sensors that calculate how far the robot has moved), we can then "draw" each LiDAR scan on a "canvas", centered around where the robot thinks it was when it took that scan. The result is a map, consisting of many many points (from the many many LiDAR scans).</p>
 
-    <p>Under the hood, the robot maintains a graph whose vertices represent discrete robot locations over time (this is functionally equivalent to this idea of drawing all the LiDAR scans on a cavnas).  As we explain in the following secetion, this graph is constantly updated and optimized as the robot drives around. <p>
+    <p>Under the hood, the robot maintains a graph whose vertices represent discrete robot locations over time (this is functionally equivalent to this idea of drawing all the LiDAR scans on a canvas).  As we explain in the following secetion, this graph is constantly updated and optimized as the robot drives around. <p>
 
     <div class="img-cont">
         <figure>
         <img src="./media/scan_diagram.png" class="img-ctr">
-        <figcaption></figcaption>
+        <figcaption>The robot takes a LiDAR scan (left) and overlays it on top of its most recent pose (right, blue X) to update the map (right, red points).</figcaption>
         </figure>
     </div>
 
     <h4 id="h4-loop-closure">Loop Closure</h4>
-    <p> As our robot moves around however, the map it buids accumulates error because the odometry sensors (the sensors that tell how many times the wheels turn) are not 100% accurate. We call this problem  "drift." To combat drift, we  need for our robot to be able to detect when it's internal pose graph is inaccurate. We do this by comparing the LiDAR scans of poses, in a process called <a href="pcr.html">point cloud registration</a>. This process allows for the robot to derive the relative difference in poses between the scans. Then, the robot can introduce this information into it's pose graph -- essentially accounting for sensor inaccuracies. Put in very simple terms, the robot can evaualte the </p>
+    <p> As our robot moves around, the map it buidls accumulates error because the odometry sensors are not 100% accurate. We call this problem "drift." To combat drift, we  need for our robot to be able to detect when its internal pose graph is inaccurate. We do this by comparing the LiDAR scans of poses in a process called <a href="pcr.html">point cloud registration</a>. This process allows for the robot to derive the relative difference in poses between the scans. Then, the robot can introduce this information into its pose graph -- essentially accounting for sensor inaccuracies. Put in very simple terms, the robot can detect how much error it accumulated while moving around, and re-evaluate the actual pose. </p>
 
-    <p>After the corrected pose information is added to the graph, we use a process called graph optimization (specifcally <a href="https://en.wikipedia.org/wiki/Gauss%E2%80%93Newton_algorithm">Gauss-Newton</a> optimization) to update the graph. Graph optmization -- on a very high level -- moves all of the nodes and edges in the pose graph around to account for all of the robots observations about it's enviroment (both from odometry and point cloud registration).</p>
+    <p>After the corrected pose information is added to the graph, we use a process called graph optimization (specifcally <a href="https://en.wikipedia.org/wiki/Gauss%E2%80%93Newton_algorithm">Gauss-Newton</a> optimization) to update the graph. Graph optmization -- on a very high level -- moves all of the nodes and edges in the pose graph around to account for all of the robots observations about its enviroment (both from odometry and point cloud registration).</p>
 
     <div class="img-cont">
         <figure>
         <img src="./media/loop_incorrect.png" class="img-ctr">
         </figure>
-        <figcaption>A visual example of how the robots map of the world (right), can differ from the actual state of it's enviroment (left) because of drift.</figcaption>
+        <figcaption>A visual example of how the robots map of the world (right) can differ from the actual state of its enviroment (left) because of drift.</figcaption>
     </div>
 
     <div class="img-cont">
         <figure>
         <img src="./media/loop_correct.png" class="img-ctr">
         </figure>
-        <figcaption>By comparing lidar scans between poses, the robot can update it's understanding of the world (the pose graph) to more closley align with the real world.</figcaption>
+        <figcaption>By comparing LiDAR scans between poses, the robot can update its understanding of the world (the pose graph) to more closely align with reality.</figcaption>
     </div>
 
     <h4>Results</h4>
-    <p>To reiview, our sytem  does three things constantly: <strong> (1) maps and localizes, (2) detects errors in the map it's making and (3) corrects those errors </strong> (when possible).</p>
+    <p>To review, our sytem does three things constantly: <strong> (1) maps and localizes, (2) detects errors in the map it's making and (3) corrects those errors </strong> (when possible).</p>
 
-    <p>Here's what it looks like running our system in real time on a Turtlebot4, as we drove it around Carleton Collge's Computer Science Deparment (on the 3rd floor of Olin Hall)</p>.
+    <p>Here's what it looks like running our SLAM implementation in real time on a TurtleBot4, as we drove it around Carleton College's Computer Science Deparment (in the 3rd floor of Olin Hall)</p>.
 
     <figure class="centered-iframe">
     <iframe width="651" height="366" src="https://www.youtube.com/embed/_kQW_v_9nQk" title="LiDAR-based SLAM results." frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
     <figcaption>In this video you can see the robot poses (blue dots) and points from LiDAR scans (red dots) accumulating in realtime, as it was driven around Olin.</figcaption>
     </figure>
 
-    <p>When it's time to create a final map, we draw a grid over the accumualted lidar scan points. We initalize all cells as "empty". If there are enought points in any one cell  we switch that cell to "occuppied". The result is what's known as an occupancy grid map.</p>
+    <p>When it's time to create a final map, we draw a grid over the accumulated LiDAR scan points. We initalize all cells as "empty". If there are enough points in any one cell, we update that cell to "occupied". The resulting grid is what we call an "occupancy grid", and functions as the final map our SLAM system outputs.</p>
 
     <figure>
     <div class="img-cont">
         <img src="./media/final_map.png" class="img-ctr">
     </div>
-    <figcaption>The occupancy grid map (with added labels) genereated from the test run shown in the previous video.</figcaption>
+    <figcaption>The occupancy grid map (with added labels) generated from the test run shown in the above video.</figcaption>
     </figure>
 
     <h4>Works Cited</h4>
