@@ -34,8 +34,11 @@
     <p> Minimizing the reprojection error is what Bundle Adjustment tackles and it is formulated as a non linear optimization problem. The algorithm we use to minimize the reprojection error simultaneously adjusts both 3D map points and poses to find and optimal set that will minimize the reprojection error for all 3D map points. </p>
     <p> Bundle Adjustment is a very computationally expensive so what ORB SLAM does it run two forms of bundle adjustment. One called local bundle adjustment which is used on a small set of 3D map points and camera poses and then global bundle adjustment which is run on all 3D map points and camera poses. This breaks the bundle adjustment problem into two seperate problems that are each easier to solve. </p>
     <img src="media/final_map_BA.png" alt="Original map" width="500px">
-    <caption>Final Map of a Classroom After Bundle Adjustment</caption>
-    <p> My solver for bundle adjustment is not as complex as other approaches to solving the reprojection error but it still is able to form a relativley accurate map. </p>
-
+    <figcaption>Final Map of a Classroom After Bundle Adjustment</figcaption>
+    <p> My solver for bundle adjustment is not as complex as other approaches to solving the reprojection error but it still is able to form a relativley accurate map as you can see above. </p>
+    <p><strong>Works Cited</strong></p>
+    <div class="csl-bib-body" style="line-height: 2; margin-left: 2em; text-indent:-2em;">
+    <div class="csl-entry">Kümmerle, R., Grisetti, G., Strasdat, H., Konolige, K., &amp; Burgard, W. (2011). G2o: A general framework for graph optimization. <i>IEEE International Conference on Robotics and Automation</i>. <a href="https://doi.org/10.1109/ICRA.2011.5979949">https://doi.org/10.1109/ICRA.2011.5979949</a>.</div>
+    <div class="csl-entry">Triggs, B., McLauchlan, P. F., Hartley, R. I., &amp; Fitzgibbon, A. W. (2000). Bundle Adjustment — A Modern Synthesis. <i>Lecture Notes in Computer Science</i>, 298-372. <a href="https://doi.org/10.1007/3-540-44480-7_21">https://doi.org/10.1007/3-540-44480-7_21</a></div>
 </body>
-</html>
+
