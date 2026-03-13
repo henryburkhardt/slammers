@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="../global.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+        <div id="nav-div">
+        <nav>
+            <ul>
+                <li><a href="..">🏠 Home</a></li>
+                <li><a href="../lidar_slam" class="selected">📡 LiDAR SLAM</a></li>
+                <li><a href="../orb_slam">📷 Visual SLAM</a></li>
+                <li><a href="../../slides/SLAM_comps_presentation.pdf">👨‍🏫 Slides</a></li>
+                <li><a href="https://github.com/henryburkhardt/slammers">👾 GitHub</a></li>
+                <li><a href="../credits">🧾 Credits</a></li>
+            </ul>
+        </nav>
+        <br>
+        <nav>
+            <ul>
+                <li><a href="pcr.html" class="selected">Point Cloud Registration</a></li>
+            </ul>
+        </nav>
+    </div>
+    <h1>Point Cloud Registration (PCR)</h1>
+
+    <h4>General Purpose in SLAM</h4>
+
+    <p>Whenever our robot updates its pose, it takes wheel odometry data to infer how far the robot moved and where, and combines it with the most recent pose to estimate a new pose. This newly estimated pose is then added to the pose graph, and used for the next update. </p>
+
+    <div class="img-cont">
+        <figure>
+        <img src="./media/move_estimate.png" class="img-ctr">
+        </figure>
+        <figcaption>Robot estimates its movement (red arrow) and adds that to its previous pose (green) to compute its current pose (blue) in its computed map.</figcaption>
+    </div>
+
+    <p>However, wheel odometry inaccuracies lead to incorrect pose estimation. This can be mitigated by also using LiDAR data. The robot additionally saves LiDAR scans for each pose, and compares subsequent scans to verify/update its original pose estimation. This process is called <i>point cloud registration</i>, and is also used in <a href="index.html#h4-loop-closure">loop closure</a> to compare two non-subsequent poses and check whether the robot is in a familiar location.</p>
+
+    <h4>PCR Overview</h4>
+
+    <p>Mathematically, the following two questions are equivalent:</p>
+    <ol>
+        <li>How did the robot move from pose A to B?</li>
+        <li>How can we map scan B to scan A?</li>
+    </ol>
+    <p>Point cloud registration, also called scan-matching, aims to answer the second question. (Note: the comparison direction between A/B is flipped because as the robot moves forward, the scans move backward, and etc.) We explored two algorithms, ICP and NDT, and ultimately used ICP for our SLAM implementation. We provide a high level overview of both below.</p>
+
+    <div class="img-cont">
+        <figure>
+        <img src="./media/scan_matching.png" class="img-ctr">
+        </figure>
+        <figcaption>Mathematically, the two tasks are equivalent.</figcaption>
+    </div>
+
+    <h4>Iterative Closest Point (ICP)</h4>
+
+    <p>We call the scan we want to map (B) the "source", and the scan we want to match (A) as the "destination". ICP iteratively shifts the source to the destination by iterating through each source point and finding its nearest destination point. It then uses <a href="https://staff.fnwi.uva.nl/r.vandenboomgaard/IPCV20162017/LectureNotes/MATH/homogenous.html">homogenous coordinates</a> and <a href="https://en.wikipedia.org/wiki/Singular_value_decomposition">SVD computation</a> to deconstruct the covariance matrix of both points and derive the <a href="http://nghiaho.com/?page_id=671">transformation</a> that minimizes these points. </p>
+    
+    <div class="img-cont">
+        <figure>
+        <img src="./media/icp.png" class="img-ctr">
+        </figure>
+        <figcaption>We can combine all individual point differences (small arrows) into one transformation that minimizes these differences (big red arrow).</figcaption>
+    </div>
+
+    <p>This transformation is not perfect, since some points select neighbors that should actually be further away. However, we still move our source closer to the destination. We thus repeat this process, selecting new neighbors, until the source converges to the destination. The final transformation matrix is our desired robot pose transformation.</p>
+
+    <p>In practice, ICP is not robust, and often requires similar scans to correctly find the optimum transformation. (This is why our robot updates its pose every 5cm.) When ICP works, it is very accurate, though convergence is slow.</p>
+
+    <h4>Normal Distribution Transform (NDT)</h4>
+
+    <p>NDT is also an iterative algorithm, designed to give coarse but fast estimates. The local map is first divided into cells (roughly 50cm by 50cm), and the destination scan is turned into a series of 2D normal distributions. We then run <a href="https://ocw.mit.edu/courses/15-084j-nonlinear-programming-spring-2004/83159d56de04a7e7dc94d0348fa4ccda_lec3_newton_mthd.pdf">Newton's method of unconstrained optimization</a> to find the direction of transformation that maximizes the source points' overlap with the normal distribution. </p>
+
+    <div class="img-cont">
+        <figure>
+        <img src="./media/ndt.png" class="img-ctr">
+        </figure>
+        <figcaption>The destination scan is transformed into a collection of 2D normal distributions, and we compute the direction that maximizes the overlap.</figcaption>
+    </div>
+
+    In practice, NDT is more robust than ICP and often converges much faster, but to a more inaccurate optimum. There exists a method to combine the best of both worlds, called <a href="https://www.sciencedirect.com/science/article/pii/S1877050919302388">NDT-ICP</a>, that runs NDT for half of its iterations to quickly obtain a course estimate, and runs ICP for the remaining iterations to accurately refine the estimate. 
+
+    <h4>Works Cited</h4>
+    <div class="csl-bib-body" style="line-height: 1.35; margin-left: 2em; text-indent:-2em;">
+
+        <div class="csl-entry" style="margin-bottom: 1em;">Arun, K.S, Thomas S Huang, and Steven D Blostein. 1987. “Least-Squares Fitting of Two 3-D Point Sets.” <i>IEEE Transactions on Pattern Analysis and Machine Intelligence</i> PAMI-9 (5): 698–700. <a href="https://doi.org/10.1109/tpami.1987.4767965">https://doi.org/10.1109/tpami.1987.4767965</a>.</div>
+
+        <div class="csl-entry" style="margin-bottom: 1em;">Biber, P., and W. Strasser. n.d. “The Normal Distributions Transform: A New Approach to Laser Scan Matching.” <i>Proceedings 2003 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS 2003) (Cat. No.03CH37453)</i>. <a href="https://doi.org/10.1109/iros.2003.1249285">https://doi.org/10.1109/iros.2003.1249285</a>.</div>
+
+        <div class="csl-entry" style="margin-bottom: 1em;">Challis, John H. 1995. “A Procedure for Determining Rigid Body Transformation Parameters.” <i>Journal of Biomechanics</i> 28 (6): 733–37. <a href="https://doi.org/10.1016/0021-9290(94)00116-l">https://doi.org/10.1016/0021-9290(94)00116-l</a>.</div>
+
+        <div class="csl-entry" style="margin-bottom: 1em;">Dennis, J E, and Robert B Schnabel. 1996. <i>Numerical Methods for Unconstrained Optimization and Nonlinear Equations</i>. Philadelphia: Society For Industrial And Applied Mathematics.</div>
+
+        <div class="csl-entry" style="margin-bottom: 1em;">Shi, Xiuying, Jianjun Peng, Jiping Li, Pitao Yan, and Hangyu Gong. 2019. “The Iterative Closest Point Registration Algorithm Based on the Normal Distribution Transformation.” <i>Procedia Computer Science</i> 147: 181–90. .<a href="https://doi.org/10.1016/j.procs.2019.01.219">https://doi.org/10.1016/j.procs.2019.01.219</a>.</div>
+
+        <div class="csl-entry" style="margin-bottom: 1em;">Sorkine-Hornung, Olga, and Michael Rabinovich. 2017. “Least-Squares Rigid Motion Using SVD.” <a href="https://igl.ethz.ch/projects/ARAP/svd_rot.pdf">https://igl.ethz.ch/projects/ARAP/svd_rot.pdf</a>.</div>
+
+        <div class="csl-entry" style="margin-bottom: 1em;">Van Den Boomgaard, Rein. 2016. “Homogeneous Coordinates — Image Processing and Computer Vision 2.0 Documentation.” Staff.fnwi.uva.nl. 2016. <a href="https://staff.fnwi.uva.nl/r.vandenboomgaard/IPCV20162017/LectureNotes/MATH/homogenous.html">https://staff.fnwi.uva.nl/r.vandenboomgaard/IPCV20162017/LectureNotes/MATH/homogenous.html</a>.</div>
+        
+    </div>
+
+</body>
+</html>

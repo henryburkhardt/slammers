@@ -18,6 +18,12 @@
                 <li><a href="../credits">🧾 Credits</a></li>
             </ul>
         </nav>
+        <br>
+        <nav>
+            <ul>
+                <li><a href="pcr.html">Point Cloud Registration</a></li>
+            </ul>
+        </nav>
     </div>
     <h1>2d Pose Graph LiDAR Based SLAM</h1>
 
@@ -43,8 +49,8 @@
         </figure>
     </div>
 
-    <h4>Loop Closure</h4>
-    <p> As our robot moves around however, the map it buids accumulates error because the odometry sensors (the sensors that tell how many times the wheels turn) are not 100% accurate. We call this problem  "drift." To combat drift, we  need for our robot to be able to detect when it's internal pose graph is inaccurate. We do this by comparing the LiDAR scans of poses, in a process called point cloud registration. This process allows for the robot to derive the relative difference in poses between the scans. Then, the robot can introduce this information into it's pose graph -- essentially accounting for sensor inaccuracies. Put in very simple terms, the robot can evaualte the </p>
+    <h4 id="h4-loop-closure">Loop Closure</h4>
+    <p> As our robot moves around however, the map it buids accumulates error because the odometry sensors (the sensors that tell how many times the wheels turn) are not 100% accurate. We call this problem  "drift." To combat drift, we  need for our robot to be able to detect when it's internal pose graph is inaccurate. We do this by comparing the LiDAR scans of poses, in a process called <a href="pcr.html">point cloud registration</a>. This process allows for the robot to derive the relative difference in poses between the scans. Then, the robot can introduce this information into it's pose graph -- essentially accounting for sensor inaccuracies. Put in very simple terms, the robot can evaualte the </p>
 
     <p>After the corrected pose information is added to the graph, we use a process called graph optimization (specifcally <a href="https://en.wikipedia.org/wiki/Gauss%E2%80%93Newton_algorithm">Gauss-Newton</a> optimization) to update the graph. Graph optmization -- on a very high level -- moves all of the nodes and edges in the pose graph around to account for all of the robots observations about it's enviroment (both from odometry and point cloud registration).</p>
 
