@@ -28,7 +28,7 @@
         </nav>
     </div>
      <h1>MapPoint Selection for Visual SLAM</h1>
-    <p>Visual SLAM systems like ORB-SLAM accumulate map points indefinitely. Every point that passes the initial quality filter is kept forever, regardless of how redundant it becomes for future localization. In the long run, this bloats memory and slows down the system. With the goal to keep the map <b>small but informative</b>, MapPoint Selection addresses this by asking a different question: given a fixed budget, <i>which subset of map points is most valuable for the camera to localize itself?</i></p>
+    <p>Visual SLAM systems like ORB-SLAM accumulate map points indefinitely. Every point that passes MapPoint Culling(the initial quality filter) is kept forever, regardless of how redundant it becomes for future localization. In the long run, this bloats memory and slows down the system. With the same goal to keep the map <b>small but informative</b>, our implementation of MapPoint Selection addresses this by asking a different question: given a fixed budget, <i>which subset of map points is most valuable for the camera to localize itself?</i></p>
     <h2>Fisher Information and Utility</h2>
     <p>The value of a map point is measured through Fisher Information — a quantity that captures how sensitively a pixel observation responds to changes in camera pose. When a known 3D point is projected into a keyframe, the resulting pixel location constrains the camera's 6 degrees of freedom (3 translation, 3 rotation). The Fisher Information Matrix (FIM) for a keyframe is:</p>
     <div style="display:flex; flex-direction:column; align-items:center; gap:16px;">
@@ -79,7 +79,7 @@
     <p><strong>Works Cited</strong></p>
     <div class="csl-bib-body" style="line-height: 2; margin-left: 2em; text-indent:-2em;">
     <div class="csl-entry">Müller, C., &amp; Dayoub, F. (2022). Map Point Selection for Visual SLAM. <i>IEEE International Conference on Robotics and Automation (ICRA)</i>. https://arxiv.org/abs/2209.09445</a>.</div>
-    <div class="csl-entry">Schöps, T., et al. (2017). A Multi-View Stereo Benchmark with High-Resolution Images and Multi-Camera Videos. <i>CVPR</i>.</a>.</div>
+    <div class="csl-entry">Schöps, T., Schönberger, J. L., Galliani, S., Sattler, T., Schindler, K., Pollefeys, M., &amp; Geiger, A. (2017). A multi-view stereo benchmark with high-resolution images and multi-camera videos. <i>Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)</i>, 2538–2547. https://doi.org/10.1109/CVPR.2017.272
     </div>
 </body>
 </html>
