@@ -1,13 +1,9 @@
 <!DOCTYPE html>
 <html lang = 'en'>
 <head>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../global.css">
-    <title>Document</title>
     <title> Bundle Adjustment </title>
 </head>
 
@@ -18,7 +14,7 @@
                 <li><a href="..">🏠 Home</a></li>
                 <li><a href="../lidar_slam">📡 LiDAR SLAM</a></li>
                 <li><a href="../orb_slam" class="selected">📷 Visual SLAM</a></li>
-                <li><a href="../slides/SLAM_comps_presentation.pdf" target="_blank">👨‍🏫 Slides</a></li>
+                <li><a href="../../slides/SLAM_comps_presentation.pdf">👨‍🏫 Slides</a></li>
                 <li><a href="https://github.com/henryburkhardt/slammers">👾 GitHub</a></li>
                 <li><a href="../credits">🧾 Credits</a></li>
             </ul>
@@ -35,11 +31,11 @@
     <h1> Bundle Adjustment </h1>
     <p> Bundle adjustment is the process of refining the 3D map points and poses created during ORB SLAM. Once bundle adjustment is finished we will have an accurate map of the environment we were tracking during ORB SLAM.</p>
     <p> To do this bundle adjustment solves the reprojection error. Since 3D map points are calculated during the process of triangulation it can be incorrectly calculated due to issues with the camera or tracking. So in order to determine how inaccurate a 3D mappoint is, it is compared to a 2D coordinate of a map point. We can compare these two by reprojecting the 3D mappoint to 2D and comparing it to the 2D mappoint that we already had. The difference between the 2D mappoint and the reprojected 3D mappoint is the reprojection error.</p>
-    <p> Minimizing the reprojection error is what Bundle Adjustment tackles and it is formulated as a non linear optimization problem. The algorithm we use to minimize the reprojection error simultaneously adjusts both 3D map points and poses to find and optimal set that will minimize the reprojection error for all 3D map points. </p>
+    <p> Minimizing the reprojection error is the main problem for Bundle Adjustment and it is formulated as a non linear optimization problem. The algorithm we use to minimize the reprojection error simultaneously adjusts both 3D map points and poses to find and optimal set that will minimize the reprojection error for all 3D map points. </p>
     <p> Bundle Adjustment is a very computationally expensive so what ORB SLAM does it run two forms of bundle adjustment. One called local bundle adjustment which is used on a small set of 3D map points and camera poses and then global bundle adjustment which is run on all 3D map points and camera poses. This breaks the bundle adjustment problem into two seperate problems that are each easier to solve. </p>
     <img src="media/final_map_BA.png" alt="Original map" width="500px">
     <figcaption>Final Map of a Classroom After Bundle Adjustment</figcaption>
-    <p> My solver for bundle adjustment is not as complex as other approaches to solving the reprojection error but it still is able to form a relativley accurate map as you can see above. </p>
+    <p>While my bundle adjustment solver is less complex than some alternative methods for minimizing reprojection error, it still produces a relatively accurate map, as shown above. This map was created using a rosbag of an example sequence from Raul Mur-Artal's lab, found in his <a href="https://github.com/raulmur/ORB_SLAM?tab=readme-ov-file">ORB-SLAM repository</a>.</p>
     <p><strong>Works Cited</strong></p>
     <div class="csl-bib-body" style="line-height: 2; margin-left: 2em; text-indent:-2em;">
     <div class="csl-entry">Kümmerle, R., Grisetti, G., Strasdat, H., Konolige, K., &amp; Burgard, W. (2011). G2o: A general framework for graph optimization. <i>IEEE International Conference on Robotics and Automation</i>. <a href="https://doi.org/10.1109/ICRA.2011.5979949">https://doi.org/10.1109/ICRA.2011.5979949</a>.</div>
